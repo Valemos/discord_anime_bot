@@ -1,3 +1,5 @@
+package bot;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,7 +9,13 @@ public class BotDiscordEntryPoint {
         BotAnimeCards bot = new BotAnimeCards();
 
         if (!bot.authenticate(bot_token)){
-            Logger.getGlobal().log(Level.SEVERE,"cannot use bot token");
+            return;
         }
+
+        if (!bot.loadEmailSettings()){
+            bot.loadDefaultSettings();
+        }
+
+//        bot.shutdown();
     }
 }

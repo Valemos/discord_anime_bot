@@ -1,5 +1,7 @@
+package game;
+
 import java.util.List;
 
-public class PersonalCollection {
+public class GlobalCollection {
     List<CharacterCard> cards;
 }

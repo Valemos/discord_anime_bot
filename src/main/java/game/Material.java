@@ -1,3 +1,5 @@
+package game;
+
 enum Material {
     Wood("Wood"),
     Stone("Stone"),

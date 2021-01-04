@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'junit:junit:4.12'
     compile "net.dv8tion:JDA:4.2.0_168"
     compile group: 'javax.mail', name: 'mail', version: '1.4'
     compile 'joda-time:joda-time:2.10.9'
