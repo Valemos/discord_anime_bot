@@ -9,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class AnimeCardsGameTest {
     AnimeCardsGame game;
     Player player;
-    CharacterCard card;
+    CharacterCard card1;
+    CharacterCard card2;
 
     @BeforeEach
     void setUp() {
@@ -17,7 +18,8 @@ class AnimeCardsGameTest {
         player = new Player("1", AccessLevel.USER);
 
         CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
-        card = new CharacterCard("Riko", "Made in Abyss", "img", stats);
+        card1 = new CharacterCard("Riko", "Made in Abyss", "img", stats);
+        card2 = new CharacterCard("Test", "Test", "img", stats.clone());
     }
 
     @Test
@@ -33,21 +35,37 @@ class AnimeCardsGameTest {
 
     @Test
     void testCardAdded() {
-        game.addCard(card);
-        assertSame(card, game.getCardById(card.getId()));
+        game.addCard(card1);
+        assertSame(card1, game.getCardById(card1.getId()));
     }
 
     @Test
     void testCardRemoved() {
-        game.addCard(card);
-        game.removeCardById(card.getId());
+        game.addCard(card1);
+        game.removeCardById(card1.getId());
 
-        assertNull(game.getCardById(card.getId()));
+        assertNull(game.getCardById(card1.getId()));
     }
 
     @Test
     void testCardStatsCopied() {
-        assertEquals(card.stats, card.stats.clone());
-        assertNotSame(card.stats, card.stats.clone());
+        assertEquals(card1.stats, card1.stats.clone());
+        assertNotSame(card1.stats, card1.stats.clone());
+    }
+
+    @Test
+    void testTwoCardsAdded() {
+        game.addCard(card1);
+        game.addCard(card2);
+
+        assertEquals(2, game.getGlobalCollection().size());
+    }
+
+    @Test
+    void testCardsUniqueId() {
+        game.addCard(card1);
+        game.addCard(card2);
+
+        assertNotEquals(card1.getId(), card2.getId());
     }
 }

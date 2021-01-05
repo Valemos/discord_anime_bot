@@ -1,5 +1,7 @@
 package game;
 
+import bot.AccessLevel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +19,12 @@ public class AnimeCardsGame {
     }
 
     public void addPlayer(Player player) {
-        if (!playerExists(player)){
-            players.add(player);
-        }
+        removePlayer(player);
+        players.add(player);
+    }
+
+    private void removePlayer(Player player) {
+        players.removeIf((p) -> p.getId().equals(player.getId()));
     }
 
     private boolean playerExists(Player player) {
@@ -36,6 +41,16 @@ public class AnimeCardsGame {
 
     public void removeCardById(String id) {
         globalCollection.removeCardById(id);
+    }
+
+    public GlobalCollection getGlobalCollection() {
+        return globalCollection;
+    }
+
+    public Player createNewPlayer(String new_player_id) {
+        Player player = new Player(new_player_id, AccessLevel.USER);
+        addPlayer(player);
+        return player;
     }
 }
 

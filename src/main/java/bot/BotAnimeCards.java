@@ -2,6 +2,7 @@ package bot;
 
 import bot.commands.CreateCardHandler;
 import bot.commands.DropHandler;
+import bot.commands.JoinAsCreatorHandler;
 import game.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -27,7 +28,8 @@ public class BotAnimeCards {
         commandsHandler = new MessageCommandsHandler(game);
         commandsHandler.setCommands(new ArrayList<>(List.of(
                 new DropHandler(),
-                new CreateCardHandler()
+                new CreateCardHandler(),
+                new JoinAsCreatorHandler()
         )));
     }
 
@@ -60,8 +62,18 @@ public class BotAnimeCards {
     public void loadDefaultSettings() {
         CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
 
-        game.addCard(new CharacterCard("Riko", "Made in Abyss", "img", stats.clone()));
-        game.addCard(new CharacterCard("Reg", "Made in Abyss", "img", stats.clone()));
+        game.addCard(new CharacterCard(
+                "Riko",
+                "Made in Abyss",
+                "img", stats.clone()));
+        game.addCard(new CharacterCard(
+                "Haruhi Suzumiya",
+                "Suzumiya Haruhi no Yuuutsu",
+                "img", stats.clone()));
+        game.addCard(new CharacterCard(
+                "Kaiman",
+                "Dorohedoro",
+                "img", stats.clone()));
     }
 
     public void waitForShutdown() {

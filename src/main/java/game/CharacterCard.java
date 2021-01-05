@@ -25,4 +25,8 @@ public class CharacterCard {
     public String getId() {
         return id;
     }
+
+    public String getOneLineString() {
+        return characterName + " / " + seriesName;
+    }
 }

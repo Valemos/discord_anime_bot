@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MessageCommandsHandlerTest {
     private MessageCommandsHandler commandHandler;
     private AnimeCardsGame game;
+    Player user;
+    Player admin;
 
     @BeforeEach
     void setUp() {
@@ -26,6 +28,9 @@ class MessageCommandsHandlerTest {
                         new DropHandler(),
                         new CreateCardHandler()
                 )));
+
+        user = new Player("1", AccessLevel.USER);
+        admin = new Player("2", AccessLevel.ADMIN);
 
     }
 
@@ -51,9 +56,6 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testUserHasAccessToCommand() {
-        Player user = new Player("1", AccessLevel.USER);
-        Player admin = new Player("2", AccessLevel.ADMIN);
-        game.addPlayer(user);
         game.addPlayer(admin);
 
         assertTrue(commandHandler.playerHasAccessToCommand(user, new DropHandler()));
@@ -61,4 +63,20 @@ class MessageCommandsHandlerTest {
         assertFalse(commandHandler.playerHasAccessToCommand(admin, new CreateCardHandler()));
     }
 
+    @Test
+    void testGetExistingPlayer() {
+        game.addPlayer(user);
+
+        Player fetchedPlayer = commandHandler.getExistingOrCreateNewPlayerById(user.getId());
+        assertSame(user, fetchedPlayer);
+    }
+
+    @Test
+    void testNewPlayerCreatedWhenNotFound() {
+        game.addPlayer(admin);
+
+        Player newPlayer = commandHandler.getExistingOrCreateNewPlayerById("15");
+        assertEquals("15", newPlayer.getId());
+        assertNotSame(admin, newPlayer);
+    }
 }

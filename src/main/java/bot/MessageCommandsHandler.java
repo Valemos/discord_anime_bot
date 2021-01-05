@@ -4,6 +4,7 @@ import bot.commands.BotCommandHandler;
 import bot.commands.CommandArguments;
 import game.AnimeCardsGame;
 import game.Player;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -22,25 +23,40 @@ public class MessageCommandsHandler extends ListenerAdapter {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
-        String messageContent = event.getMessage().getContentRaw();
-        if (!BotCommandHandler.stringIsCommand(messageContent)){
+        String messageString = event.getMessage().getContentRaw().trim();
+        if (!BotCommandHandler.stringIsCommand(messageString)){
             return;
         }
 
-        BotCommandHandler commandHandler = findCommandForString(messageContent);
+        BotCommandHandler commandHandler = findCommandForString(messageString);
+        if (BotCommandHandler.commandIsInvalid(commandHandler)){
+            return;
+        }
 
-        Player player = game.getPlayerById(event.getAuthor().getId());
+        String playerId = event.getAuthor().getId();
+        Player player = getExistingOrCreateNewPlayerById(playerId);
 
-        if (!playerHasAccessToCommand(player, commandHandler)) {
-            handleCommandMessageForUser(player, commandHandler, messageContent);
+        if (playerHasAccessToCommand(player, commandHandler)) {
+            handleCommandMessageForPlayer(player, commandHandler, event.getChannel(), messageString);
         }
     }
 
-    private void handleCommandMessageForUser(Player player, BotCommandHandler commandHandler, String messageContent) {
+    Player getExistingOrCreateNewPlayerById(String id) {
+        Player player = game.getPlayerById(id);
+
+        if (player == null){
+            player = game.createNewPlayer(id);
+        }
+
+        return player;
+    }
+
+    private void handleCommandMessageForPlayer(Player player, BotCommandHandler commandHandler,
+                                               MessageChannel channel, String messageContent) {
 
         String[] messageArguments = commandHandler.getArguments(messageContent);
         if (commandHandler.isArgumentsValid(messageArguments)){
-            CommandArguments args = new CommandArguments(player, game, messageArguments);
+            CommandArguments args = new CommandArguments(game, player, channel, messageArguments);
             commandHandler.handleCommand(args);
         }
     }
@@ -48,9 +64,9 @@ public class MessageCommandsHandler extends ListenerAdapter {
     boolean playerHasAccessToCommand(Player player, BotCommandHandler command) {
         if (command == null || player == null) {
             return false;
-        }else{
-            return player.getAccessLevel().level >= command.getAccessLevel().level;
         }
+
+        return player.getAccessLevel().level >= command.getAccessLevel().level;
     }
 
     BotCommandHandler findCommandForString(String messageString) {

@@ -7,6 +7,10 @@ public class CardStats implements Cloneable{
     CharismaState charisma;     // the card has a dye or frame or not
     Constitution constitution;  // the card is injured or not
 
+    public CardStats() {
+        this(0, 10, 0, CharismaState.NEUTRAL, Constitution.HEALTHY);
+    }
+
     public CardStats(float dexterity, float intelligence, float defenseLevel, CharismaState charisma, Constitution constitution) {
         this.dexterity = dexterity;
         this.intelligence = intelligence;
@@ -69,7 +73,6 @@ public class CardStats implements Cloneable{
     public float getDefenseLevel() {
         return defenseLevel;
     }
-
 
     public CharismaState getCharisma() {
         return charisma;

@@ -8,17 +8,20 @@ import java.util.Arrays;
 public abstract class BotCommandHandler extends CommandParser {
 
     protected String commandName = "";
-
     protected AccessLevel accessLevel = AccessLevel.USER;
 
-    public abstract void handleCommand(CommandArguments arguments);
+    public abstract void handleCommand(CommandArguments args);
 
     @Override
     public String[] getArguments(String command) {
         String[] parts = getStringCommandParts(command);
 
         if (commandPartsValid(parts)){
-            return Arrays.copyOfRange(parts, 1, parts.length);
+            if (parts.length == 1){
+                return new String[]{};
+            }else{
+                return Arrays.copyOfRange(parts, 1, parts.length);
+            }
         }
         return null;
     }
@@ -35,6 +38,10 @@ public abstract class BotCommandHandler extends CommandParser {
             }
         }
         return false;
+    }
+
+    public static boolean commandIsInvalid(BotCommandHandler handler) {
+        return handler == null;
     }
 
     public String getName() {
