@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 group 'org.bot'
@@ -11,13 +12,21 @@ repositories {
 }
 
 dependencies {
-    implementation 'junit:junit:4.12'
-    compile "net.dv8tion:JDA:4.2.0_168"
-    compile group: 'javax.mail', name: 'mail', version: '1.4'
-    compile 'joda-time:joda-time:2.10.9'
-
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    implementation 'junit:junit:4.12'
+    implementation 'net.dv8tion:JDA:4.2.0_168'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'bot.BotDiscordEntryPoint'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 test {
