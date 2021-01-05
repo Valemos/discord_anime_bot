@@ -11,7 +11,7 @@ public class CreateCardHandler extends BotCommandHandler{
     }
 
     @Override
-    public void handleCommand(AnimeCardsGame game) {
+    public void handleCommand(AnimeCardsGame game, String[] arguments) {
 
     }
 }

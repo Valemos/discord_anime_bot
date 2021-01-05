@@ -2,23 +2,21 @@ package game;
 
 import bot.AccessLevel;
 
-public class User {
+public class Player {
     private final String userId;
-
     private AccessLevel accessLevel;
-
     private PersonalCollection collection;
-
     private MaterialInventory materialInventory;
-    public User(String userId, AccessLevel accessLevel) {
+
+    public Player(String userId, AccessLevel accessLevel) {
         this.userId = userId;
         this.accessLevel = accessLevel;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof User){
-            return userId.equals(((User) obj).userId);
+        if (obj instanceof Player){
+            return userId.equals(((Player) obj).userId);
         }
         return false;
     }

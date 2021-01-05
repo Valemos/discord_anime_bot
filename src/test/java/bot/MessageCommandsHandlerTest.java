@@ -1,9 +1,10 @@
 package bot;
 
+import bot.commands.BotCommandHandler;
 import bot.commands.CreateCardHandler;
 import bot.commands.DropHandler;
 import game.AnimeCardsGame;
-import game.User;
+import game.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,19 +23,20 @@ class MessageCommandsHandlerTest {
         commandHandler = new MessageCommandsHandler(game);
         commandHandler.setCommands(
                 new ArrayList<>(List.of(
-                        new DropHandler()
+                        new DropHandler(),
+                        new CreateCardHandler()
                 )));
 
     }
 
     @Test
     void testCommandNameExtracted() {
-        assertEquals("", commandHandler.getCommandName(""));
-        assertEquals("", commandHandler.getCommandName("drop"));
-        assertEquals("", commandHandler.getCommandName("drop test"));
-        assertEquals("", commandHandler.getCommandName("# drop test"));
-        assertEquals("drop", commandHandler.getCommandName("#drop"));
-        assertEquals("drop", commandHandler.getCommandName("#drop test test"));
+        assertEquals("", BotCommandHandler.getCommandName(""));
+        assertEquals("", BotCommandHandler.getCommandName("drop"));
+        assertEquals("", BotCommandHandler.getCommandName("drop test"));
+        assertEquals("", BotCommandHandler.getCommandName("# drop test"));
+        assertEquals("drop", BotCommandHandler.getCommandName("#drop"));
+        assertEquals("drop", BotCommandHandler.getCommandName("#drop test test"));
     }
 
     @Test
@@ -49,8 +51,8 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testUserHasAccessToCommand() {
-        game.addUser(new User("1", AccessLevel.USER));
-        game.addUser(new User("2", AccessLevel.ADMIN));
+        game.addPlayer(new Player("1", AccessLevel.USER));
+        game.addPlayer(new Player("2", AccessLevel.ADMIN));
 
         assertTrue(commandHandler.userHasAccessToCommand("1", new DropHandler()));
         assertTrue(commandHandler.userHasAccessToCommand("2", new DropHandler()));

@@ -1,16 +1,17 @@
 package game;
 
 enum Material {
-    Wood("Wood"),
-    Stone("Stone"),
-    Iron("Iron"),
-    Gold("Gold"),
-    Diamond("Diamond"),
-    Emerald("Emerald"),
+    GOLD("Gold"),
 
-    Blackstone("Blackstone"),
-    ShadowSteel("Shadow Steel"),
-    SkySilkworm("Sky Silkworm");
+    WOOD("Wood"),
+    STONE("Stone"),
+    IRON("Iron"),
+    DIAMOND("Diamond"),
+    EMERALD("Emerald"),
+
+    BLACKSTONE("Blackstone"),
+    SHADOW_STEEL("Shadow Steel"),
+    SKY_SILKWORM("Sky Silkworm");
 
     private final String name;
 

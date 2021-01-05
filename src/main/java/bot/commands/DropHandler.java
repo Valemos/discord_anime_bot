@@ -10,7 +10,12 @@ public class DropHandler extends BotCommandHandler {
     }
 
     @Override
-    public void handleCommand(AnimeCardsGame game) {
+    public void handleCommand(AnimeCardsGame game, String[] arguments) {
 
+    }
+
+    @Override
+    public String[] getArguments(String command) {
+        return null;
     }
 }

@@ -2,17 +2,15 @@ package bot;
 
 import bot.commands.BotCommandHandler;
 import game.AnimeCardsGame;
-import game.User;
+import game.Player;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MessageCommandsHandler extends ListenerAdapter {
 
-    protected static final String commandPrefix = "#";
     private final AnimeCardsGame game;
     private HashMap<String, BotCommandHandler> commandsMap;
 
@@ -33,35 +31,18 @@ public class MessageCommandsHandler extends ListenerAdapter {
         }
     }
 
-
     boolean userHasAccessToCommand(String userId, BotCommandHandler command) {
         if (command == null) return false;
 
-        User user = game.getUserById(userId);
-        if (user == null) return false;
+        Player player = game.getPlayerById(userId);
+        if (player == null) return false;
 
-        return user.getAccessLevel().level >= command.getAccessLevel().level;
+        return player.getAccessLevel().level >= command.getAccessLevel().level;
     }
 
     BotCommandHandler findCommandForString(String messageString) {
-        String commandName = getCommandName(messageString);
+        String commandName = BotCommandHandler.getCommandName(messageString);
         return commandsMap.getOrDefault(commandName, null);
-    }
-
-    String getCommandName(String commandString) {
-        if (!commandString.startsWith(commandPrefix)){
-            return "";
-        }
-
-        try{
-            int nameStart = commandString.indexOf(commandPrefix) + 1;
-            int nameEnd = commandString.indexOf(' ');
-            if (nameEnd == -1) nameEnd = commandString.length();
-
-            return commandString.substring(nameStart, nameEnd);
-        }catch(IndexOutOfBoundsException e){
-            return "";
-        }
     }
 
     public void setCommands(List<BotCommandHandler> commandList) {
@@ -71,7 +52,7 @@ public class MessageCommandsHandler extends ListenerAdapter {
         }
     }
 
-    public List<BotCommandHandler> getAllHandlers() {
+    public List<BotCommandHandler> getAllCommands() {
         return new ArrayList<>(commandsMap.values());
     }
 }
