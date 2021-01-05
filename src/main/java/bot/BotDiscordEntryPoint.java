@@ -1,21 +1,25 @@
 package bot;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class BotDiscordEntryPoint {
-    public static void main(String[] args) {
-        String bot_token = "Nzk1MzU0NDIzMTk3OTU4MTY0.X_IJhw.t59wu6ie-UZ7xPw8DW-HOxcl3sk";
+    public static void main(String[] args) throws IOException {
+        String bot_token = loadBotTokenFile();
         BotAnimeCards bot = new BotAnimeCards();
 
         if (!bot.authenticate(bot_token)){
             return;
         }
 
-        if (!bot.loadEmailSettings()){
+        if (!bot.loadExternalSettings()){
             bot.loadDefaultSettings();
         }
+    }
 
-//        bot.waitForShutdown();
+    private static String loadBotTokenFile() throws IOException {
+        Path filePath = Path.of("token.txt");
+        return Files.readString(filePath);
     }
 }

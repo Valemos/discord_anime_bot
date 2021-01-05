@@ -55,7 +55,7 @@ public class BotAnimeCards {
         discord_api.shutdown();
     }
 
-    public boolean loadEmailSettings() {
+    public boolean loadExternalSettings() {
         return false;
     }
 
