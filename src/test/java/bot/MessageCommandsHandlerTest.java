@@ -51,12 +51,14 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testUserHasAccessToCommand() {
-        game.addPlayer(new Player("1", AccessLevel.USER));
-        game.addPlayer(new Player("2", AccessLevel.ADMIN));
+        Player user = new Player("1", AccessLevel.USER);
+        Player admin = new Player("2", AccessLevel.ADMIN);
+        game.addPlayer(user);
+        game.addPlayer(admin);
 
-        assertTrue(commandHandler.userHasAccessToCommand("1", new DropHandler()));
-        assertTrue(commandHandler.userHasAccessToCommand("2", new DropHandler()));
-        assertFalse(commandHandler.userHasAccessToCommand("2", new CreateCardHandler()));
+        assertTrue(commandHandler.playerHasAccessToCommand(user, new DropHandler()));
+        assertTrue(commandHandler.playerHasAccessToCommand(admin, new DropHandler()));
+        assertFalse(commandHandler.playerHasAccessToCommand(admin, new CreateCardHandler()));
     }
 
 }

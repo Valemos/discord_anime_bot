@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.BotCommandHandler;
+import bot.commands.CommandArguments;
 import game.AnimeCardsGame;
 import game.Player;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,22 +23,34 @@ public class MessageCommandsHandler extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         String messageContent = event.getMessage().getContentRaw();
-        BotCommandHandler command = findCommandForString(messageContent);
+        if (!BotCommandHandler.stringIsCommand(messageContent)){
+            return;
+        }
 
-        String userId = event.getAuthor().getId();
+        BotCommandHandler commandHandler = findCommandForString(messageContent);
 
-        if (!userHasAccessToCommand(userId, command)) {
-            command.handleCommand(game);
+        Player player = game.getPlayerById(event.getAuthor().getId());
+
+        if (!playerHasAccessToCommand(player, commandHandler)) {
+            handleCommandMessageForUser(player, commandHandler, messageContent);
         }
     }
 
-    boolean userHasAccessToCommand(String userId, BotCommandHandler command) {
-        if (command == null) return false;
+    private void handleCommandMessageForUser(Player player, BotCommandHandler commandHandler, String messageContent) {
 
-        Player player = game.getPlayerById(userId);
-        if (player == null) return false;
+        String[] messageArguments = commandHandler.getArguments(messageContent);
+        if (commandHandler.isArgumentsValid(messageArguments)){
+            CommandArguments args = new CommandArguments(player, game, messageArguments);
+            commandHandler.handleCommand(args);
+        }
+    }
 
-        return player.getAccessLevel().level >= command.getAccessLevel().level;
+    boolean playerHasAccessToCommand(Player player, BotCommandHandler command) {
+        if (command == null || player == null) {
+            return false;
+        }else{
+            return player.getAccessLevel().level >= command.getAccessLevel().level;
+        }
     }
 
     BotCommandHandler findCommandForString(String messageString) {

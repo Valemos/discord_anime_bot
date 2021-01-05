@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AnimeCardsGame {
     GlobalCollection globalCollection = new GlobalCollection();
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
     public AnimeCardsGame() {
     }
@@ -17,9 +17,13 @@ public class AnimeCardsGame {
     }
 
     public void addPlayer(Player player) {
-        if (!players.contains(player)){
+        if (!playerExists(player)){
             players.add(player);
         }
+    }
+
+    private boolean playerExists(Player player) {
+        return players.contains(player);
     }
 
     public void addCard(CharacterCard card) {

@@ -16,6 +16,6 @@ public class BotDiscordEntryPoint {
             bot.loadDefaultSettings();
         }
 
-//        bot.shutdown();
+        bot.waitForShutdown();
     }
 }

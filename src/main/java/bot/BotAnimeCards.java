@@ -2,7 +2,7 @@ package bot;
 
 import bot.commands.CreateCardHandler;
 import bot.commands.DropHandler;
-import game.AnimeCardsGame;
+import game.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.lang.System.exit;
 
 public class BotAnimeCards {
 
@@ -56,6 +58,24 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
+        CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
 
+        game.addCard(new CharacterCard("Riko", "Made in Abyss", "img", stats.clone()));
+        game.addCard(new CharacterCard("Reg", "Made in Abyss", "img", stats.clone()));
+    }
+
+    public void waitForShutdown() {
+        try {
+            discord_api.awaitStatus(JDA.Status.SHUTTING_DOWN);
+
+            // clear all resources and exit
+
+            discord_api.awaitStatus(JDA.Status.SHUTDOWN);
+            exit(0);
+
+        } catch (InterruptedException e) {
+            Logger.getGlobal().log(Level.INFO, "shutdown await interrupted");
+            exit(1);
+        }
     }
 }

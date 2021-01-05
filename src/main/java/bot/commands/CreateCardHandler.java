@@ -1,7 +1,6 @@
 package bot.commands;
 
 import bot.AccessLevel;
-import game.AnimeCardsGame;
 
 public class CreateCardHandler extends BotCommandHandler{
 
@@ -11,7 +10,7 @@ public class CreateCardHandler extends BotCommandHandler{
     }
 
     @Override
-    public void handleCommand(AnimeCardsGame game, String[] arguments) {
+    public void handleCommand(CommandArguments arguments) {
 
     }
 }

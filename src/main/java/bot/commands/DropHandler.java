@@ -1,7 +1,5 @@
 package bot.commands;
 
-import game.AnimeCardsGame;
-
 
 public class DropHandler extends BotCommandHandler {
 
@@ -10,12 +8,7 @@ public class DropHandler extends BotCommandHandler {
     }
 
     @Override
-    public void handleCommand(AnimeCardsGame game, String[] arguments) {
+    public void handleCommand(CommandArguments arguments) {
 
-    }
-
-    @Override
-    public String[] getArguments(String command) {
-        return null;
     }
 }

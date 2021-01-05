@@ -1,7 +1,6 @@
 package bot.commands;
 
 import bot.AccessLevel;
-import game.AnimeCardsGame;
 
 import java.util.Arrays;
 
@@ -12,11 +11,7 @@ public abstract class BotCommandHandler extends CommandParser {
 
     protected AccessLevel accessLevel = AccessLevel.USER;
 
-    public void handleCommand(AnimeCardsGame game) {
-        handleCommand(game, null);
-    }
-
-    public abstract void handleCommand(AnimeCardsGame game, String[] arguments);
+    public abstract void handleCommand(CommandArguments arguments);
 
     @Override
     public String[] getArguments(String command) {
@@ -26,6 +21,11 @@ public abstract class BotCommandHandler extends CommandParser {
             return Arrays.copyOfRange(parts, 1, parts.length);
         }
         return null;
+    }
+
+    @Override
+    public boolean isArgumentsValid(String[] arguments) {
+        return true;
     }
 
     protected boolean commandPartsValid(String[] parts){

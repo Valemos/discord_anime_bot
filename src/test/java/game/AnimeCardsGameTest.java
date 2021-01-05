@@ -11,14 +11,13 @@ class AnimeCardsGameTest {
     Player player;
     CharacterCard card;
 
-
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
         player = new Player("1", AccessLevel.USER);
 
-        CardStats stats = new CardStats();
-        card = new CharacterCard("Riko", "Made in Abyss", stats);
+        CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
+        card = new CharacterCard("Riko", "Made in Abyss", "img", stats);
     }
 
     @Test
@@ -44,5 +43,11 @@ class AnimeCardsGameTest {
         game.removeCardById(card.getId());
 
         assertNull(game.getCardById(card.getId()));
+    }
+
+    @Test
+    void testCardStatsCopied() {
+        assertEquals(card.stats, card.stats.clone());
+        assertNotSame(card.stats, card.stats.clone());
     }
 }

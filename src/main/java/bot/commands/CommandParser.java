@@ -5,6 +5,7 @@ public abstract class CommandParser {
 
     public abstract String[] getArguments(String command);
 
+    public abstract boolean isArgumentsValid(String[] arguments);
 
     public static String getCommandName(String commandString) {
         if (!stringIsCommand(commandString)){
