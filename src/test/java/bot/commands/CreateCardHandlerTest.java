@@ -27,6 +27,6 @@ class CreateCardHandlerTest {
     @Test
     void testArgumentsParsedCorrect() {
         assertArrayEquals(new String[]{"hello", "123"},
-                handler.getArguments("#createcard hello 123"));
+                handler.getArguments("#createcard hello 123").commandParts);
     }
 }

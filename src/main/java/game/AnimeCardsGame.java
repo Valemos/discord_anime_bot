@@ -27,10 +27,6 @@ public class AnimeCardsGame {
         players.removeIf((p) -> p.getId().equals(player.getId()));
     }
 
-    private boolean playerExists(Player player) {
-        return players.contains(player);
-    }
-
     public void addCard(CharacterCard card) {
         globalCollection.addCard(card);
     }

@@ -1,6 +1,6 @@
 package bot;
 
-import bot.commands.BotCommandHandler;
+import bot.commands.CommandParser;
 import bot.commands.CreateCardHandler;
 import bot.commands.DropHandler;
 import game.AnimeCardsGame;
@@ -36,12 +36,12 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testCommandNameExtracted() {
-        assertEquals("", BotCommandHandler.getCommandName(""));
-        assertEquals("", BotCommandHandler.getCommandName("drop"));
-        assertEquals("", BotCommandHandler.getCommandName("drop test"));
-        assertEquals("", BotCommandHandler.getCommandName("# drop test"));
-        assertEquals("drop", BotCommandHandler.getCommandName("#drop"));
-        assertEquals("drop", BotCommandHandler.getCommandName("#drop test test"));
+        assertEquals("", CommandParser.getCommandName(""));
+        assertEquals("", CommandParser.getCommandName("drop"));
+        assertEquals("", CommandParser.getCommandName("drop test"));
+        assertEquals("", CommandParser.getCommandName("# drop test"));
+        assertEquals("drop", CommandParser.getCommandName("#drop"));
+        assertEquals("drop", CommandParser.getCommandName("#drop test test"));
     }
 
     @Test

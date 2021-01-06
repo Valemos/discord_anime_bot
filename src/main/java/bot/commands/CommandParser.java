@@ -1,11 +1,6 @@
 package bot.commands;
 
-public abstract class CommandParser {
-    protected static final String commandPrefix = "#";
-
-    public abstract String[] getArguments(String command);
-
-    public abstract boolean isArgumentsValid(String[] arguments);
+public class CommandParser {
 
     public static String getCommandName(String commandString) {
         if (!stringIsCommand(commandString)){
@@ -13,7 +8,7 @@ public abstract class CommandParser {
         }
 
         try{
-            int nameStart = commandString.indexOf(commandPrefix) + 1;
+            int nameStart = commandString.indexOf(CommandInfo.commandChar) + 1;
             int nameEnd = commandString.indexOf(' ');
             if (nameEnd == -1) nameEnd = commandString.length();
 
@@ -24,7 +19,7 @@ public abstract class CommandParser {
     }
 
     public static boolean stringIsCommand(String string) {
-        return string.startsWith(commandPrefix);
+        return string.startsWith(CommandInfo.commandChar);
     }
 
     public static String[] getStringCommandParts(String string){

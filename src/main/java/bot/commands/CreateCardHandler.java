@@ -7,23 +7,20 @@ import game.CharacterCard;
 public class CreateCardHandler extends BotCommandHandler{
 
     public CreateCardHandler() {
-        commandName = "createcard";
+        commandInfo = new CommandInfo("createcard");
         accessLevel = AccessLevel.CREATOR;
     }
 
     @Override
-    public boolean isArgumentsValid(String[] arguments) {
-        return arguments.length == 3;
-    }
+    public void handleCommand(CommandParameters parameters) {
+        CreateCardArguments arguments = (CreateCardArguments) parameters.messageArgs;
 
-    @Override
-    public void handleCommand(CommandArguments args) {
         CharacterCard new_card = new CharacterCard(
-                args.commandArgs[0],
-                args.commandArgs[1],
-                args.commandArgs[2],
+                arguments.characterName,
+                arguments.seriesName,
+                arguments.imageUrl,
                 new CardStats());
 
-        args.game.addCard(new_card);
+        parameters.game.addCard(new_card);
     }
 }

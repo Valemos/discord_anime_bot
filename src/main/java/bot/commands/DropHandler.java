@@ -4,25 +4,18 @@ package bot.commands;
 import game.CharacterCard;
 import game.GlobalCollection;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class DropHandler extends BotCommandHandler {
 
     public DropHandler() {
-        commandName = "drop";
+        commandInfo = new CommandInfo("drop");
     }
 
     @Override
-    public boolean isArgumentsValid(String[] arguments) {
-        return arguments.length == 0;
-    }
+    public void handleCommand(CommandParameters parameters) {
 
-    @Override
-    public void handleCommand(CommandArguments args) {
-
-        GlobalCollection collection = args.game.getGlobalCollection();
+        GlobalCollection collection = parameters.game.getGlobalCollection();
         List<CharacterCard> cards = collection.getRandomCards(3);
 
         StringBuilder messageBuilder = new StringBuilder();
@@ -33,6 +26,6 @@ public class DropHandler extends BotCommandHandler {
             messageBuilder.append(card.getOneLineString());
         }
 
-        args.channel.sendMessage(messageBuilder.toString()).queue();
+        parameters.channel.sendMessage(messageBuilder.toString()).queue();
     }
 }

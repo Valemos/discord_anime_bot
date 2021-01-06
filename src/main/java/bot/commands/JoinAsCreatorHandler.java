@@ -5,12 +5,12 @@ import bot.AccessLevel;
 public class JoinAsCreatorHandler extends BotCommandHandler{
 
     public JoinAsCreatorHandler() {
-        commandName = "makecreator";
+        commandInfo = new CommandInfo("makecreator");
         accessLevel = AccessLevel.USER;
     }
 
     @Override
-    public void handleCommand(CommandArguments args) {
+    public void handleCommand(CommandParameters args) {
 
         if (args.player.getAccessLevel() != AccessLevel.CREATOR){
             args.player.setAccessLevel(AccessLevel.CREATOR);

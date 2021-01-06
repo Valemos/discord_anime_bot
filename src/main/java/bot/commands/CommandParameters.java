@@ -4,16 +4,16 @@ import game.AnimeCardsGame;
 import game.Player;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
-public class CommandArguments {
+public class CommandParameters {
     MessageChannel channel;
     Player player;
     AnimeCardsGame game;
-    String[] commandArgs;
+    MessageArguments messageArgs;
 
-    public CommandArguments(AnimeCardsGame game, Player player, MessageChannel channel, String[] commandArgs) {
+    public CommandParameters(AnimeCardsGame game, Player player, MessageChannel channel, MessageArguments arguments) {
         this.channel = channel;
         this.player = player;
         this.game = game;
-        this.commandArgs = commandArgs;
+        this.messageArgs = arguments;
     }
 }
