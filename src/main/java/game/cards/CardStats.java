@@ -1,4 +1,7 @@
-package game;
+package game.cards;
+
+import game.CharismaState;
+import game.Constitution;
 
 public class CardStats implements Cloneable{
     float dexterity;            // how quickly the card was picked up

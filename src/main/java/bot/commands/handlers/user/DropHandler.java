@@ -1,8 +1,11 @@
-package bot.commands;
+package bot.commands.handlers.user;
 
 
-import game.CharacterCard;
-import game.GlobalCollection;
+import bot.commands.CommandInfo;
+import bot.commands.CommandParameters;
+import bot.commands.handlers.BotCommandHandler;
+import game.cards.CharacterCard;
+import game.cards.GlobalCollection;
 
 import java.util.List;
 

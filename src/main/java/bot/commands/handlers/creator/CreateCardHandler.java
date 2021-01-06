@@ -1,10 +1,14 @@
-package bot.commands;
+package bot.commands.handlers.creator;
 
 import bot.AccessLevel;
-import game.CardStats;
-import game.CharacterCard;
+import bot.commands.CommandInfo;
+import bot.commands.CommandParameters;
+import bot.commands.CreateCardArguments;
+import bot.commands.handlers.BotCommandHandler;
+import game.cards.CardStats;
+import game.cards.CharacterCard;
 
-public class CreateCardHandler extends BotCommandHandler{
+public class CreateCardHandler extends BotCommandHandler {
 
     public CreateCardHandler() {
         commandInfo = new CommandInfo("createcard");

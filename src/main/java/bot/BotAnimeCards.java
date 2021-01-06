@@ -1,9 +1,11 @@
 package bot;
 
-import bot.commands.CreateCardHandler;
-import bot.commands.DropHandler;
-import bot.commands.JoinAsCreatorHandler;
+import bot.commands.handlers.creator.CreateCardHandler;
+import bot.commands.handlers.user.DropHandler;
+import bot.commands.handlers.creator.JoinAsCreatorHandler;
 import game.*;
+import game.cards.CardStats;
+import game.cards.CharacterCard;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;

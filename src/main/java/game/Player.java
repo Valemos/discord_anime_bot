@@ -1,6 +1,7 @@
 package game;
 
 import bot.AccessLevel;
+import game.cards.PersonalCollection;
 
 public class Player {
     private final String userId;

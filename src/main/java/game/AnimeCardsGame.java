@@ -1,6 +1,8 @@
 package game;
 
 import bot.AccessLevel;
+import game.cards.CharacterCard;
+import game.cards.GlobalCollection;
 
 import java.util.ArrayList;
 import java.util.List;

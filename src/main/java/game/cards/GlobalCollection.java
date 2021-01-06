@@ -1,4 +1,6 @@
-package game;
+package game.cards;
+
+import game.cards.CharacterCard;
 
 import java.util.ArrayList;
 import java.util.List;

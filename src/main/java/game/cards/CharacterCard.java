@@ -1,4 +1,7 @@
-package game;
+package game.cards;
+
+import game.CardWeapon;
+import game.cards.CardStats;
 
 public class CharacterCard {
     String id = null;
@@ -16,6 +19,10 @@ public class CharacterCard {
         this.imageUrl = imageUrl;
         this.stats = stats;
         weaponEquipped = null;
+    }
+
+    public CardStats getStats() {
+        return stats;
     }
 
     public void setId(String id) {

@@ -1,6 +1,8 @@
 package game;
 
 import bot.AccessLevel;
+import game.cards.CardStats;
+import game.cards.CharacterCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,8 +51,8 @@ class AnimeCardsGameTest {
 
     @Test
     void testCardStatsCopied() {
-        assertEquals(card1.stats, card1.stats.clone());
-        assertNotSame(card1.stats, card1.stats.clone());
+        assertEquals(card1.getStats(), card1.getStats().clone());
+        assertNotSame(card1.getStats(), card1.getStats().clone());
     }
 
     @Test

@@ -1,8 +1,11 @@
 package bot;
 
+import bot.commands.CommandInfo;
 import bot.commands.CommandParser;
-import bot.commands.CreateCardHandler;
-import bot.commands.DropHandler;
+import bot.commands.handlers.BotCommandHandler;
+import bot.commands.handlers.creator.CreateCardHandler;
+import bot.commands.handlers.user.DropHandler;
+import bot.commands.handlers.user.ShowCollectionHandler;
 import game.AnimeCardsGame;
 import game.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +29,8 @@ class MessageCommandsHandlerTest {
         commandHandler.setCommands(
                 new ArrayList<>(List.of(
                         new DropHandler(),
-                        new CreateCardHandler()
+                        new CreateCardHandler(),
+                        new ShowCollectionHandler()
                 )));
 
         user = new Player("1", AccessLevel.USER);
@@ -50,8 +54,17 @@ class MessageCommandsHandlerTest {
     }
 
     @Test
-    void testCommandHandled(){
-        assertEquals(commandHandler.findCommandForString("#drop").getClass(), DropHandler.class);
+    void testCommandFound(){
+        String name = (new ShowCollectionHandler()).getCommandInfo().name;
+        BotCommandHandler command = commandHandler.findCommandForString(CommandInfo.commandChar + name);
+        assertEquals(command.getClass(), ShowCollectionHandler.class);
+    }
+
+    @Test
+    void testCommandAliasFound() {
+        String name = (new ShowCollectionHandler()).getCommandInfo().alias;
+        BotCommandHandler command = commandHandler.findCommandForString(CommandInfo.commandChar + name);
+        assertEquals(command.getClass(), ShowCollectionHandler.class);
     }
 
     @Test

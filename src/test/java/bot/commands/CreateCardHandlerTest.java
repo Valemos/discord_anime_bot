@@ -1,32 +1,36 @@
 package bot.commands;
 
+import bot.AccessLevel;
+import bot.commands.handlers.creator.CreateCardHandler;
 import game.AnimeCardsGame;
+import game.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CreateCardHandlerTest {
-    CreateCardHandler handler;
+
+    CreateCardHandler command;
     AnimeCardsGame game;
+    Player player;
 
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
-        handler = new CreateCardHandler();
+
+        player = new Player("1", AccessLevel.USER);
+        game.addPlayer(player);
+
+        command = new CreateCardHandler();
     }
 
     @Test
-    void testArgumentsNotParsed_ifStringIsNotACommand() {
-        assertNull(handler.getArguments("# command hello 123"));
-        assertNull(handler.getArguments(" hello 123"));
-        assertNull(handler.getArguments("hello 123"));
-    }
+    void testParametersValid() {
+        CreateCardArguments args = new CreateCardArguments(command.getCommandInfo());
 
-    @Test
-    void testArgumentsParsedCorrect() {
-        assertArrayEquals(new String[]{"hello", "123"},
-                handler.getArguments("#createcard hello 123").commandParts);
+        args.fromString("#" + command.getCommandInfo().name + " ");
+
+        assertFalse(args.isValid());
     }
 }

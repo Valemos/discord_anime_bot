@@ -1,6 +1,6 @@
 package bot;
 
-import bot.commands.BotCommandHandler;
+import bot.commands.handlers.BotCommandHandler;
 import bot.commands.CommandParameters;
 import bot.commands.CommandParser;
 import bot.commands.MessageArguments;

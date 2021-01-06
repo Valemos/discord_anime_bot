@@ -3,8 +3,8 @@ package bot.commands;
 public class CommandInfo {
     public static final String commandChar = "#";
 
-    String name;
-    String alias;
+    public final String name;
+    public final String alias;
 
     public CommandInfo(String name) {
         this(name, null);
