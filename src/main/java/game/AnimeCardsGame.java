@@ -1,7 +1,8 @@
 package game;
 
 import bot.AccessLevel;
-import game.cards.CharacterCard;
+import game.cards.CharacterCardGlobal;
+import game.cards.CharacterCardPersonal;
 import game.cards.GlobalCollection;
 
 import java.util.ArrayList;
@@ -29,15 +30,15 @@ public class AnimeCardsGame {
         players.removeIf((p) -> p.getId().equals(player.getId()));
     }
 
-    public void addCard(CharacterCard card) {
+    public void addCard(CharacterCardGlobal card) {
         globalCollection.addCard(card);
     }
 
-    public CharacterCard getCardById(String id) {
+    public CharacterCardGlobal getGlobalCardById(int id) {
         return globalCollection.getCardById(id);
     }
 
-    public void removeCardById(String id) {
+    public void removeCardById(int id) {
         globalCollection.removeCardById(id);
     }
 
@@ -49,6 +50,11 @@ public class AnimeCardsGame {
         Player player = new Player(new_player_id, AccessLevel.USER);
         addPlayer(player);
         return player;
+    }
+
+    public CharacterCardPersonal getPersonalCard(Player player, int globalCardId) {
+        CharacterCardGlobal cardGlobal = getGlobalCardById(globalCardId);
+        return cardGlobal.getConstantCopy(player.getId());
     }
 }
 

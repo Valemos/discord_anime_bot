@@ -1,49 +1,47 @@
 package game.cards;
 
-import game.cards.CharacterCard;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GlobalCollection {
-    List<CharacterCard> cards = new ArrayList<>();
+    List<CharacterCardGlobal> cards = new ArrayList<>();
     private int currentCardId = 0;
 
     public GlobalCollection() {
     }
 
-    public void addCard(CharacterCard card) {
+    public void addCard(CharacterCardGlobal card) {
         if (isCardExists(card)) {
-            removeCardById(card.getId());
+            removeCardById(card.getGlobalCardId());
         }
 
-        card.setId(generateNextCardId());
+        card.setGlobalCardId(generateNextCardId());
         cards.add(card);
     }
 
-    private boolean isCardExists(CharacterCard card) {
+    private boolean isCardExists(CharacterCardGlobal card) {
         return cards.contains(card);
     }
 
-    private String generateNextCardId() {
+    private int generateNextCardId() {
         // will be replaced with database query in future
         currentCardId++;
-        return String.valueOf(currentCardId);
+        return currentCardId;
     }
 
-    public CharacterCard getCardById(String id) {
+    public CharacterCardGlobal getCardById(int id) {
         return cards.stream()
-                .filter((card)-> card.getId().equals(id))
+                .filter((card)-> card.getGlobalCardId() == id)
                 .findFirst().orElse(null);
     }
 
-    public void removeCardById(String id) {
-        cards.removeIf((card) -> card.getId().equals(id));
+    public void removeCardById(int id) {
+        cards.removeIf((card) -> card.getGlobalCardId() == id);
     }
 
-    public List<CharacterCard> getRandomCards(int amount) {
-        List<CharacterCard> resultCards = new ArrayList<>(amount);
+    public List<CharacterCardGlobal> getRandomCards(int amount) {
+        List<CharacterCardGlobal> resultCards = new ArrayList<>(amount);
 
         Random random = new Random();
         for(int i = 0; i < amount; i++){

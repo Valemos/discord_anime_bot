@@ -5,6 +5,9 @@ import bot.commands.CommandInfo;
 import bot.commands.CommandParameters;
 import bot.commands.DefaultMessageArguments;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public abstract class BotCommandHandler extends CommandWithArguments {
 

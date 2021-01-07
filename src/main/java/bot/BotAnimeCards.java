@@ -1,11 +1,12 @@
 package bot;
 
-import bot.commands.handlers.creator.CreateCardHandler;
+import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.user.DropHandler;
 import bot.commands.handlers.creator.JoinAsCreatorHandler;
 import game.*;
 import game.cards.CardStats;
-import game.cards.CharacterCard;
+import game.cards.CardStatsUpdatable;
+import game.cards.CharacterCardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,7 @@ public class BotAnimeCards {
         commandsHandler = new MessageCommandsHandler(game);
         commandsHandler.setCommands(new ArrayList<>(List.of(
                 new DropHandler(),
-                new CreateCardHandler(),
+                new CreateGlobalCardHandler(),
                 new JoinAsCreatorHandler()
         )));
     }
@@ -62,20 +63,20 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
+        CardStats stats = new CardStats();
 
-        game.addCard(new CharacterCard(
+        game.addCard(new CharacterCardGlobal(
                 "Riko",
                 "Made in Abyss",
-                "img", stats.clone()));
-        game.addCard(new CharacterCard(
+                "img", stats));
+        game.addCard(new CharacterCardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
-                "img", stats.clone()));
-        game.addCard(new CharacterCard(
+                "img", stats));
+        game.addCard(new CharacterCardGlobal(
                 "Kaiman",
                 "Dorohedoro",
-                "img", stats.clone()));
+                "img", stats));
     }
 
     public void waitForShutdown() {

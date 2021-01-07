@@ -19,17 +19,20 @@ public class DefaultMessageArguments extends MessageArguments {
     }
 
     @Override
-    public DefaultMessageArguments fromString(String commandString) {
+    public DefaultMessageArguments fromString(String commandString){
         try {
             List<String> parts = CommandParser.getStringCommandParts(commandString);
             setValidatedMessageParts(parts);
         } catch (CommandParser.CommandParseException e) {
             Logger.getGlobal().log(Level.INFO, e.getMessage());
+        } catch (InvalidCommandPartsException e) {
+            Logger.getGlobal().log(Level.SEVERE, "invalid command parsed. programmer error");
+            throw new RuntimeException(e);
         }
         return this;
     }
 
-    private void setValidatedMessageParts(List<String> parts) {
+    private void setValidatedMessageParts(List<String> parts) throws InvalidCommandPartsException {
         if (commandPartsValid(parts)) {
             if (parts.size() == 1) {
                 commandParts = new ArrayList<>();
@@ -38,7 +41,7 @@ public class DefaultMessageArguments extends MessageArguments {
                 commandParts = parts;
             }
         }else{
-            commandParts = null;
+            throw new InvalidCommandPartsException("command parts invalid");
         }
     }
 

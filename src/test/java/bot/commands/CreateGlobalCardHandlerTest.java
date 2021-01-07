@@ -1,14 +1,12 @@
 package bot.commands;
 
 import bot.MessageSenderMock;
-import bot.commands.handlers.creator.CreateCardHandler;
+import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import game.AnimeCardsGame;
-import game.Player;
-import game.cards.CardStats;
-import game.cards.CharacterCard;
+import game.cards.CardStatsUpdatable;
+import game.cards.CharacterCardGlobal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.util.List;
 
@@ -16,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-class CreateCardHandlerTest {
+class CreateGlobalCardHandlerTest {
 
     AnimeCardsGame game;
-    CreateCardHandler command;
+    CreateGlobalCardHandler command;
     CreateCardArguments args;
     String commandName;
 
@@ -30,7 +28,7 @@ class CreateCardHandlerTest {
     void setUp() {
         game = new AnimeCardsGame();
 
-        command = new CreateCardHandler();
+        command = new CreateGlobalCardHandler();
         args = new CreateCardArguments(command.getCommandInfo());
         commandName = "#" + command.getCommandInfo().name;
 
@@ -88,16 +86,15 @@ class CreateCardHandlerTest {
     }
 
     @Test
-    void testCardCreated() {
+    void testGlobalCardCreated() {
 
         senderMock.sendMessage(commandName + " \"two words\" \"three words here\" //url", senderMock.creator.getId());
         verify(senderMock.spyGame).addCard(senderMock.cardArgument.capture());
 
-        CharacterCard card = senderMock.cardArgument.getValue();
-        assertEquals("two words", card.getCharacterName());
-        assertEquals("three words here", card.getSeriesName());
-        assertEquals("//url", card.getImageUrl());
-        assertEquals(new CardStats(), card.getStats());
+        CharacterCardGlobal card = senderMock.cardArgument.getValue();
+        assertEquals("two words", card.getCharacterInfo().getCharacterName());
+        assertEquals("three words here", card.getCharacterInfo().getSeriesName());
+        assertEquals("//url", card.getCharacterInfo().getImageUrl());
+        assertEquals(new CardStatsUpdatable(), card.getStats());
     }
-
 }

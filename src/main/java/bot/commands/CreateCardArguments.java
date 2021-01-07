@@ -1,5 +1,7 @@
 package bot.commands;
 
+import java.util.Objects;
+
 public class CreateCardArguments extends DefaultMessageArguments{
 
     public String characterName;
@@ -23,9 +25,7 @@ public class CreateCardArguments extends DefaultMessageArguments{
             characterName = commandParts.get(0);
             seriesName = commandParts.get(1);
             imageUrl = commandParts.get(2);
-            return this;
-        }else{
-            return null;
         }
+        return this;
     }
 }

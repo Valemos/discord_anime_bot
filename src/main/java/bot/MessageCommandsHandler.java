@@ -55,8 +55,8 @@ public class MessageCommandsHandler extends ListenerAdapter {
         return player;
     }
 
-    private void handleCommandMessageForPlayer(Player player, BotCommandHandler commandHandler,
-                                               MessageChannel channel, String messageContent) {
+    void handleCommandMessageForPlayer(Player player, BotCommandHandler commandHandler,
+                                       MessageChannel channel, String messageContent) {
 
         MessageArguments messageArguments = commandHandler.getArguments(messageContent);
         if (messageArguments.isValid()){

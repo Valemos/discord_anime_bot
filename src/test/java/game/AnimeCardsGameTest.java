@@ -2,7 +2,8 @@ package game;
 
 import bot.AccessLevel;
 import game.cards.CardStats;
-import game.cards.CharacterCard;
+import game.cards.CharacterCardGlobal;
+import game.cards.CharacterCardPersonal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,18 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AnimeCardsGameTest {
     AnimeCardsGame game;
-    Player player;
-    CharacterCard card1;
-    CharacterCard card2;
+    Player player1;
+    Player player2;
+    CharacterCardGlobal card1;
+    CharacterCardGlobal card2;
 
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
-        player = new Player("1", AccessLevel.USER);
+        player1 = new Player("1", AccessLevel.USER);
+        player2 = new Player("2", AccessLevel.USER);
 
-        CardStats stats = new CardStats(0, 5, 0, CharismaState.CHARISMATIC, Constitution.HEALTHY);
-        card1 = new CharacterCard("Riko", "Made in Abyss", "img", stats);
-        card2 = new CharacterCard("Test", "Test", "img", stats.clone());
+        CardStats stats = new CardStats();
+        card1 = new CharacterCardGlobal("Riko", "Made in Abyss", "img", stats);
+        card2 = new CharacterCardGlobal("Test", "Test", "img", stats);
     }
 
     @Test
@@ -31,22 +34,22 @@ class AnimeCardsGameTest {
 
     @Test
     void testPlayerFound() {
-        game.addPlayer(player);
-        assertEquals(player, game.getPlayerById(player.getId()));
+        game.addPlayer(player1);
+        assertEquals(player1, game.getPlayerById(player1.getId()));
     }
 
     @Test
     void testCardAdded() {
         game.addCard(card1);
-        assertSame(card1, game.getCardById(card1.getId()));
+        assertSame(card1, game.getGlobalCardById(card1.getGlobalCardId()));
     }
 
     @Test
     void testCardRemoved() {
         game.addCard(card1);
-        game.removeCardById(card1.getId());
+        game.removeCardById(card1.getGlobalCardId());
 
-        assertNull(game.getCardById(card1.getId()));
+        assertNull(game.getGlobalCardById(card1.getGlobalCardId()));
     }
 
     @Test
@@ -68,6 +71,19 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertNotEquals(card1.getId(), card2.getId());
+        assertNotEquals(card1.getGlobalCardId(), card2.getGlobalCardId());
+    }
+
+    @Test
+    void testPersonalCardCreatedFromGlobalCard() {
+        CharacterCardPersonal card = card1.getConstantCopy(player1.getId());
+        game.addCard(card1);
+
+        assertEquals(card.getStats(), card1.getStats().getConstantCopy());
+        assertNotSame(card.getStats(), card1.getStats().getConstantCopy());
+
+        CharacterCardPersonal copiedCard = game.getPersonalCard(player1, card1.getGlobalCardId());
+        assertEquals(card, copiedCard);
+        assertNotSame(card, copiedCard);
     }
 }

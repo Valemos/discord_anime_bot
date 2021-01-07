@@ -3,7 +3,7 @@ package bot;
 import bot.commands.CommandInfo;
 import bot.commands.CommandParser;
 import bot.commands.handlers.BotCommandHandler;
-import bot.commands.handlers.creator.CreateCardHandler;
+import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.user.DropHandler;
 import bot.commands.handlers.user.ShowCollectionHandler;
 import game.AnimeCardsGame;
@@ -29,7 +29,7 @@ class MessageCommandsHandlerTest {
         commandHandler.setCommands(
                 new ArrayList<>(List.of(
                         new DropHandler(),
-                        new CreateCardHandler(),
+                        new CreateGlobalCardHandler(),
                         new ShowCollectionHandler()
                 )));
 
@@ -73,7 +73,7 @@ class MessageCommandsHandlerTest {
 
         assertTrue(commandHandler.playerHasAccessToCommand(user, new DropHandler()));
         assertTrue(commandHandler.playerHasAccessToCommand(admin, new DropHandler()));
-        assertFalse(commandHandler.playerHasAccessToCommand(admin, new CreateCardHandler()));
+        assertFalse(commandHandler.playerHasAccessToCommand(admin, new CreateGlobalCardHandler()));
     }
 
     @Test

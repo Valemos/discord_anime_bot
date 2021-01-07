@@ -10,5 +10,11 @@ public abstract class MessageArguments {
 
     public abstract boolean isValid();
 
-    public abstract MessageArguments fromString(String commandString);
+    public abstract MessageArguments fromString(String commandString) throws MessageArguments.InvalidCommandPartsException;
+
+    public static class InvalidCommandPartsException extends Exception {
+        public InvalidCommandPartsException(String message) {
+            super(message);
+        }
+    }
 }
