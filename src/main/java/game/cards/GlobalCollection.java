@@ -13,10 +13,10 @@ public class GlobalCollection {
 
     public void addCard(CharacterCardGlobal card) {
         if (isCardExists(card)) {
-            removeCardById(card.getGlobalCardId());
+            removeCardById(card.getCardId());
         }
 
-        card.setGlobalCardId(generateNextCardId());
+        card.setCardId(generateNextCardId());
         cards.add(card);
     }
 
@@ -32,12 +32,12 @@ public class GlobalCollection {
 
     public CharacterCardGlobal getCardById(int id) {
         return cards.stream()
-                .filter((card)-> card.getGlobalCardId() == id)
+                .filter((card)-> card.getCardId() == id)
                 .findFirst().orElse(null);
     }
 
     public void removeCardById(int id) {
-        cards.removeIf((card) -> card.getGlobalCardId() == id);
+        cards.removeIf((card) -> card.getCardId() == id);
     }
 
     public List<CharacterCardGlobal> getRandomCards(int amount) {

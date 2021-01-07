@@ -8,8 +8,7 @@ import bot.commands.handlers.BotCommandHandler;
 public class JoinAsCreatorHandler extends BotCommandHandler {
 
     public JoinAsCreatorHandler() {
-        commandInfo = new CommandInfo("makecreator");
-        accessLevel = AccessLevel.USER;
+        super(new CommandInfo("makecreator"));
     }
 
     @Override

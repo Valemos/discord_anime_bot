@@ -45,7 +45,7 @@ class BotCommandHandlerTest {
 
     @Test
     void testArgumentsParsedCorrect() {
-        assertLinesMatch(List.of("hello", "123"),
-                handlerDrop.getArguments("#drop hello 123").commandParts);
+        DefaultMessageArguments args = (DefaultMessageArguments) handlerDrop.getArguments("#drop hello 123");
+        assertLinesMatch(List.of("hello", "123"), args.commandParts);
     }
 }

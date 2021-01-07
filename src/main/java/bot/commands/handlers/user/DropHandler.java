@@ -12,7 +12,7 @@ import java.util.List;
 public class DropHandler extends BotCommandHandler {
 
     public DropHandler() {
-        commandInfo = new CommandInfo("drop");
+        super(new CommandInfo("drop"));
     }
 
     @Override

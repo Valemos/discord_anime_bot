@@ -3,7 +3,7 @@ package bot;
 import bot.commands.handlers.BotCommandHandler;
 import bot.commands.CommandParameters;
 import bot.commands.CommandParser;
-import bot.commands.MessageArguments;
+import bot.commands.handlers.MessageArguments;
 import game.AnimeCardsGame;
 import game.Player;
 import net.dv8tion.jda.api.entities.MessageChannel;

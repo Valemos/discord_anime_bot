@@ -1,8 +1,10 @@
-package bot.commands;
+package bot.commands.handlers.creator;
 
-import java.util.Objects;
+import bot.commands.CommandInfo;
+import bot.commands.CommandParser;
+import bot.commands.handlers.DefaultMessageArguments;
 
-public class CreateCardArguments extends DefaultMessageArguments{
+public class CreateCardArguments extends DefaultMessageArguments {
 
     public String characterName;
     public String seriesName;
@@ -18,7 +20,7 @@ public class CreateCardArguments extends DefaultMessageArguments{
     }
 
     @Override
-    public CreateCardArguments fromString(String commandMessage) {
+    public CreateCardArguments fromString(String commandMessage) throws InvalidCommandException {
         super.fromString(commandMessage);
 
         if (commandParts.size() == 3){

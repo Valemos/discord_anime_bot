@@ -1,15 +1,11 @@
 package bot.commands;
 
+import bot.commands.handlers.MessageArguments;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandParser {
-
-    public static class CommandParseException extends Exception {
-        public CommandParseException(String message) {
-            super(message);
-        }
-    }
 
     public static String getCommandName(String commandString) {
         if (!stringIsCommand(commandString)){
@@ -31,11 +27,10 @@ public class CommandParser {
         return string.startsWith(CommandInfo.commandChar);
     }
 
-    public static List<String> getStringCommandParts(String commandString) throws CommandParseException {
+    public static List<String> getStringCommandParts(String commandString) throws MessageArguments.InvalidCommandException {
         if (!stringIsCommand(commandString)){
-            throw new CommandParseException(String.format("\"%s\"is not a valid command", commandString));
+            throw new MessageArguments.InvalidCommandException(String.format("\"%s\"is not a valid command", commandString));
         }
-
 
         List<String> parts = new ArrayList<>();
 
@@ -82,7 +77,7 @@ public class CommandParser {
         return index;
     }
 
-    private static int findArgumentDelimiterEnd(int index, String commandString) throws CommandParseException {
+    private static int findArgumentDelimiterEnd(int index, String commandString) throws MessageArguments.InvalidCommandException {
         boolean firstQuoteFound = false;
         while(index < commandString.length()){
 
@@ -103,7 +98,7 @@ public class CommandParser {
         }
 
         if (firstQuoteFound){
-            throw new CommandParseException(String.format("second quote not found in \"%s\"", commandString));
+            throw new MessageArguments.InvalidCommandException(String.format("second quote not found in \"%s\"", commandString));
         }
 
         return index;

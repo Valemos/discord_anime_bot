@@ -1,6 +1,8 @@
 package bot.commands;
 
 import bot.MessageSenderMock;
+import bot.commands.handlers.MessageArguments;
+import bot.commands.handlers.creator.CreateCardArguments;
 import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import game.AnimeCardsGame;
 import game.cards.CardStatsUpdatable;
@@ -36,13 +38,26 @@ class CreateGlobalCardHandlerTest {
     }
 
     @Test
-    void testParametersValid() {
+    void testCannotParseOtherCommandsWithInappropriateArguments() {
+        assertThrows(
+                MessageArguments.InvalidCommandException.class,
+                () -> args.fromString(" hello i am"));
+        assertThrows(
+                MessageArguments.InvalidCommandException.class,
+                () -> args.fromString("#drop hello i am"));
+        assertThrows(
+                MessageArguments.InvalidCommandException.class,
+                () -> args.fromString(""));
+    }
+
+    @Test
+    void testParametersValid() throws MessageArguments.InvalidCommandException {
         args.fromString(commandName + " hello i am");
         assertTrue(args.isValid());
     }
 
     @Test
-    void testParametersNumberInsufficient() {
+    void testParametersNumberInsufficient() throws MessageArguments.InvalidCommandException {
         args.fromString(commandName + " hello i");
         assertFalse(args.isValid());
 
@@ -51,13 +66,13 @@ class CreateGlobalCardHandlerTest {
     }
 
     @Test
-    void testTooMuchParameters() {
+    void testTooMuchParameters() throws MessageArguments.InvalidCommandException {
         args.fromString(commandName + " hello i am test");
         assertFalse(args.isValid());
     }
 
     @Test
-    void testArgumentsWithBrackets() {
+    void testArgumentsWithBrackets() throws MessageArguments.InvalidCommandException {
         args.fromString(commandName + " \"two words\" \"three words here\" //url");
 
         assertTrue(args.isValid());
@@ -69,8 +84,9 @@ class CreateGlobalCardHandlerTest {
 
     @Test
     void testIncorrectBrackets() {
-        args.fromString(commandName + " \"two words three words here //url");
-        assertFalse(args.isValid());
+        assertThrows(
+                MessageArguments.InvalidCommandException.class,
+                () -> args.fromString(commandName + " \"two words three words here //url"));
     }
 
     @Test

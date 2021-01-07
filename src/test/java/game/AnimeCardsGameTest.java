@@ -41,15 +41,15 @@ class AnimeCardsGameTest {
     @Test
     void testCardAdded() {
         game.addCard(card1);
-        assertSame(card1, game.getGlobalCardById(card1.getGlobalCardId()));
+        assertSame(card1, game.getGlobalCardById(card1.getCardId()));
     }
 
     @Test
     void testCardRemoved() {
         game.addCard(card1);
-        game.removeCardById(card1.getGlobalCardId());
+        game.removeCardById(card1.getCardId());
 
-        assertNull(game.getGlobalCardById(card1.getGlobalCardId()));
+        assertNull(game.getGlobalCardById(card1.getCardId()));
     }
 
     @Test
@@ -71,7 +71,7 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertNotEquals(card1.getGlobalCardId(), card2.getGlobalCardId());
+        assertNotEquals(card1.getCardId(), card2.getCardId());
     }
 
     @Test
@@ -82,8 +82,10 @@ class AnimeCardsGameTest {
         assertEquals(card.getStats(), card1.getStats().getConstantCopy());
         assertNotSame(card.getStats(), card1.getStats().getConstantCopy());
 
-        CharacterCardPersonal copiedCard = game.getPersonalCard(player1, card1.getGlobalCardId());
+        CharacterCardPersonal copiedCard = game.getPersonalCard(player1, card1.getCardId());
         assertEquals(card, copiedCard);
         assertNotSame(card, copiedCard);
     }
+
+
 }

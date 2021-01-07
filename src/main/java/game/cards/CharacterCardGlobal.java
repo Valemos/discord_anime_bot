@@ -18,11 +18,11 @@ public class CharacterCardGlobal {
         return characterInfo;
     }
 
-    public void setGlobalCardId(int newCardId) {
+    public void setCardId(int newCardId) {
         characterInfo.setId(newCardId);
     }
 
-    public int getGlobalCardId() {
+    public int getCardId() {
         return characterInfo.getId();
     }
 

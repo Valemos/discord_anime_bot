@@ -3,11 +3,13 @@ package bot.commands.handlers.user;
 import bot.commands.CommandInfo;
 import bot.commands.CommandParameters;
 import bot.commands.handlers.BotCommandHandler;
+import bot.commands.handlers.DefaultMessageArguments;
+import bot.commands.handlers.EmptyMessageArguments;
 
 public class ShowCollectionHandler extends BotCommandHandler {
 
     public ShowCollectionHandler() {
-        commandInfo = new CommandInfo("collection", "c");
+        super(new CommandInfo("collection", "c"));
     }
 
     @Override

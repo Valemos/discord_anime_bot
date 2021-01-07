@@ -1,4 +1,7 @@
-package bot.commands;
+package bot.commands.handlers;
+
+import bot.commands.CommandInfo;
+import bot.commands.CommandParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,20 +22,13 @@ public class DefaultMessageArguments extends MessageArguments {
     }
 
     @Override
-    public DefaultMessageArguments fromString(String commandString){
-        try {
-            List<String> parts = CommandParser.getStringCommandParts(commandString);
-            setValidatedMessageParts(parts);
-        } catch (CommandParser.CommandParseException e) {
-            Logger.getGlobal().log(Level.INFO, e.getMessage());
-        } catch (InvalidCommandPartsException e) {
-            Logger.getGlobal().log(Level.SEVERE, "invalid command parsed. programmer error");
-            throw new RuntimeException(e);
-        }
+    public DefaultMessageArguments fromString(String commandString) throws InvalidCommandException {
+        List<String> parts = CommandParser.getStringCommandParts(commandString);
+        setValidatedMessageParts(parts);
         return this;
     }
 
-    private void setValidatedMessageParts(List<String> parts) throws InvalidCommandPartsException {
+    private void setValidatedMessageParts(List<String> parts) throws InvalidCommandException {
         if (commandPartsValid(parts)) {
             if (parts.size() == 1) {
                 commandParts = new ArrayList<>();
@@ -41,7 +37,7 @@ public class DefaultMessageArguments extends MessageArguments {
                 commandParts = parts;
             }
         }else{
-            throw new InvalidCommandPartsException("command parts invalid");
+            throw new InvalidCommandException("command parts invalid");
         }
     }
 

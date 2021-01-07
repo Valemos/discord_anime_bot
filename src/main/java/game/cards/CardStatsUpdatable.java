@@ -22,6 +22,15 @@ public class CardStatsUpdatable extends CardStats {
         return 100;
     }
 
+    public float getDexterity() {
+        return dexterity;
+    }
+
+    public float getStrength() {
+        // TODO calculate strength for all cards of this type
+        return 100;
+    }
+
     public float getWisdom() {
         // TODO
         // Value increases as the print? of the card
@@ -30,21 +39,8 @@ public class CardStatsUpdatable extends CardStats {
         return 100;
     }
 
-    public float getStrength() {
-        // TODO calculate strength for all cards of this type
-        return 100;
-    }
-
-    public float getDexterity() {
-        return dexterity;
-    }
-
     public float getIntelligence() {
         return intelligence;
-    }
-
-    public float getDefenseLevel() {
-        return defenseLevel;
     }
 
     public CharismaState getCharisma() {
