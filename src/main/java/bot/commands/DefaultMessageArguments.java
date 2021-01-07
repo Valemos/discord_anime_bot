@@ -1,10 +1,13 @@
 package bot.commands;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DefaultMessageArguments extends MessageArguments {
 
-    public String[] commandParts = new String[]{};
+    public List<String> commandParts = new ArrayList<>();
 
     public DefaultMessageArguments(CommandInfo commandInfo) {
         super(commandInfo);
@@ -17,24 +20,32 @@ public class DefaultMessageArguments extends MessageArguments {
 
     @Override
     public DefaultMessageArguments fromString(String commandString) {
-        String[] parts = CommandParser.getStringCommandParts(commandString);
+        try {
+            List<String> parts = CommandParser.getStringCommandParts(commandString);
+            setValidatedMessageParts(parts);
+        } catch (CommandParser.CommandParseException e) {
+            Logger.getGlobal().log(Level.INFO, e.getMessage());
+        }
+        return this;
+    }
 
+    private void setValidatedMessageParts(List<String> parts) {
         if (commandPartsValid(parts)) {
-            if (parts.length == 1) {
-                commandParts = new String[]{};
+            if (parts.size() == 1) {
+                commandParts = new ArrayList<>();
             } else {
-                commandParts = Arrays.copyOfRange(parts, 1, parts.length);
+                parts.remove(0);
+                commandParts = parts;
             }
-            return this;
         }else{
-            return null;
+            commandParts = null;
         }
     }
 
-    protected boolean commandPartsValid(String[] parts){
+    protected boolean commandPartsValid(List<String> parts){
         if (parts != null) {
-            if (parts.length > 0) {
-                return parts[0].equals(CommandInfo.commandChar + commandInfo.name);
+            if (parts.size() > 0) {
+                return parts.get(0).equals(CommandInfo.commandChar + commandInfo.name);
             }
         }
         return false;

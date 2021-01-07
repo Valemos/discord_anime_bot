@@ -25,6 +25,22 @@ public class CharacterCard {
         return stats;
     }
 
+    public String getCharacterName() {
+        return characterName;
+    }
+
+    public String getSeriesName() {
+        return seriesName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public CardWeapon getWeaponEquipped() {
+        return weaponEquipped;
+    }
+
     public void setId(String id) {
         this.id = id;
     }

@@ -4,6 +4,7 @@ import bot.AccessLevel;
 import bot.commands.CommandInfo;
 import bot.commands.CommandParameters;
 import bot.commands.CreateCardArguments;
+import bot.commands.DefaultMessageArguments;
 import bot.commands.handlers.BotCommandHandler;
 import game.cards.CardStats;
 import game.cards.CharacterCard;
@@ -13,6 +14,12 @@ public class CreateCardHandler extends BotCommandHandler {
     public CreateCardHandler() {
         commandInfo = new CommandInfo("createcard");
         accessLevel = AccessLevel.CREATOR;
+    }
+
+    @Override
+    public CreateCardArguments getArguments(String commandString) {
+        CreateCardArguments arguments = new CreateCardArguments(commandInfo);
+        return arguments.fromString(commandString);
     }
 
     @Override

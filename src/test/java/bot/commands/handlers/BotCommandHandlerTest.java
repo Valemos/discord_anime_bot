@@ -5,6 +5,10 @@ import game.AnimeCardsGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BotCommandHandlerTest {
@@ -33,7 +37,7 @@ class BotCommandHandlerTest {
 
     @Test
     void testArgumentsParsedCorrect() {
-        assertArrayEquals(new String[]{"hello", "123"},
+        assertLinesMatch(List.of("hello", "123"),
                 handler.getArguments("#createcard hello 123").commandParts);
     }
 }

@@ -12,11 +12,20 @@ public class CreateCardArguments extends DefaultMessageArguments{
 
     @Override
     public boolean isValid() {
-        return false;
+        return characterName != null && seriesName != null && imageUrl != null;
     }
 
     @Override
     public CreateCardArguments fromString(String commandMessage) {
-        return null;
+        super.fromString(commandMessage);
+
+        if (commandParts.size() == 3){
+            characterName = commandParts.get(0);
+            seriesName = commandParts.get(1);
+            imageUrl = commandParts.get(2);
+            return this;
+        }else{
+            return null;
+        }
     }
 }
