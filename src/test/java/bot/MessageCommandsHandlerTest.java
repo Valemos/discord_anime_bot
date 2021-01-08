@@ -17,25 +17,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MessageCommandsHandlerTest {
-    private MessageCommandsHandler commandHandler;
     private AnimeCardsGame game;
-    Player user;
-    Player admin;
+    private MessageSenderMock senderMock;
 
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
-        commandHandler = new MessageCommandsHandler(game);
-        commandHandler.setCommands(
-                new ArrayList<>(List.of(
-                        new DropHandler(),
-                        new CreateGlobalCardHandler(),
-                        new ShowCollectionHandler()
-                )));
-
-        user = new Player("1", AccessLevel.USER);
-        admin = new Player("2", AccessLevel.ADMIN);
-
+        senderMock = new MessageSenderMock(game, List.of(
+                new DropHandler(),
+                new CreateGlobalCardHandler(),
+                new ShowCollectionHandler()
+        ));
     }
 
     @Test
@@ -50,46 +42,42 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testIncorrectCommand() {
-        assertNull(commandHandler.findCommandForString("#asdfds"));
+        assertNull(senderMock.handler.findCommandForString("#asdfds"));
     }
 
     @Test
     void testCommandFound(){
         String name = (new ShowCollectionHandler()).getCommandInfo().name;
-        BotCommandHandler command = commandHandler.findCommandForString(CommandInfo.commandChar + name);
-        assertEquals(command.getClass(), ShowCollectionHandler.class);
+        BotCommandHandler command = senderMock.handler.findCommandForString(CommandInfo.commandChar + name);
+        assertSame(command, senderMock.getCommandSpy(ShowCollectionHandler.class));
     }
 
     @Test
     void testCommandAliasFound() {
         String name = (new ShowCollectionHandler()).getCommandInfo().alias;
-        BotCommandHandler command = commandHandler.findCommandForString(CommandInfo.commandChar + name);
-        assertEquals(command.getClass(), ShowCollectionHandler.class);
+        BotCommandHandler command = senderMock.handler.findCommandForString(CommandInfo.commandChar + name);
+        assertSame(command, senderMock.getCommandSpy(ShowCollectionHandler.class));
     }
 
     @Test
     void testUserHasAccessToCommand() {
-        game.addPlayer(admin);
-
-        assertTrue(commandHandler.playerHasAccessToCommand(user, new DropHandler()));
-        assertTrue(commandHandler.playerHasAccessToCommand(admin, new DropHandler()));
-        assertFalse(commandHandler.playerHasAccessToCommand(admin, new CreateGlobalCardHandler()));
+        assertTrue(senderMock.handler.playerHasAccessToCommand(senderMock.player, new DropHandler()));
+        assertTrue(senderMock.handler.playerHasAccessToCommand(senderMock.admin, new DropHandler()));
+        assertFalse(senderMock.handler.playerHasAccessToCommand(senderMock.admin, new CreateGlobalCardHandler()));
+        assertTrue(senderMock.handler.playerHasAccessToCommand(senderMock.creator, new CreateGlobalCardHandler()));
     }
 
     @Test
     void testGetExistingPlayer() {
-        game.addPlayer(user);
-
-        Player fetchedPlayer = commandHandler.getExistingOrCreateNewPlayerById(user.getId());
-        assertSame(user, fetchedPlayer);
+        Player fetchedPlayer = senderMock.handler.getExistingOrCreateNewPlayerById(senderMock.player.getId());
+        assertSame(senderMock.player, fetchedPlayer);
     }
 
     @Test
     void testNewPlayerCreatedWhenNotFound() {
-        game.addPlayer(admin);
-
-        Player newPlayer = commandHandler.getExistingOrCreateNewPlayerById("15");
+        Player newPlayer = senderMock.handler.getExistingOrCreateNewPlayerById("15");
         assertEquals("15", newPlayer.getId());
-        assertNotSame(admin, newPlayer);
+        assertEquals(AccessLevel.USER, newPlayer.getAccessLevel());
+        assertNotSame(senderMock.admin, newPlayer);
     }
 }

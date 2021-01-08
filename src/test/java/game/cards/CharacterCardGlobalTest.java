@@ -9,7 +9,7 @@ class CharacterCardGlobalTest {
 
     @Test
     void testCardCreated() {
-        CharacterCardGlobal card = new CharacterCardGlobal("", "", "", new CardStats());
+        CharacterCardGlobal card = new CharacterCardGlobal("", "", "", new CardStatsGlobal());
         AnimeCardsGame game = new AnimeCardsGame();
         game.addCard(card);
 

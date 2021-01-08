@@ -11,7 +11,6 @@ public class EmptyMessageArguments extends DefaultMessageArguments{
 
     @Override
     public boolean isValid() {
-
         return true;
     }
 

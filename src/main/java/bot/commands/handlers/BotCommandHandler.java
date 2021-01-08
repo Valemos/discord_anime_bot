@@ -57,7 +57,7 @@ public abstract class BotCommandHandler extends CommandWithArguments {
         }
     }
 
-    public static boolean isNotCommandValid(BotCommandHandler handler) {
+    public static boolean isNotValidCommand(BotCommandHandler handler) {
         return handler == null;
     }
 

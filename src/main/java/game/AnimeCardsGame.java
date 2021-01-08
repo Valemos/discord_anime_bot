@@ -52,9 +52,9 @@ public class AnimeCardsGame {
         return player;
     }
 
-    public CharacterCardPersonal getPersonalCard(Player player, int globalCardId) {
+    public CharacterCardPersonal pickPersonalCardWithDelay(Player player, int globalCardId, float pickDelay) {
         CharacterCardGlobal cardGlobal = getGlobalCardById(globalCardId);
-        return cardGlobal.getConstantCopy(player.getId());
+        return cardGlobal.getPersonalCardForPickDelay(player.getId(), pickDelay);
     }
 }
 

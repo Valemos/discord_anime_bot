@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 
 class BotCommandHandlerTest {
 
@@ -21,6 +23,7 @@ class BotCommandHandlerTest {
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
+
         handlerCreate = new CreateGlobalCardHandler();
         handlerDrop = new DropHandler();
 
@@ -44,8 +47,43 @@ class BotCommandHandlerTest {
     }
 
     @Test
-    void testArgumentsParsedCorrect() {
+    void testSingleWordArgumentsParsedCorrect() {
         DefaultMessageArguments args = (DefaultMessageArguments) handlerDrop.getArguments("#drop hello 123");
         assertLinesMatch(List.of("hello", "123"), args.commandParts);
+    }
+
+    @Test
+    void testMultiWordArgumentsParsedCorrect() {
+        DefaultMessageArguments args = (DefaultMessageArguments) handlerDrop.getArguments(
+                "#drop \"hello test\" 123");
+        assertLinesMatch(List.of("hello test", "123"), args.commandParts);
+
+        args = (DefaultMessageArguments) handlerDrop.getArguments(
+                "#drop \"hello test\" \"123 test\"");
+        assertLinesMatch(List.of("hello test", "123 test"), args.commandParts);
+    }
+
+    @Test
+    void testEmptyArgumentsCorrect() {
+        EmptyMessageArguments args = (EmptyMessageArguments) handlerDrop.getArguments(
+                "#drop \"hello test\" 123"
+        );
+        assertTrue(args.isValid());
+
+        args = (EmptyMessageArguments) handlerDrop.getArguments(
+                "#drop"
+        );
+        assertTrue(args.isValid());
+
+        args = (EmptyMessageArguments) handlerDrop.getArguments(
+                "#drop hello"
+        );
+        assertTrue(args.isValid());
+    }
+
+    @Test
+    void testLeadingAndTrailingSpacesRemoved() {
+        senderMock.sendMessage("    #drop command    ", senderMock.player.getId());
+        verify(senderMock.getCommandSpy(DropHandler.class)).handleCommand(any());
     }
 }

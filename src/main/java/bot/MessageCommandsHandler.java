@@ -33,7 +33,7 @@ public class MessageCommandsHandler extends ListenerAdapter {
         }
 
         BotCommandHandler commandHandler = findCommandForString(messageString);
-        if (BotCommandHandler.isNotCommandValid(commandHandler)){
+        if (BotCommandHandler.isNotValidCommand(commandHandler)){
             return;
         }
 

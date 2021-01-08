@@ -5,7 +5,7 @@ import bot.commands.handlers.MessageArguments;
 import bot.commands.handlers.creator.CreateCardArguments;
 import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import game.AnimeCardsGame;
-import game.cards.CardStatsUpdatable;
+import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,6 +111,6 @@ class CreateGlobalCardHandlerTest {
         assertEquals("two words", card.getCharacterInfo().getCharacterName());
         assertEquals("three words here", card.getCharacterInfo().getSeriesName());
         assertEquals("//url", card.getCharacterInfo().getImageUrl());
-        assertEquals(new CardStatsUpdatable(), card.getStats());
+        assertEquals(new CardStatsGlobal(), card.getStats());
     }
 }

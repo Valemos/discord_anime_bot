@@ -1,7 +1,7 @@
 package game;
 
 import bot.AccessLevel;
-import game.cards.CardStats;
+import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 import game.cards.CharacterCardPersonal;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,7 @@ class AnimeCardsGameTest {
         player1 = new Player("1", AccessLevel.USER);
         player2 = new Player("2", AccessLevel.USER);
 
-        CardStats stats = new CardStats();
+        CardStatsGlobal stats = new CardStatsGlobal();
         card1 = new CharacterCardGlobal("Riko", "Made in Abyss", "img", stats);
         card2 = new CharacterCardGlobal("Test", "Test", "img", stats);
     }
@@ -53,12 +53,6 @@ class AnimeCardsGameTest {
     }
 
     @Test
-    void testCardStatsCopied() {
-        assertEquals(card1.getStats(), card1.getStats().clone());
-        assertNotSame(card1.getStats(), card1.getStats().clone());
-    }
-
-    @Test
     void testTwoCardsAdded() {
         game.addCard(card1);
         game.addCard(card2);
@@ -76,13 +70,13 @@ class AnimeCardsGameTest {
 
     @Test
     void testPersonalCardCreatedFromGlobalCard() {
-        CharacterCardPersonal card = card1.getConstantCopy(player1.getId());
+        CharacterCardPersonal card = card1.getPersonalCardForPickDelay(player1.getId(), 0);
         game.addCard(card1);
 
-        assertEquals(card.getStats(), card1.getStats().getConstantCopy());
-        assertNotSame(card.getStats(), card1.getStats().getConstantCopy());
+        assertEquals(card.getStats(), card1.getStats().getStatsForPickDelay(0));
+        assertNotSame(card.getStats(), card1.getStats().getStatsForPickDelay(0));
 
-        CharacterCardPersonal copiedCard = game.getPersonalCard(player1, card1.getCardId());
+        CharacterCardPersonal copiedCard = game.pickPersonalCardWithDelay(player1, card1.getCardId(), 0);
         assertEquals(card, copiedCard);
         assertNotSame(card, copiedCard);
     }

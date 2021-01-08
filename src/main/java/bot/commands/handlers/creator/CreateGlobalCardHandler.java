@@ -4,7 +4,7 @@ import bot.AccessLevel;
 import bot.commands.CommandInfo;
 import bot.commands.CommandParameters;
 import bot.commands.handlers.BotCommandHandler;
-import game.cards.CardStats;
+import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 
 public class CreateGlobalCardHandler extends BotCommandHandler {
@@ -21,7 +21,7 @@ public class CreateGlobalCardHandler extends BotCommandHandler {
                 arguments.characterName,
                 arguments.seriesName,
                 arguments.imageUrl,
-                new CardStats());
+                new CardStatsGlobal());
 
         parameters.game.addCard(new_card);
     }

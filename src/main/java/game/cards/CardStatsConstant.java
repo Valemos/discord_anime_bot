@@ -1,17 +1,47 @@
 package game.cards;
 
-import game.CharismaState;
+import game.Charisma;
 
-public class CardStatsConstant extends CardStats{
-    public CardStatsConstant(float dexterity, float intelligence, float defenseLevel, CharismaState charisma) {
-        super(dexterity, intelligence, defenseLevel, charisma);
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class CardStatsConstant{
+
+    float approvalRating;
+    float dexterity;
+    int strength;
+    float wisdom;
+    Charisma charisma;
+
+    public CardStatsConstant(float approvalRating, float dexterity, int strength, float wisdom, Charisma charisma) {
+        this.approvalRating = approvalRating;
+        this.dexterity = dexterity;
+        this.strength = strength;
+        this.wisdom = wisdom;
+        this.charisma = charisma;
     }
 
-    public static CardStatsConstant fromUpdatable(CardStatsUpdatable statsUpdatable){
-        return new CardStatsConstant(
-                statsUpdatable.dexterity,
-                statsUpdatable.intelligence,
-                statsUpdatable.defenseLevel,
-                statsUpdatable.charisma);
+    @Override
+    public CardStatsConstant clone() {
+        try {
+            return (CardStatsConstant) super.clone();
+        } catch (CloneNotSupportedException e) {
+            Logger.getGlobal().log(Level.SEVERE, "cannot clone stats object");
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof CardStatsConstant){
+            CardStatsConstant other = (CardStatsConstant) obj;
+            return approvalRating == other.approvalRating &&
+                    dexterity == other.dexterity &&
+                    strength == other.strength &&
+                    wisdom == other.wisdom &&
+                    charisma == other.charisma;
+        }else{
+            return false;
+        }
     }
 }

@@ -12,8 +12,10 @@ import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -26,7 +28,7 @@ public class MessageSenderMock {
     public Player creator;
     public MessageCommandsHandler handler;
     private final MessageCommandsHandler spyHandler;
-    private final HashMap<BotCommandHandler, BotCommandHandler> spyCommands;
+    private final HashMap<Class<? extends BotCommandHandler>, BotCommandHandler> spyCommands;
     private final AnimeCardsGame game;
     public AnimeCardsGame spyGame;
 
@@ -49,12 +51,12 @@ public class MessageSenderMock {
 
         spyCommands = new HashMap<>();
         for(BotCommandHandler command : commands){
-            spyCommands.put(command, spy(command));
+            spyCommands.put(command.getClass(), spy(command));
         }
 
         spyGame = Mockito.spy(game);
         handler = new MessageCommandsHandler(spyGame);
-        handler.setCommands(commands);
+        handler.setCommands(new ArrayList<>(spyCommands.values()));
         spyHandler = spy(handler);
 
         mChannel = mock(MessageChannel.class);
@@ -77,12 +79,16 @@ public class MessageSenderMock {
         handler.onMessageReceived(mMessageEvent);
     }
 
-    public void assertCommandNotHandled(BotCommandHandler handler) {
+    public void assertCommandNotHandled(Class<? extends BotCommandHandler> handler) {
         BotCommandHandler currentSpyCommand = spyCommands.get(handler);
         verify(currentSpyCommand, never()).handleCommand(any());
     }
 
     public void assertNoCommandHandled() {
         verify(spyHandler, never()).handleCommandMessageForPlayer(any(), any(), any(), any());
+    }
+
+    public BotCommandHandler getCommandSpy(Class<? extends BotCommandHandler> handlerClass) {
+        return spyCommands.getOrDefault(handlerClass, null);
     }
 }

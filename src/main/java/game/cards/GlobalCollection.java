@@ -43,6 +43,10 @@ public class GlobalCollection {
     public List<CharacterCardGlobal> getRandomCards(int amount) {
         List<CharacterCardGlobal> resultCards = new ArrayList<>(amount);
 
+        if (cards.isEmpty()){
+            return new ArrayList<>();
+        }
+
         Random random = new Random();
         for(int i = 0; i < amount; i++){
             int randomIndex = random.nextInt(cards.size());

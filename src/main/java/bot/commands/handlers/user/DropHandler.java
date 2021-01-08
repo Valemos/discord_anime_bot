@@ -22,13 +22,21 @@ public class DropHandler extends BotCommandHandler {
         List<CharacterCardGlobal> cards = collection.getRandomCards(3);
 
         StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("Dropped new 3 cards:");
-
-        for (CharacterCardGlobal card : cards){
-            messageBuilder.append('\n');
-            messageBuilder.append(card.getOneLineString());
+        if (!cards.isEmpty()) {
+            createCardsMessage(cards, messageBuilder);
+        } else {
+            messageBuilder.append("There were no cards dropped");
         }
 
         parameters.channel.sendMessage(messageBuilder.toString()).queue();
+    }
+
+    private void createCardsMessage(List<CharacterCardGlobal> cards, StringBuilder messageBuilder) {
+        messageBuilder.append("Dropped new 3 cards:");
+
+        for (CharacterCardGlobal card : cards) {
+            messageBuilder.append('\n');
+            messageBuilder.append(card.getOneLineString());
+        }
     }
 }

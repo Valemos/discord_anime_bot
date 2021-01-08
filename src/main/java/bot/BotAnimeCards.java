@@ -4,8 +4,7 @@ import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.user.DropHandler;
 import bot.commands.handlers.creator.JoinAsCreatorHandler;
 import game.*;
-import game.cards.CardStats;
-import game.cards.CardStatsUpdatable;
+import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -63,7 +62,7 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        CardStats stats = new CardStats();
+        CardStatsGlobal stats = new CardStatsGlobal();
 
         game.addCard(new CharacterCardGlobal(
                 "Riko",

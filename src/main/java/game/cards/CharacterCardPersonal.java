@@ -16,10 +16,6 @@ public class CharacterCardPersonal {
         this(userId, characterInfo, stats, Constitution.HEALTHY, new CardEquipment());
     }
 
-    public CharacterCardPersonal(String userId, CharacterInfo characterInfo, CardStatsUpdatable stats) {
-        this(userId, characterInfo, CardStatsConstant.fromUpdatable(stats));
-    }
-
     public CharacterCardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats, Constitution constitution, CardEquipment cardEquipment) {
         this.userId = userId;
         this.characterInfo = characterInfo;

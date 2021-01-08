@@ -3,14 +3,14 @@ package game.cards;
 public class CharacterCardGlobal {
 
     CharacterInfo characterInfo;
-    CardStatsUpdatable stats;
+    CardStatsGlobal stats;
 
-    public CharacterCardGlobal(String characterName, String seriesName, String imageUrl, CardStats stats) {
+    public CharacterCardGlobal(String characterName, String seriesName, String imageUrl, CardStatsGlobal stats) {
         characterInfo = new CharacterInfo(characterName, seriesName, imageUrl);
-        this.stats = new CardStatsUpdatable(stats);
+        this.stats = stats;
     }
 
-    public CardStatsUpdatable getStats() {
+    public CardStatsGlobal getStats() {
         return stats;
     }
 
@@ -30,7 +30,7 @@ public class CharacterCardGlobal {
         return characterInfo.characterName + " / " + characterInfo.seriesName;
     }
 
-    public CharacterCardPersonal getConstantCopy(String userId) {
-        return new CharacterCardPersonal(userId, characterInfo, stats);
+    public CharacterCardPersonal getPersonalCardForPickDelay(String userId, float pickDelay){
+        return new CharacterCardPersonal(userId, characterInfo, stats.getStatsForPickDelay(pickDelay));
     }
 }
