@@ -65,27 +65,30 @@ public abstract class ArgumentParser {
     }
 
     private static int findArgumentEnd(int index, String commandString) throws ArgumentParseException {
-        boolean firstQuoteFound = false;
         while(index < commandString.length()){
 
             char currentChar = commandString.charAt(index);
             if (currentChar == '"'){
-                if (firstQuoteFound){
-                    firstQuoteFound = false;
-                    break;
-                }else{
-                    firstQuoteFound = true;
-                }
-            } else if (currentChar == ' ' && !firstQuoteFound){
+                index = findNextQuote(commandString, index + 1);
+            } else if (currentChar == ' '){
                 index--;
                 break;
+            }else{
+                index++;
             }
+        }
+        return index;
+    }
 
-            index++;
+    private static int findNextQuote(String commandString, int index) throws ArgumentParseException{
+        while (index < commandString.length()) {
+            if(commandString.charAt(index++) == '"'){
+                break;
+            }
         }
 
-        if (firstQuoteFound){
-            throw new ArgumentParseException(String.format("second quote not found in \"%s\"", commandString));
+        if (index == commandString.length()){
+            throw new ArgumentParseException("second quote not found in \"" + commandString + '"');
         }
 
         return index;

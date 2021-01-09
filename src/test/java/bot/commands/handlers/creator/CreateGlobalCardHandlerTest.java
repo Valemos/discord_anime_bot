@@ -51,26 +51,6 @@ class CreateGlobalCardHandlerTest {
     }
 
     @Test
-    void testArgumentsWithBrackets() {
-        sender.assertCommandHandledOnMessage(
-                commandName + " \"two words\" \"three words here\" //url",
-                command.getClass());
-
-        MessageArguments args = sender.captureLastCommandParameters(command.getClass()).messageArgs;
-
-        assertEquals("two words", args.get(0));
-        assertEquals("three words here", args.get(1));
-        assertEquals("//url", args.get(2));
-        assertNull(args.get(3));
-    }
-
-    @Test
-    void testIncorrectBrackets() {
-        sender.sendMessage(commandName + " \"two words three words here //url");
-        sender.assertCommandNotHandled(command.getClass());
-    }
-
-    @Test
     void testPlayerCannotCreateCards() {
         sender.sendMessage(commandName + " test test url", sender.player.getId());
         verify(sender.spyGame, never()).addCard(any());

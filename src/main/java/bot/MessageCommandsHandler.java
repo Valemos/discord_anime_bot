@@ -44,16 +44,6 @@ public class MessageCommandsHandler extends ListenerAdapter {
         }
     }
 
-    Player getExistingOrCreateNewPlayerById(String id) {
-        Player player = game.getPlayerById(id);
-
-        if (player == null){
-            player = game.createNewPlayer(id);
-        }
-
-        return player;
-    }
-
     void handleCommandMessageForPlayer(Player player, User user, BotCommandHandler command,
                                        MessageChannel channel, String messageContent) {
 
@@ -64,6 +54,16 @@ public class MessageCommandsHandler extends ListenerAdapter {
         }else{
             channel.sendMessage("invalid arguments: " + messageArguments.getErrorMessage()).queue();
         }
+    }
+
+    Player getExistingOrCreateNewPlayerById(String id) {
+        Player player = game.getPlayerById(id);
+
+        if (player == null){
+            player = game.createNewPlayer(id);
+        }
+
+        return player;
     }
 
     boolean playerHasAccessToCommand(Player player, BotCommandHandler command) {

@@ -54,12 +54,12 @@ class CommandCallsTest {
 
     @Test
     void testCreateCardAlias() {
-        sender.assertAnyCommandHandledOnMessage("#cr 0 0 0");
+        sender.assertCommandHandledOnMessage("#cr 0 0 0", CreateGlobalCardHandler.class);
     }
 
     @Test
     void testCreateCard() {
-        sender.assertAnyCommandHandledOnMessage("#createcard 0 0 0");
+        sender.assertCommandHandledOnMessage("#createcard 0 0 0", CreateGlobalCardHandler.class);
     }
 
     @Test

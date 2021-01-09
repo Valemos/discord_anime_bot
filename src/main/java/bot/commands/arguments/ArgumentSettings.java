@@ -4,6 +4,7 @@ import bot.commands.CommandInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class ArgumentSettings {
     private final CommandArgument commandParser;
@@ -38,6 +39,10 @@ public class ArgumentSettings {
 
     private int parseRequiredArguments(String commandString, int index, MessageArguments arguments) {
         if (index >= commandString.length()){
+            if (requiredArguments.size() > 0){
+                arguments.setErrorMessage("no required arguments provided: " + getArgumentNamesList(requiredArguments));
+            }
+
             return index;
         }
 
@@ -64,6 +69,16 @@ public class ArgumentSettings {
         }
 
         return index;
+    }
+
+    private String getArgumentNamesList(List<ArgumentParser> arguments) {
+        StringJoiner joiner = new StringJoiner(", ");
+
+        for (ArgumentParser argument : arguments){
+            joiner.add(argument.name);
+        }
+
+        return joiner.toString();
     }
 
     private String getMessageRequiredArgumentsNotFound(int startIndex) {

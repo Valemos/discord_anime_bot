@@ -8,7 +8,7 @@ import bot.commands.handlers.BotCommandHandler;
 public class JoinAsCreatorHandler extends BotCommandHandler {
 
     public JoinAsCreatorHandler() {
-        super(new CommandInfo("makecreator"));
+        super(new CommandInfo("makecreator", "jc"));
     }
 
     @Override
