@@ -32,8 +32,8 @@ class JoinAsCreatorHandlerTest {
     @Test
     void testUserBecameCreator() {
         JoinAsCreatorHandler handler = new JoinAsCreatorHandler();
-        CommandParameters params = new CommandParameters(null, player, mChannel, null);
-        handler.handleCommand(params);
+        CommandParameters params = new CommandParameters(null, player, null, mChannel, null);
+        handler.handle(params);
 
         assertSame(player.getAccessLevel(), AccessLevel.CREATOR);
     }

@@ -1,19 +1,18 @@
 package bot;
 
+import bot.commands.arguments.CommandArgument;
 import bot.commands.handlers.BotCommandHandler;
 import bot.commands.CommandParameters;
-import bot.commands.CommandParser;
-import bot.commands.handlers.MessageArguments;
+import bot.commands.arguments.MessageArguments;
 import game.AnimeCardsGame;
 import game.Player;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class MessageCommandsHandler extends ListenerAdapter {
 
@@ -28,20 +27,20 @@ public class MessageCommandsHandler extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
 
         String messageString = event.getMessage().getContentRaw().trim();
-        if (!CommandParser.stringIsCommand(messageString)){
+        if (!CommandArgument.stringIsCommand(messageString)){
             return;
         }
 
         BotCommandHandler commandHandler = findCommandForString(messageString);
-        if (BotCommandHandler.isNotValidCommand(commandHandler)){
+        if (isInvalidCommand(commandHandler)){
             return;
         }
 
-        String playerId = event.getAuthor().getId();
-        Player player = getExistingOrCreateNewPlayerById(playerId);
+        User user = event.getAuthor();
+        Player player = getExistingOrCreateNewPlayerById(user.getId());
 
         if (playerHasAccessToCommand(player, commandHandler)) {
-            handleCommandMessageForPlayer(player, commandHandler, event.getChannel(), messageString);
+            handleCommandMessageForPlayer(player, user, commandHandler, event.getChannel(), messageString);
         }
     }
 
@@ -55,13 +54,15 @@ public class MessageCommandsHandler extends ListenerAdapter {
         return player;
     }
 
-    void handleCommandMessageForPlayer(Player player, BotCommandHandler commandHandler,
+    void handleCommandMessageForPlayer(Player player, User user, BotCommandHandler command,
                                        MessageChannel channel, String messageContent) {
 
-        MessageArguments messageArguments = commandHandler.getArguments(messageContent);
+        MessageArguments messageArguments = command.parseArguments(messageContent);
         if (messageArguments.isValid()){
-            CommandParameters args = new CommandParameters(game, player, channel, messageArguments);
-            commandHandler.handleCommand(args);
+            CommandParameters parameters = new CommandParameters(game, player, user, channel, messageArguments);
+            command.handle(parameters);
+        }else{
+            channel.sendMessage("invalid arguments: " + messageArguments.getErrorMessage()).queue();
         }
     }
 
@@ -73,14 +74,22 @@ public class MessageCommandsHandler extends ListenerAdapter {
         return player.getAccessLevel().level >= command.getAccessLevel().level;
     }
 
+    private boolean isInvalidCommand(BotCommandHandler commandHandler) {
+        return commandHandler == null;
+    }
+
     BotCommandHandler findCommandForString(String messageString) {
-        String commandName = CommandParser.getCommandName(messageString);
+        String commandName = CommandArgument.getCommandName(messageString);
         return commandsMap.getOrDefault(commandName, null);
     }
 
-    public void setCommands(List<BotCommandHandler> commandList) {
+    public void setCommands(BotCommandHandler... commands) {
+        setCommands(Arrays.asList(commands));
+    }
+
+    public void setCommands(Collection<BotCommandHandler> commands) {
         commandsMap = new HashMap<>();
-        for (BotCommandHandler command : commandList) {
+        for (BotCommandHandler command : commands) {
             for (String name : command.getCommandNames()){
                 commandsMap.put(name, command);
             }
@@ -90,4 +99,5 @@ public class MessageCommandsHandler extends ListenerAdapter {
     public List<BotCommandHandler> getAllCommands() {
         return new ArrayList<>(commandsMap.values());
     }
+
 }

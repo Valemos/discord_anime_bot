@@ -44,4 +44,12 @@ public class CardStatsConstant{
             return false;
         }
     }
+
+    public float getPowerLevel() {
+        return approvalRating + dexterity + strength + wisdom;
+    }
+
+    public String getOneLineString() {
+        return charisma.getName() + "\tbase: " + approvalRating + "\td: " + dexterity + "\ts: " + strength + "\tw: " + wisdom;
+    }
 }

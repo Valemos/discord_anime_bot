@@ -40,4 +40,8 @@ public class CharacterInfo {
         }
         return false;
     }
+
+    public String getFullName() {
+        return characterName + " / " + seriesName;
+    }
 }

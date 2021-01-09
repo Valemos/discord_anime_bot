@@ -12,7 +12,7 @@ public class JoinAsCreatorHandler extends BotCommandHandler {
     }
 
     @Override
-    public void handleCommand(CommandParameters parameters) {
+    public void handle(CommandParameters parameters) {
         if (parameters.player.getAccessLevel() != AccessLevel.CREATOR){
             parameters.player.setAccessLevel(AccessLevel.CREATOR);
             accessLevel = AccessLevel.CREATOR;

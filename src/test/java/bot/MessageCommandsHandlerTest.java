@@ -1,7 +1,6 @@
 package bot;
 
 import bot.commands.CommandInfo;
-import bot.commands.CommandParser;
 import bot.commands.handlers.BotCommandHandler;
 import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.user.DropHandler;
@@ -11,7 +10,6 @@ import game.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,25 +29,20 @@ class MessageCommandsHandlerTest {
     }
 
     @Test
-    void testCommandNameExtracted() {
-        assertEquals("", CommandParser.getCommandName(""));
-        assertEquals("", CommandParser.getCommandName("drop"));
-        assertEquals("", CommandParser.getCommandName("drop test"));
-        assertEquals("", CommandParser.getCommandName("# drop test"));
-        assertEquals("drop", CommandParser.getCommandName("#drop"));
-        assertEquals("drop", CommandParser.getCommandName("#drop test test"));
+    void testCommandsHandling() {
+        senderMock.assertCommandNotHandledOnMessage("");
+        senderMock.assertCommandNotHandledOnMessage("");
+        senderMock.assertCommandNotHandledOnMessage("drop");
+        senderMock.assertCommandNotHandledOnMessage("drop test");
+        senderMock.assertCommandNotHandledOnMessage("# drop test");
+        senderMock.assertCommandHandledOnMessage("#drop", DropHandler.class);
+        senderMock.assertCommandHandledOnMessage("#drop test test", DropHandler.class);
     }
 
     @Test
     void testIncorrectCommand() {
+        senderMock.assertCommandNotHandledOnMessage("#asdfds");
         assertNull(senderMock.handler.findCommandForString("#asdfds"));
-    }
-
-    @Test
-    void testCommandFound(){
-        String name = (new ShowCollectionHandler()).getCommandInfo().name;
-        BotCommandHandler command = senderMock.handler.findCommandForString(CommandInfo.commandChar + name);
-        assertSame(command, senderMock.getCommandSpy(ShowCollectionHandler.class));
     }
 
     @Test
@@ -79,5 +72,11 @@ class MessageCommandsHandlerTest {
         assertEquals("15", newPlayer.getId());
         assertEquals(AccessLevel.USER, newPlayer.getAccessLevel());
         assertNotSame(senderMock.admin, newPlayer);
+    }
+
+    @Test
+    void testDifferentArguments() {
+        senderMock.sendMessage("#createcard ");
+        senderMock.assertCommandNotHandled(CreateGlobalCardHandler.class);
     }
 }

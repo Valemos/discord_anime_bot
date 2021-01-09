@@ -1,6 +1,7 @@
 package bot.commands.handlers;
 
 import bot.MessageSenderMock;
+import bot.commands.arguments.MessageArguments;
 import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.user.DropHandler;
 import game.AnimeCardsGame;
@@ -41,41 +42,37 @@ class BotCommandHandlerTest {
     }
 
     @Test
-    void testIncorrectCommandHandler() {
-        assertThrows(RuntimeException.class, () -> handlerCreate.getArguments("#drop hello 123"));
-        assertThrows(RuntimeException.class, () -> handlerCreate.getArguments("#drop"));
-    }
-
-    @Test
     void testSingleWordArgumentsParsedCorrect() {
-        DefaultMessageArguments args = (DefaultMessageArguments) handlerDrop.getArguments("#drop hello 123");
-        assertLinesMatch(List.of("hello", "123"), args.commandParts);
+        MessageArguments args = handlerCreate.parseArguments(
+                "#"+handlerCreate.commandInfo.name+" hello 123"
+        );
+        assertLinesMatch(List.of("hello", "123"), args.getValues());
     }
 
     @Test
     void testMultiWordArgumentsParsedCorrect() {
-        DefaultMessageArguments args = (DefaultMessageArguments) handlerDrop.getArguments(
-                "#drop \"hello test\" 123");
-        assertLinesMatch(List.of("hello test", "123"), args.commandParts);
+        MessageArguments args = handlerCreate.parseArguments(
+                "#"+handlerCreate.commandInfo.name+" \"hello test\" 123");
+        assertLinesMatch(List.of("hello test", "123"), args.getValues());
 
-        args = (DefaultMessageArguments) handlerDrop.getArguments(
-                "#drop \"hello test\" \"123 test\"");
-        assertLinesMatch(List.of("hello test", "123 test"), args.commandParts);
+        args = handlerCreate.parseArguments(
+                "#"+handlerCreate.commandInfo.name+" \"hello test\" \"123 test\"");
+        assertLinesMatch(List.of("hello test", "123 test"), args.getValues());
     }
 
     @Test
     void testEmptyArgumentsCorrect() {
-        EmptyMessageArguments args = (EmptyMessageArguments) handlerDrop.getArguments(
+        MessageArguments args = handlerDrop.parseArguments(
                 "#drop \"hello test\" 123"
         );
         assertTrue(args.isValid());
 
-        args = (EmptyMessageArguments) handlerDrop.getArguments(
+        args = handlerDrop.parseArguments(
                 "#drop"
         );
         assertTrue(args.isValid());
 
-        args = (EmptyMessageArguments) handlerDrop.getArguments(
+        args = handlerDrop.parseArguments(
                 "#drop hello"
         );
         assertTrue(args.isValid());
@@ -84,6 +81,6 @@ class BotCommandHandlerTest {
     @Test
     void testLeadingAndTrailingSpacesRemoved() {
         senderMock.sendMessage("    #drop command    ", senderMock.player.getId());
-        verify(senderMock.getCommandSpy(DropHandler.class)).handleCommand(any());
+        verify(senderMock.getCommandSpy(DropHandler.class)).handle(any());
     }
 }

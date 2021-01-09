@@ -1,12 +1,16 @@
 package game;
 
 public enum Charisma {
-    CHARISMATIC(1), NEUTRAL(0), AWKWARD(-1);
+    CHARISMATIC(1, "Charismatic"),
+    NEUTRAL(0, "Neutral"),
+    AWKWARD(-1, "Awkward");
 
     private final int state;
+    private final String name;
 
-    Charisma(int state) {
+    Charisma(int state, String name) {
         this.state = state;
+        this.name = name;
     }
 
     public static Charisma fromValue(int state){
@@ -20,5 +24,9 @@ public enum Charisma {
 
     public int getState() {
         return state;
+    }
+
+    public String getName() {
+        return name;
     }
 }

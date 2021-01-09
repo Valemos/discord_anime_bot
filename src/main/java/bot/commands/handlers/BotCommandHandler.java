@@ -3,62 +3,46 @@ package bot.commands.handlers;
 import bot.AccessLevel;
 import bot.commands.CommandInfo;
 import bot.commands.CommandParameters;
+import bot.commands.arguments.ArgumentParser;
+import bot.commands.arguments.ArgumentSettings;
+import bot.commands.arguments.ArgumentSettingsBuilder;
+import bot.commands.arguments.MessageArguments;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-
-public abstract class BotCommandHandler extends CommandWithArguments {
+public abstract class BotCommandHandler {
 
     protected CommandInfo commandInfo;
     protected AccessLevel accessLevel;
-    protected MessageArguments arguments;
+    protected ArgumentSettings argumentSettings;
 
     public BotCommandHandler(CommandInfo commandInfo) {
-        this(commandInfo, AccessLevel.USER, EmptyMessageArguments.class);
+        this(commandInfo, AccessLevel.USER);
     }
 
     public BotCommandHandler(CommandInfo commandInfo, AccessLevel accessLevel) {
-        this(commandInfo, accessLevel, EmptyMessageArguments.class);
+        this(commandInfo, accessLevel, ArgumentSettingsBuilder.getBuilder(commandInfo).build());
     }
 
-    public BotCommandHandler(CommandInfo commandInfo, Class<? extends MessageArguments> argumentsClass) {
-        this(commandInfo, AccessLevel.USER, argumentsClass);
+    public BotCommandHandler(CommandInfo commandInfo, ArgumentSettings argumentSettings) {
+        this(commandInfo, AccessLevel.USER, argumentSettings);
     }
 
     public BotCommandHandler(CommandInfo commandInfo,
                              AccessLevel accessLevel,
-                             Class<? extends MessageArguments> argumentsClass) {
+                             ArgumentSettings argumentSettings) {
         this.commandInfo = commandInfo;
         this.accessLevel = accessLevel;
-        this.arguments = createArgumentsInstance(argumentsClass);
+        this.argumentSettings = argumentSettings;
     }
 
-    private MessageArguments createArgumentsInstance(Class<? extends MessageArguments> argumentsClass) {
-        try {
-            return argumentsClass.getConstructor(CommandInfo.class).newInstance(commandInfo);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            Logger.getGlobal().log(Level.SEVERE, "cannot create arguments class instance");
-            throw new RuntimeException(e);
-        }
+    protected void setArguments(ArgumentSettings argumentSettings) {
+        this.argumentSettings = argumentSettings;
     }
 
-    public abstract void handleCommand(CommandParameters parameters);
+    public abstract void handle(CommandParameters parameters);
 
-    @Override
-    public MessageArguments getArguments(String commandString) {
-        try {
-            return arguments.fromString(commandString);
-
-        } catch (MessageArguments.InvalidCommandException e) {
-            Logger.getGlobal().log(Level.SEVERE, "invalid command parsed. programmer error");
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static boolean isNotValidCommand(BotCommandHandler handler) {
-        return handler == null;
+    public MessageArguments parseArguments(String commandString) {
+        return argumentSettings.parseArguments(commandString);
     }
 
     public String[] getCommandNames() {

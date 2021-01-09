@@ -1,8 +1,11 @@
 package bot;
 
 import bot.commands.handlers.creator.CreateGlobalCardHandler;
+import bot.commands.handlers.creator.JoinAsTesterHandler;
 import bot.commands.handlers.user.DropHandler;
 import bot.commands.handlers.creator.JoinAsCreatorHandler;
+import bot.commands.handlers.user.ShowCardHandler;
+import bot.commands.handlers.user.ShowCollectionHandler;
 import game.*;
 import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
@@ -28,11 +31,14 @@ public class BotAnimeCards {
     public BotAnimeCards() {
         game = new AnimeCardsGame();
         commandsHandler = new MessageCommandsHandler(game);
-        commandsHandler.setCommands(new ArrayList<>(List.of(
+        commandsHandler.setCommands(
                 new DropHandler(),
                 new CreateGlobalCardHandler(),
-                new JoinAsCreatorHandler()
-        )));
+                new JoinAsCreatorHandler(),
+                new ShowCollectionHandler(),
+                new ShowCardHandler(),
+                new JoinAsTesterHandler()
+        );
     }
 
     public boolean authenticate(String token) {
@@ -62,20 +68,19 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        CardStatsGlobal stats = new CardStatsGlobal();
-
         game.addCard(new CharacterCardGlobal(
                 "Riko",
                 "Made in Abyss",
-                "img", stats));
+                "https://drive.google.com/file/d/1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7/view?usp=sharing"));
         game.addCard(new CharacterCardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
-                "img", stats));
+                "https://sandradillondesign.com.au/wp-content/uploads/2015/02/Number-2-Cake-Topper-Blue-Sandra-Dillon-Design-500x500.jpg"));
         game.addCard(new CharacterCardGlobal(
                 "Kaiman",
                 "Dorohedoro",
-                "img", stats));
+                "https://www.pngarts.com/files/3/Number-3-PNG-Image-Transparent.png"));
+
     }
 
     public void waitForShutdown() {

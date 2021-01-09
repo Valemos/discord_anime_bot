@@ -1,5 +1,5 @@
 package game;
 
-public enum Constitution {
+public enum HealthState {
     HEALTHY, INJURED
 }

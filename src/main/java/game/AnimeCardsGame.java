@@ -4,6 +4,7 @@ import bot.AccessLevel;
 import game.cards.CharacterCardGlobal;
 import game.cards.CharacterCardPersonal;
 import game.cards.GlobalCollection;
+import game.cards.PersonalCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,12 @@ public class AnimeCardsGame {
     public CharacterCardPersonal pickPersonalCardWithDelay(Player player, int globalCardId, float pickDelay) {
         CharacterCardGlobal cardGlobal = getGlobalCardById(globalCardId);
         return cardGlobal.getPersonalCardForPickDelay(player.getId(), pickDelay);
+    }
+
+    public PersonalCollection getPlayerCollection(Player player) {
+
+
+        return null;
     }
 }
 

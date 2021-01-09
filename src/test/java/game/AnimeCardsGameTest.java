@@ -67,19 +67,4 @@ class AnimeCardsGameTest {
 
         assertNotEquals(card1.getCardId(), card2.getCardId());
     }
-
-    @Test
-    void testPersonalCardCreatedFromGlobalCard() {
-        CharacterCardPersonal card = card1.getPersonalCardForPickDelay(player1.getId(), 0);
-        game.addCard(card1);
-
-        assertEquals(card.getStats(), card1.getStats().getStatsForPickDelay(0));
-        assertNotSame(card.getStats(), card1.getStats().getStatsForPickDelay(0));
-
-        CharacterCardPersonal copiedCard = game.pickPersonalCardWithDelay(player1, card1.getCardId(), 0);
-        assertEquals(card, copiedCard);
-        assertNotSame(card, copiedCard);
-    }
-
-
 }
