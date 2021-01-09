@@ -30,18 +30,23 @@ class MessageCommandsHandlerTest {
 
     @Test
     void testCommandsHandling() {
-        senderMock.assertCommandNotHandledOnMessage("");
-        senderMock.assertCommandNotHandledOnMessage("");
-        senderMock.assertCommandNotHandledOnMessage("drop");
-        senderMock.assertCommandNotHandledOnMessage("drop test");
-        senderMock.assertCommandNotHandledOnMessage("# drop test");
+        senderMock.assertNoCommandHandledOnMessage("");
+        senderMock.assertNoCommandHandledOnMessage("#");
+        senderMock.assertNoCommandHandledOnMessage("cr");
+        senderMock.assertNoCommandHandledOnMessage("createcard");
+        senderMock.assertNoCommandHandledOnMessage("createcard test");
+        senderMock.assertNoCommandHandledOnMessage("# drop test");
         senderMock.assertCommandHandledOnMessage("#drop", DropHandler.class);
+    }
+
+    @Test
+    void testMoreArgumentsThanNeeded_forCommandWithNoArguments() {
         senderMock.assertCommandHandledOnMessage("#drop test test", DropHandler.class);
     }
 
     @Test
     void testIncorrectCommand() {
-        senderMock.assertCommandNotHandledOnMessage("#asdfds");
+        senderMock.assertNoCommandHandledOnMessage("#asdfds");
         assertNull(senderMock.handler.findCommandForString("#asdfds"));
     }
 

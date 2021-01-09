@@ -44,9 +44,12 @@ public class ArgumentSettings {
         for (ArgumentParser parser : requiredArguments){
             try {
                 ArgumentContent content = parser.parse(commandString, index);
-                arguments.add(content);
-
-                index = content.end + 1;
+                if (content.exists()){
+                    arguments.add(content);
+                    index = content.end + 1;
+                }else{
+                    break;
+                }
 
             } catch (ArgumentParser.ArgumentParseException | ArgumentParser.InvalidCommandException e) {
                 arguments.setErrorMessage(e.getMessage());
@@ -82,6 +85,7 @@ public class ArgumentSettings {
         while (currentIndex < commandString.length() && !optionalCopy.isEmpty()){
             try {
                 ArgumentContent content = tryParseWithSuitableParser(optionalCopy, commandString, currentIndex);
+                arguments.add(content);
                 currentIndex = content.end + 1;
 
             } catch (ArgumentParser.ArgumentParseException e) {

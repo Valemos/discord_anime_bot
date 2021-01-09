@@ -27,7 +27,13 @@ public class ShowCollectionHandler extends BotCommandHandler {
     public void handle(CommandParameters parameters) {
         MessageArguments args = parameters.messageArgs;
 
-        Player player = parameters.game.getPlayerById(args.get(0));
+        Player player;
+        String playerId = args.get(0);
+        if (playerId == null){
+            player = parameters.player;
+        }else{
+            player = parameters.game.getPlayerById(playerId);
+        }
 
         PersonalCollection collection = parameters.game.getPlayerCollection(player);
 

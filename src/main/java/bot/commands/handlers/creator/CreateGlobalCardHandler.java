@@ -36,5 +36,6 @@ public class CreateGlobalCardHandler extends BotCommandHandler {
                 new CardStatsGlobal());
 
         parameters.game.addCard(new_card);
+        parameters.channel.sendMessage("new card added, card id is " + new_card.getCharacterInfo().getId()).queue();
     }
 }

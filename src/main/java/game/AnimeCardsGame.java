@@ -59,9 +59,7 @@ public class AnimeCardsGame {
     }
 
     public PersonalCollection getPlayerCollection(Player player) {
-
-
-        return null;
+        return player.getCollection();
     }
 }
 

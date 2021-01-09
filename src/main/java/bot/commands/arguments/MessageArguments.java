@@ -29,7 +29,7 @@ public class MessageArguments {
     }
 
     public String get(int index) {
-        if (index > 0 && index < argumentContents.size()){
+        if (index >= 0 && index < argumentContents.size()){
             return argumentContents.get(index).content;
         }else{
             return null;

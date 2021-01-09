@@ -11,6 +11,10 @@ public class ArgumentContent {
         this.end = end;
     }
 
+    public ArgumentContent(String content, int start) {
+        this(content, start, content.length() + start);
+    }
+
     public boolean exists() {
         return content != null;
     }

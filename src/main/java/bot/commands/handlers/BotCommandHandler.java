@@ -56,4 +56,8 @@ public abstract class BotCommandHandler {
     public CommandInfo getCommandInfo() {
         return commandInfo;
     }
+
+    public ArgumentSettings getArgumentSettings() {
+        return argumentSettings;
+    }
 }

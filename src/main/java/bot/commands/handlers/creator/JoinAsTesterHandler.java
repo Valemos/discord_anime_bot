@@ -19,13 +19,13 @@ public class JoinAsTesterHandler extends BotCommandHandler {
     public void handle(CommandParameters parameters) {
         parameters.player.setAccessLevel(AccessLevel.CREATOR);
 
-        PersonalCollection coll = parameters.game.getPlayerCollection(parameters.player);
+        PersonalCollection collection = parameters.game.getPlayerCollection(parameters.player);
 
         List<CharacterCardGlobal> allCards = parameters.game.getGlobalCollection().getRandomCards(5);
 
         float counter = 0;
         for (CharacterCardGlobal card : allCards){
-            coll.addCard(card.getPersonalCardForPickDelay(parameters.player.getId(), counter++));
+            collection.addCard(card.getPersonalCardForPickDelay(parameters.player.getId(), counter++));
         }
     }
 }

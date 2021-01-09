@@ -4,18 +4,15 @@ import bot.commands.handlers.creator.CreateGlobalCardHandler;
 import bot.commands.handlers.creator.JoinAsTesterHandler;
 import bot.commands.handlers.user.DropHandler;
 import bot.commands.handlers.creator.JoinAsCreatorHandler;
-import bot.commands.handlers.user.ShowCardHandler;
+import bot.commands.handlers.user.InspectCardHandler;
 import bot.commands.handlers.user.ShowCollectionHandler;
 import game.*;
-import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +33,7 @@ public class BotAnimeCards {
                 new CreateGlobalCardHandler(),
                 new JoinAsCreatorHandler(),
                 new ShowCollectionHandler(),
-                new ShowCardHandler(),
+                new InspectCardHandler(),
                 new JoinAsTesterHandler()
         );
     }

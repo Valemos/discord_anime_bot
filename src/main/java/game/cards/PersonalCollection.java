@@ -1,9 +1,14 @@
 package game.cards;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonalCollection {
     List<CharacterCardPersonal> cards;
+
+    public PersonalCollection() {
+        this(new ArrayList<>());
+    }
 
     public PersonalCollection(List<CharacterCardPersonal> cards) {
         this.cards = cards;
