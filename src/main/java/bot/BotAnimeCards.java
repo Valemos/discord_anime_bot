@@ -1,18 +1,22 @@
 package bot;
 
-import bot.commands.handlers.creator.CreateGlobalCardHandler;
-import bot.commands.handlers.creator.JoinAsTesterHandler;
-import bot.commands.handlers.user.DropHandler;
-import bot.commands.handlers.creator.JoinAsCreatorHandler;
-import bot.commands.handlers.user.InspectCardHandler;
-import bot.commands.handlers.user.ShowCollectionHandler;
+import bot.commands.handlers.AbstractCommand;
+import bot.commands.handlers.creator.CreateGlobalCardCommand;
+import bot.commands.handlers.creator.JoinAsTesterCommand;
+import bot.commands.handlers.user.DropCommand;
+import bot.commands.handlers.creator.JoinAsCreatorCommand;
+import bot.commands.handlers.user.InspectCardCommand;
+import bot.commands.handlers.user.ShowCollectionCommand;
+import com.jagrosh.jdautilities.command.CommandClient;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import game.*;
 import game.cards.CharacterCardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,27 +24,16 @@ import static java.lang.System.exit;
 
 public class BotAnimeCards {
 
-    private final MessageCommandsHandler commandsHandler;
     JDA discord_api;
-
     AnimeCardsGame game;
 
     public BotAnimeCards() {
         game = new AnimeCardsGame();
-        commandsHandler = new MessageCommandsHandler(game);
-        commandsHandler.setCommands(
-                new DropHandler(),
-                new CreateGlobalCardHandler(),
-                new JoinAsCreatorHandler(),
-                new ShowCollectionHandler(),
-                new InspectCardHandler(),
-                new JoinAsTesterHandler()
-        );
     }
 
     public boolean authenticate(String token) {
         try{
-            discord_api = getApiBuilderWithHandlers(token).build();
+            discord_api = buildDiscordAPI(token);
             discord_api.awaitReady();
             return true;
         }
@@ -50,10 +43,40 @@ public class BotAnimeCards {
         }
     }
 
-    @NotNull
-    private JDABuilder getApiBuilderWithHandlers(String token) {
-        return JDABuilder.createDefault(token)
-                .addEventListeners(commandsHandler);
+    private CommandClient buildCommandClient() {
+        CommandClientBuilder builder = new CommandClientBuilder();
+        builder.setOwnerId("797845777618698240");
+        builder.setPrefix("#");
+        builder.setAlternativePrefix("c#");
+
+        addCommands(builder, List.of(
+                        DropCommand.class,
+                        CreateGlobalCardCommand.class,
+                        JoinAsCreatorCommand.class,
+                        ShowCollectionCommand.class,
+                        InspectCardCommand.class,
+                        JoinAsTesterCommand.class));
+
+        return builder.build();
+    }
+
+    private void addCommands(CommandClientBuilder builder, List<Class<? extends AbstractCommand>> commands) {
+        try {
+            for (Class<? extends AbstractCommand> command : commands){
+                AbstractCommand commandHandler =
+                        (AbstractCommand) command
+                                .getDeclaringClass()
+                                .getConstructor(AnimeCardsGame.class)
+                                .newInstance(game);
+                builder.addCommands(commandHandler);
+            }
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private JDA buildDiscordAPI(String token) throws LoginException {
+        return JDABuilder.createDefault(token).addEventListeners(buildCommandClient()).build();
     }
 
     public void shutdown(){
@@ -68,16 +91,15 @@ public class BotAnimeCards {
         game.addCard(new CharacterCardGlobal(
                 "Riko",
                 "Made in Abyss",
-                "https://drive.google.com/file/d/1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7/view?usp=sharing"));
+                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7"));
         game.addCard(new CharacterCardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
-                "https://sandradillondesign.com.au/wp-content/uploads/2015/02/Number-2-Cake-Topper-Blue-Sandra-Dillon-Design-500x500.jpg"));
+                "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk"));
         game.addCard(new CharacterCardGlobal(
                 "Kaiman",
                 "Dorohedoro",
-                "https://www.pngarts.com/files/3/Number-3-PNG-Image-Transparent.png"));
-
+                "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
     }
 
     public void waitForShutdown() {

@@ -1,7 +1,6 @@
 package bot.commands.handlers.creator;
 
 import bot.MessageSenderMock;
-import bot.commands.arguments.MessageArguments;
 import game.AnimeCardsGame;
 import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
@@ -15,10 +14,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-class CreateGlobalCardHandlerTest {
+class CreateGlobalCardCommandTest {
 
     AnimeCardsGame game;
-    CreateGlobalCardHandler command;
+    CreateGlobalCardCommand command;
     String commandName;
 
     MessageSenderMock sender;
@@ -28,7 +27,7 @@ class CreateGlobalCardHandlerTest {
     void setUp() {
         game = new AnimeCardsGame();
 
-        command = new CreateGlobalCardHandler();
+        command = new CreateGlobalCardCommand();
         commandName = "#" + command.getCommandInfo().name;
 
         sender = new MessageSenderMock(game, List.of(command));

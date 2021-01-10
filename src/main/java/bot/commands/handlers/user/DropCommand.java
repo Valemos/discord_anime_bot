@@ -1,30 +1,30 @@
 package bot.commands.handlers.user;
 
 
-import bot.commands.CommandInfo;
-import bot.commands.CommandParameters;
-import bot.commands.handlers.BotCommandHandler;
+import bot.commands.handlers.AbstractCommand;
+import com.jagrosh.jdautilities.command.CommandEvent;
+import game.AnimeCardsGame;
 import game.cards.CharacterCardGlobal;
 import game.cards.GlobalCollection;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.List;
 
-public class DropHandler extends BotCommandHandler {
+public class DropCommand extends AbstractCommand {
 
-    public DropHandler() {
-        super(new CommandInfo("drop"));
+    public DropCommand(AnimeCardsGame game) {
+        super(game);
+        name = "drop";
     }
 
     @Override
-    public void handle(CommandParameters parameters) {
-
-        GlobalCollection collection = parameters.game.getGlobalCollection();
+    protected void execute(CommandEvent event) {
+        GlobalCollection collection = game.getGlobalCollection();
         List<CharacterCardGlobal> cards = collection.getRandomCards(3);
-        displayCards(parameters.channel, cards);
+        displayCards(cards, event.getChannel());
     }
 
-    private void displayCards(MessageChannel channel, List<CharacterCardGlobal> cards) {
+    private void displayCards(List<CharacterCardGlobal> cards, MessageChannel channel) {
         StringBuilder builder = new StringBuilder();
         if (!cards.isEmpty()) {
             createCardsMessage(cards, builder);
@@ -38,8 +38,7 @@ public class DropHandler extends BotCommandHandler {
         messageBuilder.append("Dropped cards:");
 
         for (CharacterCardGlobal card : cards) {
-            messageBuilder.append('\n');
-            messageBuilder.append(card.getOneLineString());
+            messageBuilder.append('\n').append(card.getOneLineString());
         }
     }
 }

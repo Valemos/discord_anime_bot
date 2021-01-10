@@ -1,13 +1,13 @@
 package bot.commands;
 
 import bot.MessageSenderMock;
-import bot.commands.handlers.BotCommandHandler;
-import bot.commands.handlers.creator.CreateGlobalCardHandler;
-import bot.commands.handlers.creator.JoinAsCreatorHandler;
-import bot.commands.handlers.creator.JoinAsTesterHandler;
-import bot.commands.handlers.user.DropHandler;
-import bot.commands.handlers.user.InspectCardHandler;
-import bot.commands.handlers.user.ShowCollectionHandler;
+import bot.commands.handlers.AbstractBotCommand;
+import bot.commands.handlers.creator.CreateGlobalCardCommand;
+import bot.commands.handlers.creator.JoinAsCreatorCommand;
+import bot.commands.handlers.creator.JoinAsTesterCommand;
+import bot.commands.handlers.user.DropCommand;
+import bot.commands.handlers.user.InspectCardCommand;
+import bot.commands.handlers.user.ShowCollectionCommand;
 import game.AnimeCardsGame;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,13 +23,13 @@ class CommandCallsTest {
     void setUp() {
         game = new AnimeCardsGame();
 
-        List<BotCommandHandler> allCommands = List.of(
-                new JoinAsTesterHandler(),
-                new DropHandler(),
-                new CreateGlobalCardHandler(),
-                new JoinAsCreatorHandler(),
-                new ShowCollectionHandler(),
-                new InspectCardHandler()
+        List<AbstractBotCommand> allCommands = List.of(
+                new JoinAsTesterCommand(),
+                new DropCommand(),
+                new CreateGlobalCardCommand(),
+                new JoinAsCreatorCommand(),
+                new ShowCollectionCommand(),
+                new InspectCardCommand()
         );
 
         sender = new MessageSenderMock(game, allCommands);
@@ -54,12 +54,12 @@ class CommandCallsTest {
 
     @Test
     void testCreateCardAlias() {
-        sender.assertCommandHandledOnMessage("#cr 0 0 0", CreateGlobalCardHandler.class);
+        sender.assertCommandHandledOnMessage("#cr 0 0 0", CreateGlobalCardCommand.class);
     }
 
     @Test
     void testCreateCard() {
-        sender.assertCommandHandledOnMessage("#createcard 0 0 0", CreateGlobalCardHandler.class);
+        sender.assertCommandHandledOnMessage("#createcard 0 0 0", CreateGlobalCardCommand.class);
     }
 
     @Test
@@ -75,6 +75,11 @@ class CommandCallsTest {
     @Test
     void testShowCollectionForUser() {
         sender.assertAnyCommandHandledOnMessage("#collection 1");
+    }
+
+    @Test
+    void testShowCollectionWithOptionalArgument() {
+        sender.assertAnyCommandHandledOnMessage("#collection 1 s=name");
     }
 
     @Test

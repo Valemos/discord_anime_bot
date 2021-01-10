@@ -1,22 +1,22 @@
 package game;
 
-import bot.AccessLevel;
+import bot.PlayerAccessLevel;
 import game.cards.PersonalCollection;
 
 public class Player {
     private final String userId;
-    private AccessLevel accessLevel;
+    private PlayerAccessLevel playerAccessLevel;
     private final PersonalCollection collection;
     private final MaterialInventory materialInventory;
 
 
-    public Player(String userId, AccessLevel accessLevel) {
-        this(userId, accessLevel, new PersonalCollection(), new MaterialInventory());
+    public Player(String userId, PlayerAccessLevel playerAccessLevel) {
+        this(userId, playerAccessLevel, new PersonalCollection(), new MaterialInventory());
     }
 
-    public Player(String userId, AccessLevel accessLevel, PersonalCollection collection, MaterialInventory materialInventory) {
+    public Player(String userId, PlayerAccessLevel playerAccessLevel, PersonalCollection collection, MaterialInventory materialInventory) {
         this.userId = userId;
-        this.accessLevel = accessLevel;
+        this.playerAccessLevel = playerAccessLevel;
         this.collection = collection;
         this.materialInventory = materialInventory;
     }
@@ -29,12 +29,12 @@ public class Player {
         return false;
     }
 
-    public AccessLevel getAccessLevel() {
-        return accessLevel;
+    public PlayerAccessLevel getAccessLevel() {
+        return playerAccessLevel;
     }
 
-    public void setAccessLevel(AccessLevel accessLevel) {
-        this.accessLevel = accessLevel;
+    public void setAccessLevel(PlayerAccessLevel playerAccessLevel) {
+        this.playerAccessLevel = playerAccessLevel;
     }
 
     public String getId() {

@@ -1,7 +1,7 @@
 package bot;
 
 import bot.commands.CommandParameters;
-import bot.commands.handlers.BotCommandHandler;
+import bot.commands.handlers.AbstractBotCommand;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CharacterCardGlobal;
@@ -29,7 +29,7 @@ public class MessageSenderMock {
 
     public MessageCommandsHandler handler;
     private final MessageCommandsHandler spyHandler;
-    private final HashMap<Class<? extends BotCommandHandler>, BotCommandHandler> spyCommands;
+    private final HashMap<Class<? extends AbstractBotCommand>, AbstractBotCommand> spyCommands;
     private final AnimeCardsGame game;
     public AnimeCardsGame spyGame;
 
@@ -40,10 +40,10 @@ public class MessageSenderMock {
     User mUser;
 
 
-    public MessageSenderMock(AnimeCardsGame game, List<BotCommandHandler> commands) {
-        player = new Player("1", AccessLevel.USER);
-        admin = new Player("2", AccessLevel.ADMIN);
-        creator = new Player("3", AccessLevel.CREATOR);
+    public MessageSenderMock(AnimeCardsGame game, List<AbstractBotCommand> commands) {
+        player = new Player("1", PlayerAccessLevel.USER);
+        admin = new Player("2", PlayerAccessLevel.ADMIN);
+        creator = new Player("3", PlayerAccessLevel.CREATOR);
 
         defaultPlayer = player;
 
@@ -53,7 +53,7 @@ public class MessageSenderMock {
         game.addPlayer(creator);
 
         spyCommands = new HashMap<>();
-        for(BotCommandHandler command : commands){
+        for(AbstractBotCommand command : commands){
             spyCommands.put(command.getClass(), spy(command));
         }
 
@@ -90,30 +90,30 @@ public class MessageSenderMock {
         spyHandler.onMessageReceived(mMessageEvent);
     }
 
-    public void assertCommandNotHandled(Class<? extends BotCommandHandler> commandClass) {
-        BotCommandHandler currentSpyCommand = spyCommands.get(commandClass);
+    public void assertCommandNotHandled(Class<? extends AbstractBotCommand> commandClass) {
+        AbstractBotCommand currentSpyCommand = spyCommands.get(commandClass);
         verify(currentSpyCommand, never()).handle(any());
     }
 
-    public void assertCommandNotHandledOnMessage(String message, Class<? extends BotCommandHandler> commandClass){
+    public void assertCommandNotHandledOnMessage(String message, Class<? extends AbstractBotCommand> commandClass){
         sendMessage(message);
         assertCommandNotHandled(commandClass);
     }
 
     public void assertNoCommandHandled() {
-        verify(spyHandler, never()).handleCommandMessageForPlayer(any(), any(), any(), any(), any());
+        verify(spyHandler, never()).handleCommandMessage(any(), any(), any(), any(), any());
     }
 
     public void assertAnyCommandHandled() {
-        verify(spyHandler).handleCommandMessageForPlayer(any(), any(), any(), any(), any());
+        verify(spyHandler).handleCommandMessage(any(), any(), any(), any(), any());
     }
 
-    public BotCommandHandler getCommandSpy(Class<? extends BotCommandHandler> handlerClass) {
+    public AbstractBotCommand getCommandSpy(Class<? extends AbstractBotCommand> handlerClass) {
         return spyCommands.get(handlerClass);
     }
 
-    public void assertCommandHandled(Class<? extends BotCommandHandler> commandClass) {
-        BotCommandHandler currentSpyCommand = spyCommands.get(commandClass);
+    public void assertCommandHandled(Class<? extends AbstractBotCommand> commandClass) {
+        AbstractBotCommand currentSpyCommand = spyCommands.get(commandClass);
         verify(currentSpyCommand).handle(any());
     }
 
@@ -126,19 +126,19 @@ public class MessageSenderMock {
         assertNoCommandHandled();
     }
 
-    public void assertCommandHandledOnMessage(String messageString, Class<? extends BotCommandHandler> handlerClass) {
+    public void assertCommandHandledOnMessage(String messageString, Class<? extends AbstractBotCommand> handlerClass) {
         assertCommandHandledOnMessage(messageString, defaultPlayer.getId(), handlerClass);
     }
 
     public void assertCommandHandledOnMessage(String messageString,
                                               String userId,
-                                              Class<? extends BotCommandHandler> commandClass) {
+                                              Class<? extends AbstractBotCommand> commandClass) {
         sendMessage(messageString, userId);
         assertCommandHandled(commandClass);
     }
 
-    public CommandParameters captureLastCommandParameters(Class<? extends BotCommandHandler> handlerClass) {
-        BotCommandHandler handler = spyCommands.get(handlerClass);
+    public CommandParameters getLastCommandParameters(Class<? extends AbstractBotCommand> handlerClass) {
+        AbstractBotCommand handler = spyCommands.get(handlerClass);
         ArgumentCaptor<CommandParameters> argumentCaptor = ArgumentCaptor.forClass(CommandParameters.class);
         verify(handler).handle(argumentCaptor.capture());
         return argumentCaptor.getValue();
