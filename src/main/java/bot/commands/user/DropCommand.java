@@ -1,7 +1,7 @@
-package bot.commands.handlers.user;
+package bot.commands.user;
 
 
-import bot.commands.handlers.AbstractCommand;
+import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CharacterCardGlobal;
@@ -10,15 +10,15 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.List;
 
-public class DropCommand extends AbstractCommand {
+public class DropCommand extends AbstractCommand<AbstractCommand.NoArgumentsConfig> {
 
     public DropCommand(AnimeCardsGame game) {
-        super(game);
+        super(game, NoArgumentsConfig.class);
         name = "drop";
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void handle(CommandEvent event) {
         GlobalCollection collection = game.getGlobalCollection();
         List<CharacterCardGlobal> cards = collection.getRandomCards(3);
         displayCards(cards, event.getChannel());

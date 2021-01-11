@@ -1,12 +1,12 @@
 package bot;
 
-import bot.commands.handlers.AbstractCommand;
-import bot.commands.handlers.creator.CreateGlobalCardCommand;
-import bot.commands.handlers.creator.JoinAsTesterCommand;
-import bot.commands.handlers.user.DropCommand;
-import bot.commands.handlers.creator.JoinAsCreatorCommand;
-import bot.commands.handlers.user.InspectCardCommand;
-import bot.commands.handlers.user.ShowCollectionCommand;
+import bot.commands.AbstractCommand;
+import bot.commands.creator.CreateGlobalCardCommand;
+import bot.commands.creator.JoinAsTesterCommand;
+import bot.commands.user.DropCommand;
+import bot.commands.creator.JoinAsCreatorCommand;
+import bot.commands.user.InspectCardCommand;
+import bot.commands.user.ShowCollectionCommand;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import game.*;
@@ -29,6 +29,10 @@ public class BotAnimeCards {
 
     public BotAnimeCards() {
         game = new AnimeCardsGame();
+    }
+
+    public AnimeCardsGame getGame() {
+        return game;
     }
 
     public boolean authenticate(String token) {
@@ -60,14 +64,10 @@ public class BotAnimeCards {
         return builder.build();
     }
 
-    private void addCommands(CommandClientBuilder builder, List<Class<? extends AbstractCommand>> commands) {
+    private void addCommands(CommandClientBuilder builder, List<Class<? extends AbstractCommand<?>>> commands) {
         try {
-            for (Class<? extends AbstractCommand> command : commands){
-                AbstractCommand commandHandler =
-                        (AbstractCommand) command
-                                .getDeclaringClass()
-                                .getConstructor(AnimeCardsGame.class)
-                                .newInstance(game);
+            for (Class<? extends AbstractCommand<?>> command : commands){
+                AbstractCommand<?> commandHandler = command.getConstructor(AnimeCardsGame.class).newInstance(game);
                 builder.addCommands(commandHandler);
             }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -116,4 +116,6 @@ public class BotAnimeCards {
             exit(1);
         }
     }
+
+
 }

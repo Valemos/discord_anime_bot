@@ -1,6 +1,6 @@
 package game;
 
-import bot.PlayerAccessLevel;
+import bot.CommandAccessLevel;
 import game.cards.CardStatsGlobal;
 import game.cards.CharacterCardGlobal;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +18,8 @@ class AnimeCardsGameTest {
     @BeforeEach
     void setUp() {
         game = new AnimeCardsGame();
-        player1 = new Player("1", PlayerAccessLevel.USER);
-        player2 = new Player("2", PlayerAccessLevel.USER);
+        player1 = new Player("1", CommandAccessLevel.USER);
+        player2 = new Player("2", CommandAccessLevel.USER);
 
         CardStatsGlobal stats = new CardStatsGlobal();
         card1 = new CharacterCardGlobal("Riko", "Made in Abyss", "img", stats);

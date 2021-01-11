@@ -1,29 +1,25 @@
-package bot.commands.handlers.user;
+package bot.commands.user;
 
-import bot.commands.CommandInfo;
-import bot.commands.CommandParameters;
-import bot.commands.handlers.AbstractCommand;
-import bot.commands.parsing.*;
-import bot.commands.handlers.AbstractBotCommand;
+import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.Player;
 import game.cards.CharacterCardPersonal;
 import game.cards.PersonalCollection;
 
-public class ShowCollectionCommand extends AbstractCommand {
+public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand.Arguments> {
+
+    public static class Arguments {
+    }
 
     public ShowCollectionCommand(AnimeCardsGame game) {
-        super(game);
+        super(game, Arguments.class);
         name = "collection";
         aliases = new String[]{"c"};
     }
 
     @Override
-    protected void execute(CommandEvent event) {
-        // TODO get player by user id
-
-        PersonalCollection collection = game.getPlayerCollection(player);
+    protected void handle(CommandEvent event) {
+        PersonalCollection collection = game.getPlayerCollection(game.createNewPlayer("10"));
 
         StringBuilder b = new StringBuilder();
         b.append("User collection");

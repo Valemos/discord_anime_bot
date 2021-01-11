@@ -1,26 +1,18 @@
-package bot.commands.handlers.creator;
+package bot.commands.creator;
 
-import bot.PlayerAccessLevel;
-import bot.commands.CommandInfo;
-import bot.commands.CommandParameters;
-import bot.commands.handlers.AbstractBotCommand;
-import bot.commands.handlers.AbstractCommand;
+import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.cards.CharacterCardGlobal;
-import game.cards.PersonalCollection;
 
-import java.util.List;
-
-public class JoinAsTesterCommand extends AbstractCommand {
+public class JoinAsTesterCommand extends AbstractCommand<AbstractCommand.NoArgumentsConfig> {
 
     public JoinAsTesterCommand(AnimeCardsGame game) {
-        super(game);
+        super(game, NoArgumentsConfig.class);
         name = "test";
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void handle(CommandEvent event) {
 //        parameters.player.setAccessLevel(PlayerAccessLevel.CREATOR);
 //
 //        PersonalCollection collection = parameters.game.getPlayerCollection(parameters.player);

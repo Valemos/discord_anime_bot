@@ -1,6 +1,6 @@
 package game;
 
-import bot.PlayerAccessLevel;
+import bot.CommandAccessLevel;
 import game.cards.CharacterCardGlobal;
 import game.cards.CharacterCardPersonal;
 import game.cards.GlobalCollection;
@@ -48,7 +48,7 @@ public class AnimeCardsGame {
     }
 
     public Player createNewPlayer(String new_player_id) {
-        Player player = new Player(new_player_id, PlayerAccessLevel.USER);
+        Player player = new Player(new_player_id, CommandAccessLevel.USER);
         addPlayer(player);
         return player;
     }

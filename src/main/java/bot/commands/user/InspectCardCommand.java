@@ -1,29 +1,23 @@
-package bot.commands.handlers.user;
+package bot.commands.user;
 
-import bot.commands.CommandInfo;
-import bot.commands.CommandParameters;
-import bot.commands.handlers.AbstractCommand;
-import bot.commands.parsing.ArgumentSettingsBuilder;
-import bot.commands.parsing.IntegerArgument;
+import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CharacterCardGlobal;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class InspectCardCommand extends AbstractCommand {
+public class InspectCardCommand extends AbstractCommand<AbstractCommand.NoArgumentsConfig> {
 
     public InspectCardCommand(AnimeCardsGame game) {
-        super(game);
+        super(game, NoArgumentsConfig.class);
         name = "inspect";
         aliases = new String[]{"i"};
         guildOnly = false;
     }
 
     @Override
-    protected void execute(CommandEvent event) {
-        int cardId = Integer.parseInt(parameters.messageArgs.get(0));
-
-        CharacterCardGlobal card = game.getGlobalCardById(cardId);
+    protected void handle(CommandEvent event) {
+        CharacterCardGlobal card = game.getGlobalCardById(1);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();
             b.addField("Card info", card.getOneLineRepresentationString(), true);
