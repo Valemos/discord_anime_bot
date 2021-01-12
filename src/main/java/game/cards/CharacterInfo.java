@@ -2,22 +2,22 @@ package game.cards;
 
 public class CharacterInfo {
 
-    int id;
+    String id;
     String characterName;
-    String seriesName;
+    String seriesTitle;
     String imageUrl;
 
-    public CharacterInfo(String characterName, String seriesName, String imageUrl) {
+    public CharacterInfo(String characterName, String seriesTitle, String imageUrl) {
         this.characterName = characterName;
-        this.seriesName = seriesName;
+        this.seriesTitle = seriesTitle;
         this.imageUrl = imageUrl;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -25,8 +25,8 @@ public class CharacterInfo {
         return characterName;
     }
 
-    public String getSeriesName() {
-        return seriesName;
+    public String getSeriesTitle() {
+        return seriesTitle;
     }
 
     public String getImageUrl() {
@@ -36,12 +36,12 @@ public class CharacterInfo {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CharacterInfo){
-            return this.id == ((CharacterInfo) obj).id;
+            return this.id.equals(((CharacterInfo) obj).id);
         }
         return false;
     }
 
     public String getFullName() {
-        return characterName + " / " + seriesName;
+        return characterName + " / " + seriesTitle;
     }
 }

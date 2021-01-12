@@ -14,7 +14,7 @@ class CardGlobalTest {
         AnimeCardsGame game = new AnimeCardsGame(new BotAnimeCards());
         game.addCard(card);
 
-        assertSame(card, game.getGlobalCardById(card.getCardId()));
+        assertSame(card, game.getGlobalCardById(card.getId()));
     }
 
 

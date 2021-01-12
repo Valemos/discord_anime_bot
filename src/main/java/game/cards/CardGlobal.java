@@ -22,16 +22,16 @@ public class CardGlobal {
         return characterInfo;
     }
 
-    public void setCardId(int newCardId) {
+    public void setId(String newCardId) {
         characterInfo.setId(newCardId);
     }
 
-    public int getCardId() {
+    public String getId() {
         return characterInfo.getId();
     }
 
     public String getOneLineString() {
-        return characterInfo.characterName + " / " + characterInfo.seriesName;
+        return characterInfo.characterName + " / " + characterInfo.seriesTitle;
     }
 
     public CardPersonal getPersonalCardForDelay(String userId, float pickDelay){

@@ -54,15 +54,19 @@ public class AnimeCardsGame {
         cardCollectionGlobal.addCard(card);
     }
 
-    public CardGlobal getGlobalCardById(int id) {
+    public CardGlobal getGlobalCardById(String id) {
         return cardCollectionGlobal.getCardById(id);
     }
 
-    public CardGlobal getGlobalCardByName(String cardName) {
-        return cardCollectionGlobal.getCardByName(cardName);
+    public CardGlobal getGlobalCard(String cardName, String series) {
+        return cardCollectionGlobal.getCardByNameAndSeries(cardName, series);
     }
 
-    public void removeCardById(int id) {
+    public List<CardGlobal> getMatchingCards(String name, String series) {
+        return cardCollectionGlobal.getAllCardsByNameAndSeries(name, series);
+    }
+
+    public void removeCardById(String id) {
         cardCollectionGlobal.removeCardById(id);
     }
 
@@ -80,7 +84,7 @@ public class AnimeCardsGame {
         return player;
     }
 
-    public void pickPersonalCardDelay(Player player, int globalCardId, float pickDelay) {
+    public void pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
         CardGlobal cardGlobal = getGlobalCardById(globalCardId);
         CardPersonal cardPersonal = cardGlobal.getPersonalCardForDelay(player.getId(), pickDelay);
         player.addPersonalCard(cardPersonal);
@@ -114,7 +118,7 @@ public class AnimeCardsGame {
         return itemCollectionGlobal;
     }
 
-    public ItemsShop getItemShop() {
+    public ItemsShop getItemsShop() {
         return itemsShop;
     }
 }

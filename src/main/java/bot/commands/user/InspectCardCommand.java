@@ -10,8 +10,11 @@ import org.kohsuke.args4j.Argument;
 public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Arguments> {
 
     public static class Arguments {
-        @Argument(usage = "card name and series")
+        @Argument(usage = "name of card")
         String cardName;
+
+        @Argument(usage = "series to search for")
+        String series;
     }
 
     public InspectCardCommand(AnimeCardsGame game) {
@@ -23,7 +26,7 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
 
     @Override
     protected void handle(CommandEvent event) {
-        CardGlobal card = game.getGlobalCardByName(commandArgs.cardName);
+        CardGlobal card = game.getGlobalCard(commandArgs.cardName, commandArgs.series);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();
             b.addField("Card info", card.getOneLineRepresentationString(), true);

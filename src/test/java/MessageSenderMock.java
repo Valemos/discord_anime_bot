@@ -1,10 +1,12 @@
 import bot.BotAnimeCards;
+import org.mockito.Mockito;
 
 public class MessageSenderMock {
 
-    private final BotAnimeCards bot;
+    private final BotAnimeCards spyBot;
 
     public MessageSenderMock() {
-        bot = new BotAnimeCards();
+        spyBot = Mockito.spy(new BotAnimeCards());
+
     }
 }

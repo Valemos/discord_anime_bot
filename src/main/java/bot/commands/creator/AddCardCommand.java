@@ -6,7 +6,7 @@ import game.AnimeCardsGame;
 import game.cards.CardGlobal;
 import org.kohsuke.args4j.Argument;
 
-public class CreateCardCommand extends AbstractCommand<CreateCardCommand.Args> {
+public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
 
     public static class Args{
         @Argument(usage = "name of character", required = true)
@@ -19,9 +19,9 @@ public class CreateCardCommand extends AbstractCommand<CreateCardCommand.Args> {
         String imageUrl;
     }
 
-    public CreateCardCommand(AnimeCardsGame game) {
+    public AddCardCommand(AnimeCardsGame game) {
         super(game, Args.class);
-        name = "createcard";
+        name = "addcard";
         aliases = new String[]{"cr"};
         guildOnly = false;
     }

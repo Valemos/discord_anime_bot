@@ -32,4 +32,9 @@ public class MaterialsSet {
         // TODO compare hashmaps
         return true;
     }
+
+    public void incrementAmount(Material material, int increment) {
+        int newAmount = materialAmounts.getOrDefault(material, 0) + increment;
+        materialAmounts.put(material, newAmount);
+    }
 }

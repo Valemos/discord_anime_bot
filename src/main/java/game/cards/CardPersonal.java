@@ -64,7 +64,7 @@ public class CardPersonal {
     }
 
     public String getSeries() {
-        return characterInfo.seriesName;
+        return characterInfo.seriesTitle;
     }
 
     public float getApprovalRating(){

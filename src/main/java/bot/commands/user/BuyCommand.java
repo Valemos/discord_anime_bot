@@ -20,7 +20,7 @@ public class BuyCommand extends AbstractCommand<BuyCommand.Arguments> {
 
     @Override
     protected void handle(CommandEvent event) {
-        ItemsShop shop = game.getItemShop();
+        ItemsShop shop = game.getItemsShop();
         if (shop.tryBuyItem(player, commandArgs.itemId)){
             sendMessage(event, String.format("you bought \"%s\"", shop.getLastItemBought().getName()));
         }else{

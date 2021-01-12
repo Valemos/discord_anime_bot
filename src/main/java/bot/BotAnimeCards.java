@@ -2,7 +2,8 @@ package bot;
 
 import bot.commands.AbstractCommand;
 import bot.commands.creator.AddItemCommand;
-import bot.commands.creator.CreateCardCommand;
+import bot.commands.creator.AddCardCommand;
+import bot.commands.creator.DeleteCardCommand;
 import bot.commands.creator.DeleteItemCommand;
 import bot.commands.user.*;
 import com.jagrosh.jdautilities.command.CommandClient;
@@ -62,14 +63,19 @@ public class BotAnimeCards {
 
         addCommands(builder, Set.of(
                 DropCommand.class,
-                CreateCardCommand.class,
-                ShowCollectionCommand.class,
-                InspectCardCommand.class,
+                DailyCommand.class,
+
+                AddCardCommand.class,
+                DeleteCardCommand.class,
                 AddItemCommand.class,
                 DeleteItemCommand.class,
+
+                ShowCollectionCommand.class,
+                InspectCardCommand.class,
+
                 ShopCommand.class,
-                BuyCommand.class,
-                ArmorShopCommand.class
+                ArmorShopCommand.class,
+                BuyCommand.class
         ));
 
         return builder.build();
@@ -129,8 +135,8 @@ public class BotAnimeCards {
         items.addItem(new ItemGlobal("item3very long name with spaces", 3, 4));
 
         for (CardGlobal card : game.getCollection().getAllCards()){
-            game.pickPersonalCardDelay(tester, card.getCardId(), 1);
-            game.pickPersonalCardDelay(tester2, card.getCardId(), 1);
+            game.pickPersonalCardDelay(tester, card.getId(), 1);
+            game.pickPersonalCardDelay(tester2, card.getId(), 1);
         }
     }
 

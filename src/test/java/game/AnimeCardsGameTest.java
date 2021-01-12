@@ -41,15 +41,15 @@ class AnimeCardsGameTest {
     @Test
     void testCardAdded() {
         game.addCard(card1);
-        assertSame(card1, game.getGlobalCardById(card1.getCardId()));
+        assertSame(card1, game.getGlobalCardById(card1.getId()));
     }
 
     @Test
     void testCardRemoved() {
         game.addCard(card1);
-        game.removeCardById(card1.getCardId());
+        game.removeCardById(card1.getId());
 
-        assertNull(game.getGlobalCardById(card1.getCardId()));
+        assertNull(game.getGlobalCardById(card1.getId()));
     }
 
     @Test
@@ -65,6 +65,6 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertNotEquals(card1.getCardId(), card2.getCardId());
+        assertNotEquals(card1.getId(), card2.getId());
     }
 }
