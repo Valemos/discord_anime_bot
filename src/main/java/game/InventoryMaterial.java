@@ -3,10 +3,10 @@ package game;
 import java.util.EnumMap;
 
 
-public class MaterialInventory {
+public class InventoryMaterial {
     EnumMap<Material, Integer> materialCounts;
 
-    public MaterialInventory() {
+    public InventoryMaterial() {
         materialCounts = new EnumMap<>(Material.class);
         clear();
     }

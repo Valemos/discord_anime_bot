@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public abstract class AbstractCommand<T> extends Command {
 
     private final Class<T> argumentsConfig;
-    protected T argumentsObject;
+    protected T commandArgs;
     protected AnimeCardsGame game;
     protected Player player;
     private final CommandAccessLevel commandAccessLevel;
@@ -39,8 +39,8 @@ public abstract class AbstractCommand<T> extends Command {
 
     @NotNull
     private CmdLineParser getNewArgumentsParser(Class<T> argumentsConfig) {
-        argumentsObject = createArgumentsInstance(argumentsConfig);
-        return new CmdLineParser(argumentsObject);
+        commandArgs = createArgumentsInstance(argumentsConfig);
+        return new CmdLineParser(commandArgs);
     }
 
     private T createArgumentsInstance(Class<T> config) {
@@ -97,4 +97,8 @@ public abstract class AbstractCommand<T> extends Command {
     }
 
     protected abstract void handle(CommandEvent event);
+
+    protected static void sendMessage(CommandEvent event, String message) {
+        event.getChannel().sendMessage(message).queue();
+    }
 }

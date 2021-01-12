@@ -4,7 +4,7 @@ import game.HealthState;
 
 import java.util.Objects;
 
-public class CharacterCardPersonal {
+public class CardPersonal {
     String userId;
     int cardId;
 
@@ -14,11 +14,11 @@ public class CharacterCardPersonal {
 
     HealthState healthState;
 
-    public CharacterCardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats) {
+    public CardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats) {
         this(userId, characterInfo, stats, HealthState.HEALTHY, new CardEquipment());
     }
 
-    public CharacterCardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats, HealthState healthState, CardEquipment cardEquipment) {
+    public CardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats, HealthState healthState, CardEquipment cardEquipment) {
         cardId = -1;
         this.userId = userId;
         this.characterInfo = characterInfo;
@@ -41,8 +41,8 @@ public class CharacterCardPersonal {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof CharacterCardPersonal){
-            CharacterCardPersonal other = (CharacterCardPersonal) obj;
+        if (obj instanceof CardPersonal){
+            CardPersonal other = (CardPersonal) obj;
             return  Objects.equals(userId, other.userId) &&
                     Objects.equals(characterInfo, other.characterInfo) &&
                     Objects.equals(stats, other.stats);
@@ -57,5 +57,17 @@ public class CharacterCardPersonal {
 
     public String getOneLineRepresentationString() {
         return characterInfo.getFullName() + ": " + stats.getOneLineString();
+    }
+
+    public String getName() {
+        return characterInfo.characterName;
+    }
+
+    public String getSeries() {
+        return characterInfo.seriesName;
+    }
+
+    public float getApprovalRating(){
+        return stats.approvalRating;
     }
 }

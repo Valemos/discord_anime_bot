@@ -1,15 +1,15 @@
 package game.cards;
 
-public class CharacterCardGlobal {
+public class CardGlobal {
 
     CharacterInfo characterInfo;
     CardStatsGlobal stats;
 
-    public CharacterCardGlobal(String characterName, String seriesName, String imageUrl) {
+    public CardGlobal(String characterName, String seriesName, String imageUrl) {
         this(characterName, seriesName, imageUrl, new CardStatsGlobal());
     }
 
-    public CharacterCardGlobal(String characterName, String seriesName, String imageUrl, CardStatsGlobal stats) {
+    public CardGlobal(String characterName, String seriesName, String imageUrl, CardStatsGlobal stats) {
         characterInfo = new CharacterInfo(characterName, seriesName, imageUrl);
         this.stats = stats;
     }
@@ -34,8 +34,8 @@ public class CharacterCardGlobal {
         return characterInfo.characterName + " / " + characterInfo.seriesName;
     }
 
-    public CharacterCardPersonal getPersonalCardForPickDelay(String userId, float pickDelay){
-        return new CharacterCardPersonal(userId, characterInfo, stats.getStatsForPickDelay(pickDelay));
+    public CardPersonal getPersonalCardForDelay(String userId, float pickDelay){
+        return new CardPersonal(userId, characterInfo, stats.getStatsForPickDelay(pickDelay));
     }
 
     public String getOneLineRepresentationString() {

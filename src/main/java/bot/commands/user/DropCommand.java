@@ -4,8 +4,8 @@ package bot.commands.user;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.cards.CharacterCardGlobal;
-import game.cards.GlobalCollection;
+import game.cards.CardGlobal;
+import game.cards.CollectionGlobal;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.List;
@@ -19,12 +19,12 @@ public class DropCommand extends AbstractCommand<AbstractCommand.NoArgumentsConf
 
     @Override
     protected void handle(CommandEvent event) {
-        GlobalCollection collection = game.getGlobalCollection();
-        List<CharacterCardGlobal> cards = collection.getRandomCards(3);
+        CollectionGlobal collection = game.getGlobalCollection();
+        List<CardGlobal> cards = collection.getRandomCards(3);
         displayCards(cards, event.getChannel());
     }
 
-    private void displayCards(List<CharacterCardGlobal> cards, MessageChannel channel) {
+    private void displayCards(List<CardGlobal> cards, MessageChannel channel) {
         StringBuilder builder = new StringBuilder();
         if (!cards.isEmpty()) {
             createCardsMessage(cards, builder);
@@ -34,10 +34,10 @@ public class DropCommand extends AbstractCommand<AbstractCommand.NoArgumentsConf
         }
     }
 
-    private void createCardsMessage(List<CharacterCardGlobal> cards, StringBuilder messageBuilder) {
+    private void createCardsMessage(List<CardGlobal> cards, StringBuilder messageBuilder) {
         messageBuilder.append("Dropped cards:");
 
-        for (CharacterCardGlobal card : cards) {
+        for (CardGlobal card : cards) {
             messageBuilder.append('\n').append(card.getOneLineString());
         }
     }

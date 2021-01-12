@@ -1,16 +1,18 @@
 package game;
 
 import bot.CommandAccessLevel;
-import game.cards.CharacterCardGlobal;
-import game.cards.CharacterCardPersonal;
-import game.cards.GlobalCollection;
-import game.cards.PersonalCollection;
+import game.cards.CardGlobal;
+import game.cards.CardPersonal;
+import game.cards.CollectionGlobal;
+import game.cards.CollectionPersonal;
+import game.items.ItemGlobal;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnimeCardsGame {
-    GlobalCollection globalCollection = new GlobalCollection();
+    CollectionGlobal collectionGlobal = new CollectionGlobal();
+
     private final List<Player> players = new ArrayList<>();
 
     public AnimeCardsGame() {
@@ -31,35 +33,58 @@ public class AnimeCardsGame {
         players.removeIf((p) -> p.getId().equals(player.getId()));
     }
 
-    public void addCard(CharacterCardGlobal card) {
-        globalCollection.addCard(card);
+    public void addCard(CardGlobal card) {
+        collectionGlobal.addCard(card);
     }
 
-    public CharacterCardGlobal getGlobalCardById(int id) {
-        return globalCollection.getCardById(id);
+    public CardGlobal getGlobalCardById(int id) {
+        return collectionGlobal.getCardById(id);
+    }
+
+    public CardGlobal getGlobalCardByName(String cardName) {
+        return collectionGlobal.getCardByName(cardName);
     }
 
     public void removeCardById(int id) {
-        globalCollection.removeCardById(id);
+        collectionGlobal.removeCardById(id);
     }
 
-    public GlobalCollection getGlobalCollection() {
-        return globalCollection;
+    public CollectionGlobal getGlobalCollection() {
+        return collectionGlobal;
     }
 
-    public Player createNewPlayer(String new_player_id) {
-        Player player = new Player(new_player_id, CommandAccessLevel.USER);
+    public Player createNewPlayer(String playerId) {
+        return createNewPlayer(playerId, CommandAccessLevel.USER);
+    }
+
+    public Player createNewPlayer(String playerId, CommandAccessLevel accessLevel) {
+        Player player = new Player(playerId, accessLevel);
         addPlayer(player);
         return player;
     }
 
-    public CharacterCardPersonal pickPersonalCardWithDelay(Player player, int globalCardId, float pickDelay) {
-        CharacterCardGlobal cardGlobal = getGlobalCardById(globalCardId);
-        return cardGlobal.getPersonalCardForPickDelay(player.getId(), pickDelay);
+    public CardPersonal pickPersonalCardDelay(Player player, int globalCardId, float pickDelay) {
+        CardGlobal cardGlobal = getGlobalCardById(globalCardId);
+        CardPersonal cardPersonal = cardGlobal.getPersonalCardForDelay(player.getId(), pickDelay);
+        player.addPersonalCard(cardPersonal);
+        return cardPersonal;
     }
 
-    public PersonalCollection getPlayerCollection(Player player) {
-        return player.getCollection();
+    public CollectionPersonal getPlayerCollection(Player player) {
+        if (player != null){
+            return player.getCollection();
+        }
+        return null;
+    }
+
+    public ItemGlobal addItem(ItemGlobal item) {
+        // TODO add item system
+        return item;
+    }
+
+    public boolean removeItemById(String itemId) {
+        // TODO add delete from item system
+        return false;
     }
 }
 

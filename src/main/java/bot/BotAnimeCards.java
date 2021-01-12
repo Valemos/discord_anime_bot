@@ -1,16 +1,16 @@
 package bot;
 
 import bot.commands.AbstractCommand;
-import bot.commands.creator.CreateGlobalCardCommand;
-import bot.commands.creator.JoinAsTesterCommand;
+import bot.commands.creator.AddItemCommand;
+import bot.commands.creator.CreateCardCommand;
+import bot.commands.creator.DeleteItemCommand;
 import bot.commands.user.DropCommand;
-import bot.commands.creator.JoinAsCreatorCommand;
 import bot.commands.user.InspectCardCommand;
 import bot.commands.user.ShowCollectionCommand;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import game.*;
-import game.cards.CharacterCardGlobal;
+import game.cards.CardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -54,12 +54,13 @@ public class BotAnimeCards {
         builder.setAlternativePrefix("c#");
 
         addCommands(builder, List.of(
-                        DropCommand.class,
-                        CreateGlobalCardCommand.class,
-                        JoinAsCreatorCommand.class,
-                        ShowCollectionCommand.class,
-                        InspectCardCommand.class,
-                        JoinAsTesterCommand.class));
+                DropCommand.class,
+                CreateCardCommand.class,
+                ShowCollectionCommand.class,
+                InspectCardCommand.class,
+                AddItemCommand.class,
+                DeleteItemCommand.class
+        ));
 
         return builder.build();
     }
@@ -88,18 +89,26 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        game.addCard(new CharacterCardGlobal(
+        Player tester = game.createNewPlayer("409754559775375371", CommandAccessLevel.CREATOR);
+        Player tester2 = game.createNewPlayer("797845777618698240", CommandAccessLevel.CREATOR);
+
+        game.addCard(new CardGlobal(
                 "Riko",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7"));
-        game.addCard(new CharacterCardGlobal(
+        game.addCard(new CardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
                 "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk"));
-        game.addCard(new CharacterCardGlobal(
+        game.addCard(new CardGlobal(
                 "Kaiman",
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
+
+        for (CardGlobal card : game.getGlobalCollection().getAllCards()){
+            game.pickPersonalCardDelay(tester, card.getCardId(), 1);
+            game.pickPersonalCardDelay(tester2, card.getCardId(), 1);
+        }
     }
 
     public void waitForShutdown() {

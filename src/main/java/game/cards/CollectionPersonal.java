@@ -3,28 +3,28 @@ package game.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonalCollection {
-    List<CharacterCardPersonal> cards;
+public class CollectionPersonal {
+    List<CardPersonal> cards;
 
-    public PersonalCollection() {
+    public CollectionPersonal() {
         this(new ArrayList<>());
     }
 
-    public PersonalCollection(List<CharacterCardPersonal> cards) {
+    public CollectionPersonal(List<CardPersonal> cards) {
         this.cards = cards;
     }
 
-    public List<CharacterCardPersonal> getCards() {
+    public List<CardPersonal> getCards() {
         return cards;
     }
 
-    public CharacterCardPersonal getCardById(int cardId) {
+    public CardPersonal getCardById(int cardId) {
         return cards.stream()
                 .filter((card) -> card.getCardId() == cardId)
                 .findFirst().orElse(null);
     }
 
-    public void addCard(CharacterCardPersonal card) {
+    public void addCard(CardPersonal card) {
         cards.add(card);
     }
 }

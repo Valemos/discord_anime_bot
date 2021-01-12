@@ -1,24 +1,25 @@
 package game;
 
 import bot.CommandAccessLevel;
-import game.cards.PersonalCollection;
+import game.cards.CardPersonal;
+import game.cards.CollectionPersonal;
 
 public class Player {
     private final String userId;
     private CommandAccessLevel commandAccessLevel;
-    private final PersonalCollection collection;
-    private final MaterialInventory materialInventory;
+    private final CollectionPersonal collection;
+    private final InventoryMaterial inventoryMaterial;
 
 
     public Player(String userId, CommandAccessLevel commandAccessLevel) {
-        this(userId, commandAccessLevel, new PersonalCollection(), new MaterialInventory());
+        this(userId, commandAccessLevel, new CollectionPersonal(), new InventoryMaterial());
     }
 
-    public Player(String userId, CommandAccessLevel commandAccessLevel, PersonalCollection collection, MaterialInventory materialInventory) {
+    public Player(String userId, CommandAccessLevel commandAccessLevel, CollectionPersonal collection, InventoryMaterial inventoryMaterial) {
         this.userId = userId;
         this.commandAccessLevel = commandAccessLevel;
         this.collection = collection;
-        this.materialInventory = materialInventory;
+        this.inventoryMaterial = inventoryMaterial;
     }
 
     @Override
@@ -41,11 +42,15 @@ public class Player {
         return userId;
     }
 
-    public PersonalCollection getCollection() {
+    public CollectionPersonal getCollection() {
         return collection;
     }
 
-    public MaterialInventory getMaterialInventory() {
-        return materialInventory;
+    public InventoryMaterial getMaterialInventory() {
+        return inventoryMaterial;
+    }
+
+    public void addPersonalCard(CardPersonal card) {
+        collection.addCard(card);
     }
 }

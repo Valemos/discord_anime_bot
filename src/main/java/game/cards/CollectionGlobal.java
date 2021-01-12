@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GlobalCollection {
-    List<CharacterCardGlobal> cards = new ArrayList<>();
+public class CollectionGlobal {
+    List<CardGlobal> cards = new ArrayList<>();
     private int currentCardId = 0;
 
-    public GlobalCollection() {
+    public CollectionGlobal() {
     }
 
-    public void addCard(CharacterCardGlobal card) {
+    public void addCard(CardGlobal card) {
         if (isCardExists(card)) {
             removeCardById(card.getCardId());
         }
@@ -20,7 +20,7 @@ public class GlobalCollection {
         cards.add(card);
     }
 
-    private boolean isCardExists(CharacterCardGlobal card) {
+    private boolean isCardExists(CardGlobal card) {
         return cards.contains(card);
     }
 
@@ -30,18 +30,28 @@ public class GlobalCollection {
         return currentCardId;
     }
 
-    public CharacterCardGlobal getCardById(int id) {
+    public CardGlobal getCardById(int id) {
         return cards.stream()
                 .filter((card)-> card.getCardId() == id)
                 .findFirst().orElse(null);
+    }
+
+    public CardGlobal getCardByName(String cardName) {
+        return cards.stream()
+                .filter((card)-> isCardHasName(card, cardName))
+                .findFirst().orElse(null);
+    }
+
+    private boolean isCardHasName(CardGlobal card, String cardName) {
+        return card.getCharacterInfo().getFullName().equalsIgnoreCase(cardName);
     }
 
     public void removeCardById(int id) {
         cards.removeIf((card) -> card.getCardId() == id);
     }
 
-    public List<CharacterCardGlobal> getRandomCards(int amount) {
-        List<CharacterCardGlobal> resultCards = new ArrayList<>(amount);
+    public List<CardGlobal> getRandomCards(int amount) {
+        List<CardGlobal> resultCards = new ArrayList<>(amount);
 
         if (cards.isEmpty()){
             return new ArrayList<>();
@@ -58,5 +68,9 @@ public class GlobalCollection {
 
     public int size() {
         return cards.size();
+    }
+
+    public List<CardGlobal> getAllCards() {
+        return cards;
     }
 }
