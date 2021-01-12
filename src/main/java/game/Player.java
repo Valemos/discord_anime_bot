@@ -1,25 +1,33 @@
 package game;
 
-import bot.CommandAccessLevel;
+import bot.CommandPermissions;
 import game.cards.CardPersonal;
-import game.cards.CollectionPersonal;
+import game.cards.CardCollectionPersonal;
+import game.items.InventoryItems;
+import game.items.MaterialsSet;
 
 public class Player {
     private final String userId;
-    private CommandAccessLevel commandAccessLevel;
-    private final CollectionPersonal collection;
-    private final InventoryMaterial inventoryMaterial;
+    private CommandPermissions commandPermissions;
+    private final CardCollectionPersonal collection;
+    private final InventoryItems inventoryItems;
+    private final MaterialsSet materialsSet;
 
 
-    public Player(String userId, CommandAccessLevel commandAccessLevel) {
-        this(userId, commandAccessLevel, new CollectionPersonal(), new InventoryMaterial());
+    public Player(String userId, CommandPermissions commandPermissions) {
+        this(userId, commandPermissions, new CardCollectionPersonal(), new MaterialsSet(), new InventoryItems(userId));
     }
 
-    public Player(String userId, CommandAccessLevel commandAccessLevel, CollectionPersonal collection, InventoryMaterial inventoryMaterial) {
+    public Player(String userId,
+                  CommandPermissions commandPermissions,
+                  CardCollectionPersonal collection,
+                  MaterialsSet materialsSet,
+                  InventoryItems inventoryItems) {
         this.userId = userId;
-        this.commandAccessLevel = commandAccessLevel;
+        this.commandPermissions = commandPermissions;
         this.collection = collection;
-        this.inventoryMaterial = inventoryMaterial;
+        this.materialsSet = materialsSet;
+        this.inventoryItems = inventoryItems;
     }
 
     @Override
@@ -30,27 +38,31 @@ public class Player {
         return false;
     }
 
-    public CommandAccessLevel getAccessLevel() {
-        return commandAccessLevel;
+    public CommandPermissions getAccessLevel() {
+        return commandPermissions;
     }
 
-    public void setAccessLevel(CommandAccessLevel commandAccessLevel) {
-        this.commandAccessLevel = commandAccessLevel;
+    public void setAccessLevel(CommandPermissions commandPermissions) {
+        this.commandPermissions = commandPermissions;
     }
 
     public String getId() {
         return userId;
     }
 
-    public CollectionPersonal getCollection() {
+    public CardCollectionPersonal getCollection() {
         return collection;
     }
 
-    public InventoryMaterial getMaterialInventory() {
-        return inventoryMaterial;
+    public MaterialsSet getMaterials() {
+        return materialsSet;
     }
 
     public void addPersonalCard(CardPersonal card) {
         collection.addCard(card);
+    }
+
+    public InventoryItems getInventoryItems() {
+        return inventoryItems;
     }
 }

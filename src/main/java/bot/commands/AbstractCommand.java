@@ -1,6 +1,6 @@
 package bot.commands;
 
-import bot.CommandAccessLevel;
+import bot.CommandPermissions;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -16,25 +16,19 @@ import java.util.logging.Logger;
 
 
 public abstract class AbstractCommand<T> extends Command {
-
     private final Class<T> argumentsConfig;
     protected T commandArgs;
     protected AnimeCardsGame game;
     protected Player player;
-    private final CommandAccessLevel commandAccessLevel;
-
-
-    public static class NoArgumentsConfig {}
 
     public AbstractCommand(AnimeCardsGame game, Class<T> argumentsConfig) {
-        this(game, argumentsConfig, CommandAccessLevel.USER);
+        this(game, argumentsConfig, CommandPermissions.USER);
     }
 
-    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsConfig, CommandAccessLevel accessLevel) {
+    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsConfig, CommandPermissions commandPermissions) {
         this.game = game;
         this.argumentsConfig = argumentsConfig;
-        commandAccessLevel = accessLevel;
-        getNewArgumentsParser(argumentsConfig);
+        userPermissions = commandPermissions.getRequiredPermissions();
     }
 
     @NotNull
@@ -58,10 +52,8 @@ public abstract class AbstractCommand<T> extends Command {
         player = game.getPlayerById(userId);
         if (player == null) player = game.createNewPlayer(userId);
 
-        if (playerHasAccess(player, this)){
-            if(tryParseArguments(event)){
-                handle(event);
-            }
+        if(tryParseArguments(event)){
+            handle(event);
         }
     }
 
@@ -73,25 +65,6 @@ public abstract class AbstractCommand<T> extends Command {
             return true;
         }catch(CmdLineException e){
             event.getChannel().sendMessage(e.getMessage()).queue();
-        }
-        return false;
-    }
-
-    private boolean playerHasAccess(@NotNull Player player, AbstractCommand<T> command) {
-        CommandAccessLevel playerAccessLevel = player.getAccessLevel();
-        if (CommandAccessLevel.USER == commandAccessLevel){
-
-            return true;
-
-        } else if (CommandAccessLevel.ADMIN == commandAccessLevel){
-
-            return CommandAccessLevel.ADMIN == playerAccessLevel ||
-                    CommandAccessLevel.CREATOR == playerAccessLevel;
-
-        } else if (CommandAccessLevel.CREATOR == commandAccessLevel){
-
-            return CommandAccessLevel.CREATOR == playerAccessLevel;
-
         }
         return false;
     }

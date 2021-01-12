@@ -1,6 +1,7 @@
 package game;
 
-import bot.CommandAccessLevel;
+import bot.BotAnimeCards;
+import bot.CommandPermissions;
 import game.cards.CardStatsGlobal;
 import game.cards.CardGlobal;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,9 @@ class AnimeCardsGameTest {
 
     @BeforeEach
     void setUp() {
-        game = new AnimeCardsGame();
-        player1 = new Player("1", CommandAccessLevel.USER);
-        player2 = new Player("2", CommandAccessLevel.USER);
+        game = new AnimeCardsGame(new BotAnimeCards());
+        player1 = new Player("1", CommandPermissions.USER);
+        player2 = new Player("2", CommandPermissions.USER);
 
         CardStatsGlobal stats = new CardStatsGlobal();
         card1 = new CardGlobal("Riko", "Made in Abyss", "img", stats);
@@ -56,7 +57,7 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertEquals(2, game.getGlobalCollection().size());
+        assertEquals(2, game.getCollection().size());
     }
 
     @Test

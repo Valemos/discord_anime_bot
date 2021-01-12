@@ -3,14 +3,14 @@ package game.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectionPersonal {
+public class CardCollectionPersonal {
     List<CardPersonal> cards;
 
-    public CollectionPersonal() {
+    public CardCollectionPersonal() {
         this(new ArrayList<>());
     }
 
-    public CollectionPersonal(List<CardPersonal> cards) {
+    public CardCollectionPersonal(List<CardPersonal> cards) {
         this.cards = cards;
     }
 

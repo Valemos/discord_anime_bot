@@ -1,6 +1,6 @@
 package bot.commands.creator;
 
-import bot.CommandAccessLevel;
+import bot.CommandPermissions;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -8,13 +8,14 @@ import org.kohsuke.args4j.Argument;
 
 public class DeleteItemCommand extends AbstractCommand<DeleteItemCommand.Arguments> {
 
-    static class Arguments{
+    public static class Arguments{
         @Argument(usage = "item id specified in all items list", required = true)
         String itemId;
     }
 
     public DeleteItemCommand(AnimeCardsGame game) {
-        super(game, Arguments.class, CommandAccessLevel.CREATOR);
+        super(game, Arguments.class, CommandPermissions.CREATOR);
+        name = "itemdelete";
     }
 
     @Override

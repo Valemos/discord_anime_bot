@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CollectionGlobal {
-    List<CardGlobal> cards = new ArrayList<>();
+public class CardCollectionGlobal {
+    List<CardGlobal> cards;
     private int currentCardId = 0;
 
-    public CollectionGlobal() {
+    public CardCollectionGlobal() {
+        this(new ArrayList<>());
+    }
+
+    public CardCollectionGlobal(List<CardGlobal> cards) {
+        this.cards = cards;
     }
 
     public void addCard(CardGlobal card) {

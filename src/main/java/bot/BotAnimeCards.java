@@ -6,17 +6,21 @@ import bot.commands.creator.CreateCardCommand;
 import bot.commands.creator.DeleteItemCommand;
 import bot.commands.user.DropCommand;
 import bot.commands.user.InspectCardCommand;
+import bot.commands.user.ShopCommand;
 import bot.commands.user.ShowCollectionCommand;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.CardGlobal;
+import game.items.ItemGlobal;
+import game.items.ItemCollectionGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,13 +30,19 @@ public class BotAnimeCards {
 
     JDA discord_api;
     AnimeCardsGame game;
+    CommandClient commandClient;
+    EventWaiter eventWaiter;
 
     public BotAnimeCards() {
-        game = new AnimeCardsGame();
+        game = new AnimeCardsGame(this);
     }
 
     public AnimeCardsGame getGame() {
         return game;
+    }
+
+    public EventWaiter getEventWaiter() {
+        return eventWaiter;
     }
 
     public boolean authenticate(String token) {
@@ -53,19 +63,20 @@ public class BotAnimeCards {
         builder.setPrefix("#");
         builder.setAlternativePrefix("c#");
 
-        addCommands(builder, List.of(
+        addCommands(builder, Set.of(
                 DropCommand.class,
                 CreateCardCommand.class,
                 ShowCollectionCommand.class,
                 InspectCardCommand.class,
                 AddItemCommand.class,
-                DeleteItemCommand.class
+                DeleteItemCommand.class,
+                ShopCommand.class
         ));
 
         return builder.build();
     }
 
-    private void addCommands(CommandClientBuilder builder, List<Class<? extends AbstractCommand<?>>> commands) {
+    private void addCommands(CommandClientBuilder builder, Set<Class<? extends AbstractCommand<?>>> commands) {
         try {
             for (Class<? extends AbstractCommand<?>> command : commands){
                 AbstractCommand<?> commandHandler = command.getConstructor(AnimeCardsGame.class).newInstance(game);
@@ -77,7 +88,9 @@ public class BotAnimeCards {
     }
 
     private JDA buildDiscordAPI(String token) throws LoginException {
-        return JDABuilder.createDefault(token).addEventListeners(buildCommandClient()).build();
+        commandClient = buildCommandClient();
+        eventWaiter = new EventWaiter();
+        return JDABuilder.createDefault(token).addEventListeners(commandClient, eventWaiter).build();
     }
 
     public void shutdown(){
@@ -89,8 +102,8 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        Player tester = game.createNewPlayer("409754559775375371", CommandAccessLevel.CREATOR);
-        Player tester2 = game.createNewPlayer("797845777618698240", CommandAccessLevel.CREATOR);
+        Player tester = game.createNewPlayer("409754559775375371", CommandPermissions.CREATOR);
+        Player tester2 = game.createNewPlayer("797845777618698240", CommandPermissions.CREATOR);
 
         game.addCard(new CardGlobal(
                 "Riko",
@@ -105,7 +118,16 @@ public class BotAnimeCards {
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
 
-        for (CardGlobal card : game.getGlobalCollection().getAllCards()){
+        ItemCollectionGlobal items = game.getItemsCollection();
+        items.addItem(new ItemGlobal("item1", 1, 0));
+        items.addItem(new ItemGlobal("item2", 2, 0));
+        items.addItem(new ItemGlobal("item4", 3, 5));
+        items.addItem(new ItemGlobal("item5", 3, 6));
+        items.addItem(new ItemGlobal("item6", 0, 1));
+        items.addItem(new ItemGlobal("item7", 15, 0));
+        items.addItem(new ItemGlobal("item3very long name with spaces", 3, 4));
+
+        for (CardGlobal card : game.getCollection().getAllCards()){
             game.pickPersonalCardDelay(tester, card.getCardId(), 1);
             game.pickPersonalCardDelay(tester2, card.getCardId(), 1);
         }

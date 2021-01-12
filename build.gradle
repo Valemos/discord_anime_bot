@@ -20,6 +20,7 @@ dependencies {
     compile group: 'org.apache.ant', name: 'ant', version: '1.8.2'
     implementation 'args4j:args4j:2.33'
     implementation 'com.jagrosh:jda-utilities-command:3.0.5'
+    implementation 'com.jagrosh:jda-utilities-menu:3.0.5'
     implementation 'net.dv8tion:JDA:4.2.0_168'
 }
 

@@ -1,6 +1,6 @@
 package game;
 
-enum Material {
+public enum Material {
     GOLD("Gold"),
 
     WOOD("Wood"),
