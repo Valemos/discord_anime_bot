@@ -9,7 +9,8 @@ import game.cards.CardCollectionGlobal;
 import game.cards.CardCollectionPersonal;
 import game.items.ItemGlobal;
 import game.items.ItemCollectionGlobal;
-import game.shop.ItemShop;
+import game.shop.ArmorShop;
+import game.shop.ItemsShop;
 import game.shop.ShopViewer;
 import net.dv8tion.jda.api.entities.User;
 
@@ -21,7 +22,8 @@ public class AnimeCardsGame {
 
     CardCollectionGlobal cardCollectionGlobal;
     ItemCollectionGlobal itemCollectionGlobal;
-    private final ItemShop itemShopGlobal;
+    private final ItemsShop itemsShop;
+    private final ArmorShop armorShop;
 
     private final BotAnimeCards mainBot;
 
@@ -29,17 +31,18 @@ public class AnimeCardsGame {
         mainBot = bot;
         cardCollectionGlobal = new CardCollectionGlobal();
         itemCollectionGlobal = new ItemCollectionGlobal();
-        itemShopGlobal = new ItemShop(itemCollectionGlobal);
+        itemsShop = new ItemsShop(itemCollectionGlobal);
+        armorShop = new ArmorShop(itemCollectionGlobal);
     }
 
     public Player getPlayerById(String playerId) {
         return players.stream()
-                .filter(player -> player.getId().equals(playerId))
-                .findFirst().orElse(null);
+                .filter(p -> p.getId().equals(playerId))
+                .findFirst()
+                .orElseGet(() -> createNewPlayer(playerId));
     }
 
     public void addPlayer(Player player) {
-        removePlayer(player);
         players.add(player);
     }
 
@@ -91,7 +94,7 @@ public class AnimeCardsGame {
     }
 
     public ItemGlobal addItem(ItemGlobal item) {
-        // TODO add item system
+        itemCollectionGlobal.addItem(item);
         return item;
     }
 
@@ -99,16 +102,20 @@ public class AnimeCardsGame {
         return itemCollectionGlobal.removeById(itemId);
     }
 
-    public Paginator getShopViewer(User user) {
-        return ShopViewer.buildPagesMenu(mainBot.getEventWaiter(), this, user);
+    public Paginator getItemShopViewer(User user) {
+        return ShopViewer.get(mainBot.getEventWaiter(), itemsShop, user);
+    }
+
+    public Paginator getArmorShopViewer(User user) {
+        return ShopViewer.get(mainBot.getEventWaiter(), armorShop, user);
     }
 
     public ItemCollectionGlobal getItemsCollection() {
         return itemCollectionGlobal;
     }
 
-    public ItemShop getItemShop() {
-        return itemShopGlobal;
+    public ItemsShop getItemShop() {
+        return itemsShop;
     }
 }
 

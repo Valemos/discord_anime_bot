@@ -48,7 +48,7 @@ public class AddItemCommand extends AbstractCommand<AddItemCommand.Arguments>{
                 newMaterialsSet));
 
         event.getChannel().sendMessage(
-                String.format("new item \"%s\" created with id %s", newItem.getName(), newItem.getStringId())
+                String.format("new item \"%s\" created with id %s", newItem.getName(), newItem.getId())
         ).queue();
     }
 }

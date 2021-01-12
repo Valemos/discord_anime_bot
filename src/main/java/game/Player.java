@@ -1,6 +1,7 @@
 package game;
 
 import bot.CommandPermissions;
+import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.CardPersonal;
 import game.cards.CardCollectionPersonal;
 import game.items.InventoryItems;
@@ -12,6 +13,7 @@ public class Player {
     private final CardCollectionPersonal collection;
     private final InventoryItems inventoryItems;
     private final MaterialsSet materialsSet;
+    private Paginator cachedShopViewer;
 
 
     public Player(String userId, CommandPermissions commandPermissions) {
@@ -38,7 +40,7 @@ public class Player {
         return false;
     }
 
-    public CommandPermissions getAccessLevel() {
+    public CommandPermissions getCommandPermissions() {
         return commandPermissions;
     }
 
@@ -64,5 +66,9 @@ public class Player {
 
     public InventoryItems getInventoryItems() {
         return inventoryItems;
+    }
+
+    public void setShopViewer(Paginator shopViewer) {
+        cachedShopViewer = shopViewer;
     }
 }

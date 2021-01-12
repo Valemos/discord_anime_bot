@@ -16,19 +16,22 @@ import java.util.logging.Logger;
 
 
 public abstract class AbstractCommand<T> extends Command {
-    private final Class<T> argumentsConfig;
+    private final Class<T> argumentsClass;
     protected T commandArgs;
+    CommandPermissions commandPermissionLevel;
+
     protected AnimeCardsGame game;
     protected Player player;
 
-    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsConfig) {
-        this(game, argumentsConfig, CommandPermissions.USER);
+    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsClass) {
+        this(game, argumentsClass, CommandPermissions.USER);
     }
 
-    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsConfig, CommandPermissions commandPermissions) {
+    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsClass, CommandPermissions commandPermissions) {
         this.game = game;
-        this.argumentsConfig = argumentsConfig;
+        this.argumentsClass = argumentsClass;
         userPermissions = commandPermissions.getRequiredPermissions();
+        commandPermissionLevel = CommandPermissions.CREATOR;
     }
 
     @NotNull
@@ -50,7 +53,12 @@ public abstract class AbstractCommand<T> extends Command {
     protected void execute(CommandEvent event) {
         String userId = event.getAuthor().getId();
         player = game.getPlayerById(userId);
-        if (player == null) player = game.createNewPlayer(userId);
+
+        if (commandPermissionLevel == CommandPermissions.CREATOR){
+            if (player.getCommandPermissions() != CommandPermissions.CREATOR){
+                return;
+            }
+        }
 
         if(tryParseArguments(event)){
             handle(event);
@@ -61,7 +69,7 @@ public abstract class AbstractCommand<T> extends Command {
         String[] args = Commandline.translateCommandline(event.getArgs());
 
         try{
-            getNewArgumentsParser(argumentsConfig).parseArgument(args);
+            getNewArgumentsParser(argumentsClass).parseArgument(args);
             return true;
         }catch(CmdLineException e){
             event.getChannel().sendMessage(e.getMessage()).queue();

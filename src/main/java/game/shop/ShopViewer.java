@@ -10,12 +10,13 @@ import java.util.List;
 
 public class ShopViewer {
 
-    public static Paginator buildPagesMenu(EventWaiter eventWaiter, AnimeCardsGame game, User user){
-        List<ItemGlobal> shopItems = game.getItemsCollection().getItems();
+    public static Paginator get(EventWaiter eventWaiter, AbstractShop shop, User user){
+        List<ItemGlobal> shopItems = shop.getItems();
 
         Paginator.Builder builder = new Paginator.Builder();
         builder.setEventWaiter(eventWaiter);
         builder.setUsers(user);
+        builder.setText(shop.getTitle());
 
         if (shopItems.size() > 0){
             builder.setItems(shopItems.stream()

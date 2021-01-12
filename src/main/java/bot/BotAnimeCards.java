@@ -4,10 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.commands.creator.AddItemCommand;
 import bot.commands.creator.CreateCardCommand;
 import bot.commands.creator.DeleteItemCommand;
-import bot.commands.user.DropCommand;
-import bot.commands.user.InspectCardCommand;
-import bot.commands.user.ShopCommand;
-import bot.commands.user.ShowCollectionCommand;
+import bot.commands.user.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -70,7 +67,9 @@ public class BotAnimeCards {
                 InspectCardCommand.class,
                 AddItemCommand.class,
                 DeleteItemCommand.class,
-                ShopCommand.class
+                ShopCommand.class,
+                BuyCommand.class,
+                ArmorShopCommand.class
         ));
 
         return builder.build();
@@ -125,6 +124,8 @@ public class BotAnimeCards {
         items.addItem(new ItemGlobal("item5", 3, 6));
         items.addItem(new ItemGlobal("item6", 0, 1));
         items.addItem(new ItemGlobal("item7", 15, 0));
+        items.addItem(new ItemGlobal("item100", 15, 10));
+        items.addItem(new ItemGlobal("item1000", 15, 15));
         items.addItem(new ItemGlobal("item3very long name with spaces", 3, 4));
 
         for (CardGlobal card : game.getCollection().getAllCards()){

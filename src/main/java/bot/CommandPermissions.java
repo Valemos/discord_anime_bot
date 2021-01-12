@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.Permission;
 
 public enum CommandPermissions {
     USER(),
-    ADMIN(Permission.ADMINISTRATOR),
-    CREATOR(Permission.values());
+    ADMIN(Permission.MANAGE_SERVER),
+    CREATOR(Permission.ADMINISTRATOR);
 
     private final Permission[] permissions;
 

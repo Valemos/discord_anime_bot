@@ -15,7 +15,7 @@ public class ItemCollectionGlobal {
     }
 
     public void addItem(ItemGlobal item) {
-        if (item.getStringId() == null){
+        if (item.getId() == null){
             item.setId(getNextItemId());
             items.add(item);
         }
@@ -26,7 +26,7 @@ public class ItemCollectionGlobal {
     }
 
     public boolean removeById(String itemId) {
-        return items.removeIf((item) -> item.getStringId().equals(itemId));
+        return items.removeIf((item) -> item.getId().equals(itemId));
     }
 
     public ItemGlobal getById(String itemId) {

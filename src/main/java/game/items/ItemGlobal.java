@@ -37,12 +37,12 @@ public class ItemGlobal {
         return description;
     }
 
-    public String getStringId() {
-        return id;
-    }
-
     public String getOneLineString() {
         return String.format("%s: %s attack %s defense", name, attack, defense);
+    }
+
+    public float getDefense() {
+        return defense;
     }
 
     public MaterialsSet getMaterialsCost() {
