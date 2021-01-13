@@ -1,27 +1,23 @@
-package bot.commands.user;
+package bot.commands.user.stocks;
 
 import bot.commands.AbstractCommand;
+import bot.commands.OptionalIdentifierArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
 import game.stocks.StocksPersonal;
-import org.kohsuke.args4j.Argument;
 
-public class ShowStocksCommand extends AbstractCommand<ShowStocksCommand.Arguments> {
-
-    public static class Arguments{
-        @Argument(usage = "optional id to show stocks of specific player")
-        String playerId;
-    }
+public class ShowStocksCommand extends AbstractCommand<OptionalIdentifierArguments> {
 
     public ShowStocksCommand(AnimeCardsGame game) {
-        super(game, Arguments.class);
+        super(game, OptionalIdentifierArguments.class);
         name = "stocks";
+        guildOnly = false;
     }
 
     @Override
     protected void handle(CommandEvent event) {
-        String playerId = commandArgs.playerId == null? player.getId() : commandArgs.playerId;
+        String playerId = commandArgs.getSelectedOrPlayerId(player);
 
         StocksPersonal stocks = game.getStocks(playerId);
 

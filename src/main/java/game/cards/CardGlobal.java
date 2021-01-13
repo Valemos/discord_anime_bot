@@ -30,11 +30,11 @@ public class CardGlobal {
         return characterInfo.getId();
     }
 
-    public String getOneLineString() {
-        return characterInfo.characterName + " / " + characterInfo.seriesTitle;
+    public String getFullName() {
+        return characterInfo.getFullName();
     }
 
-    public String getOneLineRepresentationString() {
+    public String getOneLineStatsString() {
         return characterInfo.getFullName()
                 + ": "
                 + stats.getStatsForPickDelay(0).getOneLineString();

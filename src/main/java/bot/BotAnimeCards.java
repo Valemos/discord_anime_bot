@@ -1,11 +1,20 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.commands.user.wishlist.*;
 import bot.commands.creator.AddItemCommand;
 import bot.commands.creator.AddCardCommand;
 import bot.commands.creator.DeleteCardCommand;
 import bot.commands.creator.DeleteItemCommand;
 import bot.commands.user.*;
+import bot.commands.user.shop.ArmorShopCommand;
+import bot.commands.user.shop.BuyCommand;
+import bot.commands.user.shop.ShopCommand;
+import bot.commands.user.squadron.PatrolCommand;
+import bot.commands.user.squadron.PatrolStopCommand;
+import bot.commands.user.squadron.SquadronAddCommand;
+import bot.commands.user.squadron.SquadronCommand;
+import bot.commands.user.stocks.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -81,7 +90,15 @@ public class BotAnimeCards {
                 PatrolStopCommand.class,
 
                 ExchangeForStockCommand.class,
-                ShowStocksCommand.class
+                ShowStocksCommand.class,
+                StockValueCommand.class,
+                StockCollectionValueCommand.class,
+
+                WishListCommand.class,
+                WishCardCommand.class,
+                WishCardByIdCommand.class,
+                WishRemoveCommand.class,
+                WishRemoveByIdCommand.class
         ));
 
         return builder.build();

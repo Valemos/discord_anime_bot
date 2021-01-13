@@ -42,7 +42,7 @@ class AnimeCardsGameTest {
     @Test
     void testCardAdded() {
         game.addCard(card1);
-        assertSame(card1, game.getGlobalCardById(card1.getId()));
+        assertSame(card1, game.getCardGlobalById(card1.getId()));
     }
 
     @Test
@@ -50,7 +50,7 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.removeCardById(card1.getId());
 
-        assertNull(game.getGlobalCardById(card1.getId()));
+        assertNull(game.getCardGlobalById(card1.getId()));
     }
 
     @Test

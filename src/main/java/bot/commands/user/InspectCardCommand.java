@@ -26,10 +26,10 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
 
     @Override
     protected void handle(CommandEvent event) {
-        CardGlobal card = game.getGlobalCard(commandArgs.cardName, commandArgs.series);
+        CardGlobal card = game.getCardGlobal(commandArgs.cardName, commandArgs.series);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();
-            b.addField("Card info", card.getOneLineRepresentationString(), true);
+            b.addField("Card info", card.getOneLineStatsString(), true);
             b.setImage(card.getCharacterInfo().getImageUrl());
             event.getChannel().sendMessage(b.build()).queue();
         }else{

@@ -63,12 +63,12 @@ public class Squadron {
         return cardsStateMap.isEmpty();
     }
 
-    public boolean addCard(CardPersonal card) {
-        if (cardsStateMap.size() < sizeMax){
-            cardsStateMap.put(card, HealthState.HEALTHY);
-            return true;
-        }
-        return false;
+    public void addCard(CardPersonal card) {
+        cardsStateMap.put(card, HealthState.HEALTHY);
+    }
+
+    public boolean isFull() {
+        return cardsStateMap.size() < sizeMax;
     }
 
     public float getPowerLevel() {

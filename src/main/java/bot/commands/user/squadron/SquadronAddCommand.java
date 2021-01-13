@@ -1,15 +1,16 @@
-package bot.commands.user;
+package bot.commands.user.squadron;
 
 import bot.commands.AbstractCommand;
+import bot.commands.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardPersonal;
 import game.squadron.Squadron;
 
-public class SquadronAddCommand extends AbstractCommand<MultipleCardsArguments> {
+public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArguments> {
 
     public SquadronAddCommand(AnimeCardsGame game) {
-        super(game, MultipleCardsArguments.class);
+        super(game, MultipleIdentifiersArguments.class);
         name = "squadronadd";
         aliases = new String[]{"sqa"};
         guildOnly = false;
@@ -20,16 +21,17 @@ public class SquadronAddCommand extends AbstractCommand<MultipleCardsArguments> 
         Squadron squadron = game.getSquadron(player);
 
         StringBuilder msgBuilder = new StringBuilder();
-        for (String cardId : commandArgs.cardIds){
-            CardPersonal card = game.getPersonalCard(player, cardId);
+        for (String cardId : commandArgs.multipleIds){
+            if (squadron.isFull()){
+                msgBuilder.append("cannot add more cards to squadron");
+                break;
+            }
+
+            CardPersonal card = game.getCardPersonal(player, cardId);
 
             if (card != null){
-                if (squadron.addCard(card)){
-                    msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
-                }else{
-                    msgBuilder.append("cannot add more cards to squadron");
-                    break;
-                }
+                squadron.addCard(card);
+                msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
             }else{
                 msgBuilder.append(cardId).append(" not found in player collection");
             }

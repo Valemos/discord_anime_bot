@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.squadron;
 
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;

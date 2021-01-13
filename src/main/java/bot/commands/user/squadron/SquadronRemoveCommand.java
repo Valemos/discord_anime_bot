@@ -1,13 +1,14 @@
-package bot.commands.user;
+package bot.commands.user.squadron;
 
 import bot.commands.AbstractCommand;
+import bot.commands.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.squadron.Squadron;
 
-public class SquadronRemoveCommand extends AbstractCommand<MultipleCardsArguments> {
+public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersArguments> {
     public SquadronRemoveCommand(AnimeCardsGame game) {
-        super(game, MultipleCardsArguments.class);
+        super(game, MultipleIdentifiersArguments.class);
         name = "squadronremove";
         aliases = new String[]{"sqr"};
         guildOnly = false;
@@ -18,7 +19,7 @@ public class SquadronRemoveCommand extends AbstractCommand<MultipleCardsArgument
         Squadron squadron = game.getSquadron(player);
 
         if (squadron.getCards().removeIf(
-                (card) -> commandArgs.cardIds.contains(card.getCardId())
+                (card) -> commandArgs.multipleIds.contains(card.getCardId())
         )){
             sendMessage(event, "removed cards");
         }else{

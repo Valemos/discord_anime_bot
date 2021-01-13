@@ -1,41 +1,57 @@
 package game.cards;
 
-import game.HealthState;
-
 import java.util.Objects;
 
 public class CardPersonal {
-    String userId;
-    int cardId;
+    String cardId;
+    String playerId; // TODO replace with database query in personal collections
 
     CharacterInfo characterInfo;
     CardStatsConstant stats;
     CardEquipment cardEquipment;
+    private float powerLevel;
 
-    HealthState healthState;
 
-    public CardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats) {
-        this(userId, characterInfo, stats, HealthState.HEALTHY, new CardEquipment());
+    public CardPersonal(CharacterInfo characterInfo, CardStatsConstant stats) {
+        this(characterInfo, stats, new CardEquipment());
     }
 
-    public CardPersonal(String userId, CharacterInfo characterInfo, CardStatsConstant stats, HealthState healthState, CardEquipment cardEquipment) {
-        cardId = -1;
-        this.userId = userId;
+    public CardPersonal(CharacterInfo characterInfo, CardStatsConstant stats, CardEquipment cardEquipment) {
         this.characterInfo = characterInfo;
-        this.stats = stats;
-        this.healthState = healthState;
         this.cardEquipment = cardEquipment;
+        setStats(stats);
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public CardStatsConstant getStats() {
         return stats;
     }
 
-    public int getCardId() {
+    public CharacterInfo getCharacterInfo() {
+        return characterInfo;
+    }
+
+    public void setStats(CardStatsConstant stats) {
+        this.stats = stats;
+        updatePowerLevel(stats);
+    }
+
+    private void updatePowerLevel(CardStatsConstant stats) {
+        powerLevel = stats.getPowerLevel() + cardEquipment.getPowerLevel();
+    }
+
+    public String getCardId() {
         return cardId;
     }
 
-    public void setCardId(int cardId) {
+    public void setCardId(String cardId) {
         this.cardId = cardId;
     }
 
@@ -43,16 +59,14 @@ public class CardPersonal {
     public boolean equals(Object obj) {
         if (obj instanceof CardPersonal){
             CardPersonal other = (CardPersonal) obj;
-            return  Objects.equals(userId, other.userId) &&
-                    Objects.equals(characterInfo, other.characterInfo) &&
+            return  Objects.equals(characterInfo, other.characterInfo) &&
                     Objects.equals(stats, other.stats);
         }
         return false;
     }
 
-    public float calculatePowerLevel(){
-        float powerLevel = stats.getPowerLevel() + cardEquipment.getPowerLevel();
-        return healthState == HealthState.INJURED ? powerLevel * 0.2f : powerLevel;
+    public float getPowerLevel(){
+        return powerLevel;
     }
 
     public String getOneLineRepresentationString() {

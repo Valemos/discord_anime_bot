@@ -37,4 +37,13 @@ public class StocksPersonal {
     public String getStockStringValue(String name) {
         return name + ": " + getStockValue(name);
     }
+
+    public String findByNamePart(String searchName) {
+        for (String name : getNames()){
+            if (name.contains(searchName)){
+                return name;
+            }
+        }
+        return null;
+    }
 }

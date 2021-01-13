@@ -1,15 +1,14 @@
-package bot.commands.user;
+package bot.commands.user.shop;
 
-import bot.CommandPermissions;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
 
-public class ShopCommand extends AbstractCommand<ShopArguments> {
+public class ShopCommand extends AbstractCommand<ShopPageArguments> {
 
     public ShopCommand(AnimeCardsGame game) {
-        super(game, ShopArguments.class);
+        super(game, ShopPageArguments.class);
         name = "shop";
         aliases = new String[]{"s"};
         guildOnly = false;

@@ -1,14 +1,15 @@
-package bot.commands.user;
+package bot.commands.user.stocks;
 
 import bot.commands.AbstractCommand;
+import bot.commands.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardPersonal;
 
-public class ExchangeForStockCommand extends AbstractCommand<MultipleCardsArguments> {
+public class ExchangeForStockCommand extends AbstractCommand<MultipleIdentifiersArguments> {
 
     public ExchangeForStockCommand(AnimeCardsGame game) {
-        super(game, MultipleCardsArguments.class);
+        super(game, MultipleIdentifiersArguments.class);
         name = "exchange";
         aliases = new String[]{"e"};
         guildOnly = false;
@@ -18,8 +19,8 @@ public class ExchangeForStockCommand extends AbstractCommand<MultipleCardsArgume
     protected void handle(CommandEvent event) {
 
         StringBuilder messageBuilder = new StringBuilder();
-        for (String cardId : commandArgs.cardIds){
-            CardPersonal card = game.getPersonalCard(player, cardId);
+        for (String cardId : commandArgs.multipleIds){
+            CardPersonal card = game.getCardPersonal(player, cardId);
             if(card != null){
                 float seriesStockValue = game.exchangeCardForStock(player, card);
 

@@ -1,6 +1,5 @@
 package bot.commands.creator;
 
-import bot.CommandPermissions;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -30,10 +29,10 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
     protected void handle(CommandEvent event) {
         CardGlobal card;
         if (commandArgs.cardId == null){
-            card = game.getGlobalCard(commandArgs.name, commandArgs.series);
+            card = game.getCardGlobal(commandArgs.name, commandArgs.series);
         }
         else{
-            card = game.getGlobalCardById(commandArgs.cardId);
+            card = game.getCardGlobalById(commandArgs.cardId);
         }
 
         if (card != null){

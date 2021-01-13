@@ -39,7 +39,7 @@ public class DropCommand extends AbstractCommandNoArguments {
         messageBuilder.append("Dropped cards:");
 
         for (CardGlobal card : cards) {
-            messageBuilder.append('\n').append(card.getOneLineString());
+            messageBuilder.append('\n').append(card.getFullName());
         }
     }
 }

@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.shop;
 
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;

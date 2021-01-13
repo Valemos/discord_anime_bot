@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.stocks;
 
 import bot.commands.AbstractCommand;
 import bot.commands.SortingType;
@@ -44,7 +44,7 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
 
         Player requestedPlayer = commandArgs.userId != null ? game.getPlayerById(commandArgs.userId) : player;
 
-        CardsPersonalManager collection = game.getPlayerCardsManager(requestedPlayer);
+        CardsPersonalManager collection = game.getCardsPersonalManager(requestedPlayer);
         if (collection == null){
             event.getChannel().sendMessage("player not found").queue();
             return;

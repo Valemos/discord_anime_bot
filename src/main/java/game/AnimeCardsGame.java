@@ -12,12 +12,15 @@ import game.items.ItemsGlobalManager;
 import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
-import game.shop.ShopViewer;
+import bot.commands.MenuCreator;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
-import game.stocks.SeriesStocksManager;
+import game.stocks.StocksManager;
 import game.stocks.StocksPersonal;
+import game.wishlist.WishList;
+import game.wishlist.WishListsManager;
 import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,7 +38,8 @@ public class AnimeCardsGame {
 
     CardsPersonalManager cardsPersonalManager;
     ItemsPersonalManager itemsPersonalManager;
-    SeriesStocksManager seriesStocksManager;
+    StocksManager stocksManager;
+    WishListsManager wishListsManager;
 
     private final List<PatrolActivity> currentPatrols;
 
@@ -72,12 +76,16 @@ public class AnimeCardsGame {
         cardsGlobalManager.addCard(card);
     }
 
-    public CardGlobal getGlobalCardById(String id) {
+    public CardGlobal getCardGlobalById(String id) {
         return cardsGlobalManager.getCardById(id);
     }
 
-    public CardGlobal getGlobalCard(String cardName, String series) {
+    public CardGlobal getCardGlobal(String cardName, String series) {
         return cardsGlobalManager.getCardByNameAndSeries(cardName, series);
+    }
+
+    public List<CardGlobal> getMatchingCardsGlobal(String name, String series) {
+        return cardsGlobalManager.getAllCardsByNameAndSeries(name, series);
     }
 
     public void removeCardById(String id) {
@@ -100,7 +108,7 @@ public class AnimeCardsGame {
     }
 
     public void pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
-        CardGlobal cardGlobal = getGlobalCardById(globalCardId);
+        CardGlobal cardGlobal = getCardGlobalById(globalCardId);
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
     }
@@ -109,11 +117,15 @@ public class AnimeCardsGame {
         return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
     }
 
-    public CardsPersonalManager getPlayerCardsManager(Player player) {
+    public CardsPersonalManager getCardsPersonalManager(Player player) {
         if (player != null){
             return player.getCardsManager();
         }
         return null;
+    }
+
+    public StocksManager getSeriesStocksManager() {
+        return stocksManager;
     }
 
     public ItemGlobal addItem(ItemGlobal item) {
@@ -126,11 +138,11 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return ShopViewer.get(eventWaiter, itemsShop, user);
+        return MenuCreator.getShopMenu(eventWaiter, itemsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
-        return ShopViewer.get(eventWaiter, armorShop, user);
+        return MenuCreator.getShopMenu(eventWaiter, armorShop, user);
     }
 
     public ItemsGlobalManager getItemsCollection() {
@@ -152,7 +164,7 @@ public class AnimeCardsGame {
         return squadron;
     }
 
-    public CardPersonal getPersonalCard(Player player, String cardId) {
+    public CardPersonal getCardPersonal(Player player, String cardId) {
         return player.getCardsManager().getCardById(cardId);
     }
 
@@ -198,9 +210,10 @@ public class AnimeCardsGame {
     }
 
     public float exchangeCardForStock(Player player, CardPersonal card) {
-        float cardStockValue = seriesStocksManager.getCardStockValue(card);
+        float cardStockValue = stocksManager.getCardStockValue(card);
         if (cardsPersonalManager.removeCard(player.getId(), card)){
-            seriesStocksManager.addSeriesStock(player.getId(), card.getCharacterInfo(), cardStockValue);
+            String seriesTitle = card.getCharacterInfo().getSeriesTitle();
+            stocksManager.addStockValue(player.getId(), seriesTitle, cardStockValue);
             return cardStockValue;
         }else{
             return 0;
@@ -208,7 +221,19 @@ public class AnimeCardsGame {
     }
 
     public StocksPersonal getStocks(String playerId) {
-        return seriesStocksManager.getStocks(playerId);
+        return stocksManager.getElement(playerId);
+    }
+
+    public void addToWishlist(Player player, CardGlobal card) {
+        wishListsManager.addCard(player.getId(), card);
+    }
+
+    public boolean removeFromWishlist(Player player, CardGlobal card) {
+        return wishListsManager.removeCard(player.getId(), card);
+    }
+
+    public @NotNull WishList getWishList(String playerId) {
+        return wishListsManager.getElement(playerId);
     }
 }
 
