@@ -24,6 +24,7 @@ public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
         name = "addcard";
         aliases = new String[]{"cr"};
         guildOnly = false;
+        ownerCommand = true;
     }
 
     @Override

@@ -14,10 +14,12 @@ import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.ShopViewer;
+import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AnimeCardsGame {
@@ -32,6 +34,8 @@ public class AnimeCardsGame {
 
     CardCollectionsPersonal cardCollectionsPersonal;
     ItemCollectionsPersonal itemCollectionsPersonal;
+    private final List<PatrolActivity> currentPatrols;
+
 
     public AnimeCardsGame(EventWaiter eventWaiter) {
         this.eventWaiter = eventWaiter;
@@ -39,6 +43,11 @@ public class AnimeCardsGame {
         itemCollectionGlobal = new ItemCollectionGlobal();
         itemsShop = new ItemsShop(itemCollectionGlobal);
         armorShop = new ArmorShop(itemCollectionGlobal);
+
+        cardCollectionsPersonal = new CardCollectionsPersonal();
+        itemCollectionsPersonal = new ItemCollectionsPersonal();
+
+        currentPatrols = new LinkedList<>();
     }
 
     public Player getPlayerById(String playerId) {
@@ -143,6 +152,47 @@ public class AnimeCardsGame {
 
     public CardPersonal getPersonalCard(Player player, String cardId) {
         return player.getCardsCollection().getCardById(cardId);
+    }
+
+    public boolean createNewPatrol(Player player, PatrolType patrolType) {
+        Squadron squadron = player.getSquadron();
+        if (squadron != null){
+            PatrolActivity patrol = new PatrolActivity(squadron, patrolType);
+            startPatrol(patrol);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void startPatrol(PatrolActivity patrol) {
+        currentPatrols.add(patrol);
+    }
+
+    private void finishOldestPatrol(){
+        if (currentPatrols.isEmpty()){
+            return;
+        }
+
+        PatrolActivity patrol = currentPatrols.get(0);
+        finishPatrol(patrol);
+        currentPatrols.remove(0);
+    }
+
+    public MaterialsSet finishPatrol(PatrolActivity patrol) {
+        Player player = getPlayerById(patrol.getSquadron().getPlayerId());
+        MaterialsSet materials = patrol.getMaterialsFound();
+
+        player.getMaterials().addMaterials(materials);
+        patrol.setFinished(true);
+
+        return materials;
+    }
+
+    public PatrolActivity findPatrol(Player player) {
+        return currentPatrols.stream()
+                .filter(patrol -> patrol.getSquadron().getPlayerId().equals(player.getId()))
+                .findFirst().orElse(null);
     }
 }
 

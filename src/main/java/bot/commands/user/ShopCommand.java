@@ -9,7 +9,7 @@ import game.AnimeCardsGame;
 public class ShopCommand extends AbstractCommand<ShopArguments> {
 
     public ShopCommand(AnimeCardsGame game) {
-        super(game, ShopArguments.class, CommandPermissions.USER);
+        super(game, ShopArguments.class);
         name = "shop";
         aliases = new String[]{"s"};
         guildOnly = false;

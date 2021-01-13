@@ -30,8 +30,9 @@ public class AddItemCommand extends AbstractCommand<AddItemCommand.Arguments>{
     }
 
     public AddItemCommand(AnimeCardsGame game) {
-        super(game, Arguments.class, CommandPermissions.CREATOR);
-        name = "itemadd";
+        super(game, Arguments.class);
+        name = "additem";
+        ownerCommand = true;
     }
 
     @Override

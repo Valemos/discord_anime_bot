@@ -14,8 +14,9 @@ public class DeleteItemCommand extends AbstractCommand<DeleteItemCommand.Argumen
     }
 
     public DeleteItemCommand(AnimeCardsGame game) {
-        super(game, Arguments.class, CommandPermissions.CREATOR);
+        super(game, Arguments.class);
         name = "delitem";
+        ownerCommand = true;
     }
 
     @Override

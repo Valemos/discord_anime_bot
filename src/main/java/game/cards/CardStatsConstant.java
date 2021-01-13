@@ -46,6 +46,7 @@ public class CardStatsConstant{
     }
 
     public float getPowerLevel() {
+        // TODO add charisma modifiers to power level formula
         return approvalRating + dexterity + strength + wisdom;
     }
 

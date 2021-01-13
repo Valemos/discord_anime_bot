@@ -70,4 +70,14 @@ public class Squadron {
         }
         return false;
     }
+
+    public float getPowerLevel() {
+        float totalPowerLevel = 0;
+        for (CardPersonal card : getCards()){
+            float cardPowerLevel = card.getPowerLevel();
+            HealthState cardHealth = cardsStateMap.get(card);
+            totalPowerLevel += cardHealth == HealthState.INJURED ? cardPowerLevel * 0.2 : cardPowerLevel;
+        }
+        return totalPowerLevel;
+    }
 }

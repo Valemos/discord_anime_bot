@@ -71,4 +71,9 @@ class MaterialsSetTest {
         assertTrue(m1.containsNotLessThan(m1));
         assertTrue(m2.containsNotLessThan(m2));
     }
+
+    @Test
+    void testEmptyMaterialsDescription() {
+        assertEquals(MaterialsSet.noMaterialsDescription, emptySet.getDescriptionMultiline());
+    }
 }

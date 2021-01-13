@@ -11,7 +11,9 @@ class CardGlobalTest {
     @Test
     void testCardCreated() {
         CardGlobal card = new CardGlobal("", "", "", new CardStatsGlobal());
-        AnimeCardsGame game = new AnimeCardsGame(new BotAnimeCards());
+
+        BotAnimeCards bot = new BotAnimeCards();
+        AnimeCardsGame game = bot.getGame();
         game.addCard(card);
 
         assertSame(card, game.getGlobalCardById(card.getId()));

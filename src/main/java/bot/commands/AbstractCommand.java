@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 public abstract class AbstractCommand<T> extends Command {
     private final Class<T> argumentsClass;
     protected T commandArgs;
-    CommandPermissions commandPermissionLevel;
 
     protected AnimeCardsGame game;
     protected Player player;
@@ -32,7 +31,6 @@ public abstract class AbstractCommand<T> extends Command {
         this.game = game;
         this.argumentsClass = argumentsClass;
         userPermissions = commandPermissions.getRequiredPermissions();
-        commandPermissionLevel = CommandPermissions.CREATOR;
     }
 
     @NotNull
@@ -54,12 +52,6 @@ public abstract class AbstractCommand<T> extends Command {
     protected void execute(CommandEvent event) {
         String userId = event.getAuthor().getId();
         player = game.getPlayerById(userId);
-
-        if (commandPermissionLevel == CommandPermissions.CREATOR){
-            if (player.getCommandPermissions() != CommandPermissions.CREATOR){
-                return;
-            }
-        }
 
         if(tryParseArguments(event)){
             handle(event);

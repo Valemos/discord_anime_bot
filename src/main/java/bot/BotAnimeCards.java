@@ -54,9 +54,10 @@ public class BotAnimeCards {
 
     private CommandClient buildCommandClient() {
         CommandClientBuilder builder = new CommandClientBuilder();
-        builder.setOwnerId("797845777618698240");
-        builder.setPrefix("#");
-        builder.setAlternativePrefix("c#");
+        builder.setOwnerId("797845777618698240")
+                .setCoOwnerIds("409754559775375371")
+                .setPrefix("#")
+                .setAlternativePrefix("c#");
 
         addCommands(builder, Set.of(
                 DropCommand.class,
@@ -75,7 +76,9 @@ public class BotAnimeCards {
                 BuyCommand.class,
 
                 SquadronCommand.class,
-                SquadronAddCommand.class
+                SquadronAddCommand.class,
+                PatrolCommand.class,
+                PatrolStopCommand.class
         ));
 
         return builder.build();

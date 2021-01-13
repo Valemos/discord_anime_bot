@@ -2,11 +2,16 @@ package game.items;
 
 import game.Material;
 
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MaterialsSet {
 
     EnumMap<Material, Integer> materialAmounts;
+    public static final String noMaterialsDescription = "No materials";
+
 
     public MaterialsSet() {
         this(new EnumMap<>(Material.class));
@@ -26,7 +31,7 @@ public class MaterialsSet {
 
     public void subtractMaterials(MaterialsSet other) {
         for(Material material : Material.values()){
-            incrementAmount(material, -other.getAmount(material));
+            addAmount(material, -other.getAmount(material));
         }
     }
 
@@ -39,8 +44,30 @@ public class MaterialsSet {
         return true;
     }
 
-    public void incrementAmount(Material material, int increment) {
+    public void addAmount(Material material, int increment) {
         int newAmount = getAmount(material) + increment;
         setAmount(material, newAmount);
+    }
+
+    public void addMaterials(MaterialsSet materials) {
+        for (Material m : Material.values()){
+            addAmount(m, materials.getAmount(m));
+        }
+    }
+
+    public String getDescriptionMultiline() {
+        String description = Arrays.stream(Material.values())
+                .map(this::getMaterialAmountString)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("\n"));
+        return description.equals("") ? noMaterialsDescription : description;
+    }
+
+    private String getMaterialAmountString(Material material) {
+        int amount = getAmount(material);
+        if(amount > 0){
+            return material.getName() + ": " + amount;
+        }
+        return null;
     }
 }
