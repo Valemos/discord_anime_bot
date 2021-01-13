@@ -1,12 +1,12 @@
 package game.shop;
 
-import game.items.ItemCollectionGlobal;
+import game.items.ItemsGlobalManager;
 import game.items.ItemGlobal;
 
 import java.util.stream.Stream;
 
 public class ArmorShop extends AbstractShop {
-    public ArmorShop(ItemCollectionGlobal itemsCollection) {
+    public ArmorShop(ItemsGlobalManager itemsCollection) {
         super(itemsCollection, "Armor shop");
     }
 

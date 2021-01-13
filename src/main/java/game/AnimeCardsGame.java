@@ -1,21 +1,22 @@
 package game;
 
-import bot.CommandPermissions;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import game.cards.CardCollectionGlobal;
-import game.cards.CardCollectionsPersonal;
-import game.items.ItemCollectionsPersonal;
+import game.cards.CardsGlobalManager;
+import game.cards.CardsPersonalManager;
+import game.items.ItemsPersonalManager;
 import game.items.ItemGlobal;
-import game.items.ItemCollectionGlobal;
+import game.items.ItemsGlobalManager;
 import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.ShopViewer;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
+import game.stocks.SeriesStocksManager;
+import game.stocks.StocksPersonal;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
@@ -29,25 +30,31 @@ public class AnimeCardsGame {
     private final ArmorShop armorShop;
 
     private final List<Player> players = new ArrayList<>();
-    CardCollectionGlobal cardCollectionGlobal;
-    ItemCollectionGlobal itemCollectionGlobal;
+    CardsGlobalManager cardsGlobalManager;
+    ItemsGlobalManager itemsGlobalManager;
 
-    CardCollectionsPersonal cardCollectionsPersonal;
-    ItemCollectionsPersonal itemCollectionsPersonal;
+    CardsPersonalManager cardsPersonalManager;
+    ItemsPersonalManager itemsPersonalManager;
+    SeriesStocksManager seriesStocksManager;
+
     private final List<PatrolActivity> currentPatrols;
 
 
     public AnimeCardsGame(EventWaiter eventWaiter) {
         this.eventWaiter = eventWaiter;
-        cardCollectionGlobal = new CardCollectionGlobal();
-        itemCollectionGlobal = new ItemCollectionGlobal();
-        itemsShop = new ItemsShop(itemCollectionGlobal);
-        armorShop = new ArmorShop(itemCollectionGlobal);
+        cardsGlobalManager = new CardsGlobalManager();
+        itemsGlobalManager = new ItemsGlobalManager();
+        itemsShop = new ItemsShop(itemsGlobalManager);
+        armorShop = new ArmorShop(itemsGlobalManager);
 
-        cardCollectionsPersonal = new CardCollectionsPersonal();
-        itemCollectionsPersonal = new ItemCollectionsPersonal();
+        cardsPersonalManager = new CardsPersonalManager();
+        itemsPersonalManager = new ItemsPersonalManager();
 
         currentPatrols = new LinkedList<>();
+    }
+
+    public EventWaiter getEventWaiter() {
+        return eventWaiter;
     }
 
     public Player getPlayerById(String playerId) {
@@ -62,36 +69,31 @@ public class AnimeCardsGame {
     }
 
     public void addCard(CardGlobal card) {
-        cardCollectionGlobal.addCard(card);
+        cardsGlobalManager.addCard(card);
     }
 
     public CardGlobal getGlobalCardById(String id) {
-        return cardCollectionGlobal.getCardById(id);
+        return cardsGlobalManager.getCardById(id);
     }
 
     public CardGlobal getGlobalCard(String cardName, String series) {
-        return cardCollectionGlobal.getCardByNameAndSeries(cardName, series);
+        return cardsGlobalManager.getCardByNameAndSeries(cardName, series);
     }
 
     public void removeCardById(String id) {
-        cardCollectionGlobal.removeCardById(id);
+        cardsGlobalManager.removeCardById(id);
     }
 
-    public CardCollectionGlobal getCollection() {
-        return cardCollectionGlobal;
+    public CardsGlobalManager getCollection() {
+        return cardsGlobalManager;
     }
 
     public Player createNewPlayer(String playerId) {
-        return createNewPlayer(playerId, CommandPermissions.USER);
-    }
-
-    public Player createNewPlayer(String playerId, CommandPermissions accessLevel) {
         Player player = new Player(
                 playerId,
-                accessLevel,
-                cardCollectionsPersonal,
+                cardsPersonalManager,
                 new MaterialsSet(),
-                itemCollectionsPersonal
+                itemsPersonalManager
         );
         addPlayer(player);
         return player;
@@ -100,27 +102,27 @@ public class AnimeCardsGame {
     public void pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
         CardGlobal cardGlobal = getGlobalCardById(globalCardId);
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
-        player.addPersonalCard(card);
+        player.addCard(card);
     }
 
     private CardPersonal getPersonalCardForDelay(CardGlobal card, float delay) {
         return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
     }
 
-    public CardCollectionsPersonal getPlayerCollection(Player player) {
+    public CardsPersonalManager getPlayerCardsManager(Player player) {
         if (player != null){
-            return player.getCardsCollection();
+            return player.getCardsManager();
         }
         return null;
     }
 
     public ItemGlobal addItem(ItemGlobal item) {
-        itemCollectionGlobal.addItem(item);
+        itemsGlobalManager.addItem(item);
         return item;
     }
 
     public boolean removeItemById(String itemId) {
-        return itemCollectionGlobal.removeById(itemId);
+        return itemsGlobalManager.removeById(itemId);
     }
 
     public Paginator getItemShopViewer(User user) {
@@ -131,8 +133,8 @@ public class AnimeCardsGame {
         return ShopViewer.get(eventWaiter, armorShop, user);
     }
 
-    public ItemCollectionGlobal getItemsCollection() {
-        return itemCollectionGlobal;
+    public ItemsGlobalManager getItemsCollection() {
+        return itemsGlobalManager;
     }
 
     public ItemsShop getItemsShop() {
@@ -151,7 +153,7 @@ public class AnimeCardsGame {
     }
 
     public CardPersonal getPersonalCard(Player player, String cardId) {
-        return player.getCardsCollection().getCardById(cardId);
+        return player.getCardsManager().getCardById(cardId);
     }
 
     public boolean createNewPatrol(Player player, PatrolType patrolType) {
@@ -193,6 +195,20 @@ public class AnimeCardsGame {
         return currentPatrols.stream()
                 .filter(patrol -> patrol.getSquadron().getPlayerId().equals(player.getId()))
                 .findFirst().orElse(null);
+    }
+
+    public float exchangeCardForStock(Player player, CardPersonal card) {
+        float cardStockValue = seriesStocksManager.getCardStockValue(card);
+        if (cardsPersonalManager.removeCard(player.getId(), card)){
+            seriesStocksManager.addSeriesStock(player.getId(), card.getCharacterInfo(), cardStockValue);
+            return cardStockValue;
+        }else{
+            return 0;
+        }
+    }
+
+    public StocksPersonal getStocks(String playerId) {
+        return seriesStocksManager.getStocks(playerId);
     }
 }
 

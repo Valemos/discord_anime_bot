@@ -26,7 +26,7 @@ public class ShopViewer {
             builder.setItems("No items in the shop");
         }
 
-        builder.setItemsPerPage(4);
+        builder.setItemsPerPage(5);
         return builder.build();
     }
 }

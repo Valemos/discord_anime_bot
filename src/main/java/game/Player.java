@@ -2,29 +2,26 @@ package game;
 
 import bot.CommandPermissions;
 import game.cards.CardPersonal;
-import game.cards.CardCollectionsPersonal;
-import game.items.ItemCollectionsPersonal;
+import game.cards.CardsPersonalManager;
+import game.items.ItemsPersonalManager;
 import game.items.MaterialsSet;
 import game.squadron.Squadron;
 
 public class Player {
     private final String id;
-    private CommandPermissions commandPermissions;
-    private final CardCollectionsPersonal collection;
-    private final ItemCollectionsPersonal itemCollectionsPersonal;
+    private final CardsPersonalManager cardsManager;
+    private final ItemsPersonalManager itemsPersonalManager;
     private final MaterialsSet materialsSet;
     private Squadron squadron;
 
     public Player(String id,
-                  CommandPermissions commandPermissions,
-                  CardCollectionsPersonal collection,
+                  CardsPersonalManager cardsManager,
                   MaterialsSet materialsSet,
-                  ItemCollectionsPersonal itemCollectionsPersonal) {
+                  ItemsPersonalManager itemsPersonalManager) {
         this.id = id;
-        this.commandPermissions = commandPermissions;
-        this.collection = collection;
+        this.cardsManager = cardsManager;
         this.materialsSet = materialsSet;
-        this.itemCollectionsPersonal = itemCollectionsPersonal;
+        this.itemsPersonalManager = itemsPersonalManager;
     }
 
     @Override
@@ -35,32 +32,24 @@ public class Player {
         return false;
     }
 
-    public CommandPermissions getCommandPermissions() {
-        return commandPermissions;
-    }
-
-    public void setAccessLevel(CommandPermissions commandPermissions) {
-        this.commandPermissions = commandPermissions;
-    }
-
     public String getId() {
         return id;
     }
 
-    public CardCollectionsPersonal getCardsCollection() {
-        return collection;
+    public CardsPersonalManager getCardsManager() {
+        return cardsManager;
     }
 
     public MaterialsSet getMaterials() {
         return materialsSet;
     }
 
-    public void addPersonalCard(CardPersonal card) {
-        collection.addCard(id, card);
+    public void addCard(CardPersonal card) {
+        cardsManager.addCard(id, card);
     }
 
-    public ItemCollectionsPersonal getInventoryItems() {
-        return itemCollectionsPersonal;
+    public ItemsPersonalManager getInventoryItems() {
+        return itemsPersonalManager;
     }
 
     public void setSquadron(Squadron squadron) {

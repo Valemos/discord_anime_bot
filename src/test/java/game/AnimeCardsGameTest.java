@@ -1,7 +1,6 @@
 package game;
 
 import bot.BotAnimeCards;
-import bot.CommandPermissions;
 import game.cards.CardStatsGlobal;
 import game.cards.CardGlobal;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +20,8 @@ class AnimeCardsGameTest {
     void setUp() {
         bot = new BotAnimeCards();
         game = bot.getGame();
-        player1 = game.createNewPlayer("1", CommandPermissions.USER);
-        player2 = game.createNewPlayer("2", CommandPermissions.USER);
+        player1 = game.createNewPlayer("1");
+        player2 = game.createNewPlayer("2");
 
         CardStatsGlobal stats = new CardStatsGlobal();
         card1 = new CardGlobal("Riko", "Made in Abyss", "img", stats);

@@ -1,7 +1,7 @@
 package game.shop;
 
 import game.Player;
-import game.items.ItemCollectionGlobal;
+import game.items.ItemsGlobalManager;
 import game.items.ItemGlobal;
 import game.items.MaterialsSet;
 
@@ -11,11 +11,11 @@ import java.util.stream.Stream;
 
 public abstract class AbstractShop {
 
-    protected final ItemCollectionGlobal itemCollection;
+    protected final ItemsGlobalManager itemCollection;
     ItemGlobal lastItemBought;
     private final String messageTitle;
 
-    public AbstractShop(ItemCollectionGlobal items, String messageTitle) {
+    public AbstractShop(ItemsGlobalManager items, String messageTitle) {
         this.itemCollection = items;
         this.messageTitle = messageTitle;
     }

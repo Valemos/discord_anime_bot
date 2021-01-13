@@ -6,7 +6,7 @@ import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
-import game.cards.CardCollectionGlobal;
+import game.cards.CardsGlobalManager;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class DropCommand extends AbstractCommandNoArguments {
 
     @Override
     protected void handle(CommandEvent event) {
-        CardCollectionGlobal collection = game.getCollection();
+        CardsGlobalManager collection = game.getCollection();
         List<CardGlobal> cards = collection.getRandomCards(3);
         displayCards(cards, event.getChannel());
     }

@@ -12,7 +12,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.CardGlobal;
 import game.items.ItemGlobal;
-import game.items.ItemCollectionGlobal;
+import game.items.ItemsGlobalManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -78,7 +78,10 @@ public class BotAnimeCards {
                 SquadronCommand.class,
                 SquadronAddCommand.class,
                 PatrolCommand.class,
-                PatrolStopCommand.class
+                PatrolStopCommand.class,
+
+                ExchangeForStockCommand.class,
+                ShowStocksCommand.class
         ));
 
         return builder.build();
@@ -109,8 +112,8 @@ public class BotAnimeCards {
     }
 
     public void loadDefaultSettings() {
-        Player tester = game.createNewPlayer("409754559775375371", CommandPermissions.CREATOR);
-        Player tester2 = game.createNewPlayer("797845777618698240", CommandPermissions.CREATOR);
+        Player tester = game.createNewPlayer("409754559775375371");
+        Player tester2 = game.createNewPlayer("797845777618698240");
 
         game.addCard(new CardGlobal(
                 "Riko",
@@ -125,7 +128,7 @@ public class BotAnimeCards {
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
 
-        ItemCollectionGlobal items = game.getItemsCollection();
+        ItemsGlobalManager items = game.getItemsCollection();
         items.addItem(new ItemGlobal("item1", 1, 0));
         items.addItem(new ItemGlobal("item2", 2, 0));
         items.addItem(new ItemGlobal("item4", 3, 5));

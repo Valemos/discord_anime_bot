@@ -8,15 +8,15 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CardCollectionGlobal {
+public class CardsGlobalManager {
     List<CardGlobal> cards;
     private int currentCardId = 0;
 
-    public CardCollectionGlobal() {
+    public CardsGlobalManager() {
         this(new ArrayList<>());
     }
 
-    public CardCollectionGlobal(List<CardGlobal> cards) {
+    public CardsGlobalManager(List<CardGlobal> cards) {
         this.cards = cards;
     }
 

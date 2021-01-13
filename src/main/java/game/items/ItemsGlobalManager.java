@@ -3,11 +3,11 @@ package game.items;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemCollectionGlobal {
+public class ItemsGlobalManager {
     List<ItemGlobal> items = new ArrayList<>();
     private int currentItemId = 0;
 
-    public ItemCollectionGlobal() {
+    public ItemsGlobalManager() {
     }
 
     public List<ItemGlobal> getItems() {

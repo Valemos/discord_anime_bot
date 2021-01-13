@@ -1,19 +1,17 @@
 package game.items;
 
-import game.Player;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemCollectionsPersonal {
+public class ItemsPersonalManager {
 
     private final List<ItemGlobal> items;
 
-    public ItemCollectionsPersonal() {
+    public ItemsPersonalManager() {
         this(new ArrayList<>());
     }
 
-    public ItemCollectionsPersonal(List<ItemGlobal> items) {
+    public ItemsPersonalManager(List<ItemGlobal> items) {
         this.items = items;
     }
 

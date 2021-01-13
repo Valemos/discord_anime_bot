@@ -3,14 +3,14 @@ package game.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardCollectionsPersonal {
+public class CardsPersonalManager {
     List<CardPersonal> cards;
 
-    public CardCollectionsPersonal() {
+    public CardsPersonalManager() {
         this(new ArrayList<>());
     }
 
-    public CardCollectionsPersonal(List<CardPersonal> cards) {
+    public CardsPersonalManager(List<CardPersonal> cards) {
         this.cards = cards;
     }
 
@@ -28,5 +28,12 @@ public class CardCollectionsPersonal {
         // TODO add database query to get card id
         card.setPlayerId(playerId);
         cards.add(card);
+    }
+
+    public boolean removeCard(String playerId, CardPersonal card) {
+        return cards.removeIf(c ->
+                c.getCardId().equals(card.getCardId()) &&
+                c.getPlayerId().equals(playerId)
+        );
     }
 }
