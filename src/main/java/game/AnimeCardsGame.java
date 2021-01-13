@@ -1,34 +1,40 @@
 package game;
 
-import bot.BotAnimeCards;
 import bot.CommandPermissions;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
 import game.cards.CardCollectionGlobal;
-import game.cards.CardCollectionPersonal;
+import game.cards.CardCollectionsPersonal;
+import game.items.ItemCollectionsPersonal;
 import game.items.ItemGlobal;
 import game.items.ItemCollectionGlobal;
+import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.ShopViewer;
+import game.squadron.Squadron;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AnimeCardsGame {
-    private final List<Player> players = new ArrayList<>();
+    private final EventWaiter eventWaiter;
 
-    CardCollectionGlobal cardCollectionGlobal;
-    ItemCollectionGlobal itemCollectionGlobal;
     private final ItemsShop itemsShop;
     private final ArmorShop armorShop;
 
-    private final BotAnimeCards mainBot;
+    private final List<Player> players = new ArrayList<>();
+    CardCollectionGlobal cardCollectionGlobal;
+    ItemCollectionGlobal itemCollectionGlobal;
 
-    public AnimeCardsGame(BotAnimeCards bot) {
-        mainBot = bot;
+    CardCollectionsPersonal cardCollectionsPersonal;
+    ItemCollectionsPersonal itemCollectionsPersonal;
+
+    public AnimeCardsGame(EventWaiter eventWaiter) {
+        this.eventWaiter = eventWaiter;
         cardCollectionGlobal = new CardCollectionGlobal();
         itemCollectionGlobal = new ItemCollectionGlobal();
         itemsShop = new ItemsShop(itemCollectionGlobal);
@@ -46,10 +52,6 @@ public class AnimeCardsGame {
         players.add(player);
     }
 
-    private void removePlayer(Player player) {
-        players.removeIf((p) -> p.getId().equals(player.getId()));
-    }
-
     public void addCard(CardGlobal card) {
         cardCollectionGlobal.addCard(card);
     }
@@ -60,10 +62,6 @@ public class AnimeCardsGame {
 
     public CardGlobal getGlobalCard(String cardName, String series) {
         return cardCollectionGlobal.getCardByNameAndSeries(cardName, series);
-    }
-
-    public List<CardGlobal> getMatchingCards(String name, String series) {
-        return cardCollectionGlobal.getAllCardsByNameAndSeries(name, series);
     }
 
     public void removeCardById(String id) {
@@ -79,20 +77,30 @@ public class AnimeCardsGame {
     }
 
     public Player createNewPlayer(String playerId, CommandPermissions accessLevel) {
-        Player player = new Player(playerId, accessLevel);
+        Player player = new Player(
+                playerId,
+                accessLevel,
+                cardCollectionsPersonal,
+                new MaterialsSet(),
+                itemCollectionsPersonal
+        );
         addPlayer(player);
         return player;
     }
 
     public void pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
         CardGlobal cardGlobal = getGlobalCardById(globalCardId);
-        CardPersonal cardPersonal = cardGlobal.getPersonalCardForDelay(player.getId(), pickDelay);
-        player.addPersonalCard(cardPersonal);
+        CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
+        player.addPersonalCard(card);
     }
 
-    public CardCollectionPersonal getPlayerCollection(Player player) {
+    private CardPersonal getPersonalCardForDelay(CardGlobal card, float delay) {
+        return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
+    }
+
+    public CardCollectionsPersonal getPlayerCollection(Player player) {
         if (player != null){
-            return player.getCollection();
+            return player.getCardsCollection();
         }
         return null;
     }
@@ -107,11 +115,11 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return ShopViewer.get(mainBot.getEventWaiter(), itemsShop, user);
+        return ShopViewer.get(eventWaiter, itemsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
-        return ShopViewer.get(mainBot.getEventWaiter(), armorShop, user);
+        return ShopViewer.get(eventWaiter, armorShop, user);
     }
 
     public ItemCollectionGlobal getItemsCollection() {
@@ -120,6 +128,21 @@ public class AnimeCardsGame {
 
     public ItemsShop getItemsShop() {
         return itemsShop;
+    }
+
+    public Squadron getSquadron(Player player) {
+        Squadron squadron = player.getSquadron();
+
+        if (squadron == null){
+            squadron = new Squadron(3);
+            player.setSquadron(squadron);
+        }
+
+        return squadron;
+    }
+
+    public CardPersonal getPersonalCard(Player player, String cardId) {
+        return player.getCardsCollection().getCardById(cardId);
     }
 }
 

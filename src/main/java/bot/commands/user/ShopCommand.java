@@ -18,7 +18,6 @@ public class ShopCommand extends AbstractCommand<ShopArguments> {
     @Override
     protected void handle(CommandEvent event) {
         Paginator shop = game.getItemShopViewer(event.getAuthor());
-        player.setShopViewer(shop);
         shop.paginate(event.getChannel(), commandArgs.pageNumber);
     }
 }

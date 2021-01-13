@@ -1,41 +1,36 @@
 package game;
 
 import bot.CommandPermissions;
-import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.CardPersonal;
-import game.cards.CardCollectionPersonal;
-import game.items.InventoryItems;
+import game.cards.CardCollectionsPersonal;
+import game.items.ItemCollectionsPersonal;
 import game.items.MaterialsSet;
+import game.squadron.Squadron;
 
 public class Player {
-    private final String userId;
+    private final String id;
     private CommandPermissions commandPermissions;
-    private final CardCollectionPersonal collection;
-    private final InventoryItems inventoryItems;
+    private final CardCollectionsPersonal collection;
+    private final ItemCollectionsPersonal itemCollectionsPersonal;
     private final MaterialsSet materialsSet;
-    private Paginator cachedShopViewer;
+    private Squadron squadron;
 
-
-    public Player(String userId, CommandPermissions commandPermissions) {
-        this(userId, commandPermissions, new CardCollectionPersonal(), new MaterialsSet(), new InventoryItems(userId));
-    }
-
-    public Player(String userId,
+    public Player(String id,
                   CommandPermissions commandPermissions,
-                  CardCollectionPersonal collection,
+                  CardCollectionsPersonal collection,
                   MaterialsSet materialsSet,
-                  InventoryItems inventoryItems) {
-        this.userId = userId;
+                  ItemCollectionsPersonal itemCollectionsPersonal) {
+        this.id = id;
         this.commandPermissions = commandPermissions;
         this.collection = collection;
         this.materialsSet = materialsSet;
-        this.inventoryItems = inventoryItems;
+        this.itemCollectionsPersonal = itemCollectionsPersonal;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Player){
-            return userId.equals(((Player) obj).userId);
+            return id.equals(((Player) obj).id);
         }
         return false;
     }
@@ -49,10 +44,10 @@ public class Player {
     }
 
     public String getId() {
-        return userId;
+        return id;
     }
 
-    public CardCollectionPersonal getCollection() {
+    public CardCollectionsPersonal getCardsCollection() {
         return collection;
     }
 
@@ -61,14 +56,19 @@ public class Player {
     }
 
     public void addPersonalCard(CardPersonal card) {
-        collection.addCard(card);
+        collection.addCard(id, card);
     }
 
-    public InventoryItems getInventoryItems() {
-        return inventoryItems;
+    public ItemCollectionsPersonal getInventoryItems() {
+        return itemCollectionsPersonal;
     }
 
-    public void setShopViewer(Paginator shopViewer) {
-        cachedShopViewer = shopViewer;
+    public void setSquadron(Squadron squadron) {
+        this.squadron = squadron;
+        squadron.setPlayerId(id);
+    }
+
+    public Squadron getSquadron() {
+        return squadron;
     }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AnimeCardsGameTest {
+    BotAnimeCards bot;
     AnimeCardsGame game;
     Player player1;
     Player player2;
@@ -18,9 +19,10 @@ class AnimeCardsGameTest {
 
     @BeforeEach
     void setUp() {
-        game = new AnimeCardsGame(new BotAnimeCards());
-        player1 = new Player("1", CommandPermissions.USER);
-        player2 = new Player("2", CommandPermissions.USER);
+        bot = new BotAnimeCards();
+        game = bot.getGame();
+        player1 = game.createNewPlayer("1", CommandPermissions.USER);
+        player2 = game.createNewPlayer("2", CommandPermissions.USER);
 
         CardStatsGlobal stats = new CardStatsGlobal();
         card1 = new CardGlobal("Riko", "Made in Abyss", "img", stats);

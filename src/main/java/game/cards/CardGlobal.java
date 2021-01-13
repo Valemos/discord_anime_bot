@@ -34,10 +34,6 @@ public class CardGlobal {
         return characterInfo.characterName + " / " + characterInfo.seriesTitle;
     }
 
-    public CardPersonal getPersonalCardForDelay(String userId, float pickDelay){
-        return new CardPersonal(userId, characterInfo, stats.getStatsForPickDelay(pickDelay));
-    }
-
     public String getOneLineRepresentationString() {
         return characterInfo.getFullName()
                 + ": "

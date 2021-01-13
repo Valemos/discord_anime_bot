@@ -32,15 +32,12 @@ public class BotAnimeCards {
     EventWaiter eventWaiter;
 
     public BotAnimeCards() {
-        game = new AnimeCardsGame(this);
+        eventWaiter = new EventWaiter();
+        game = new AnimeCardsGame(eventWaiter);
     }
 
     public AnimeCardsGame getGame() {
         return game;
-    }
-
-    public EventWaiter getEventWaiter() {
-        return eventWaiter;
     }
 
     public boolean authenticate(String token) {
@@ -75,7 +72,10 @@ public class BotAnimeCards {
 
                 ShopCommand.class,
                 ArmorShopCommand.class,
-                BuyCommand.class
+                BuyCommand.class,
+
+                SquadronCommand.class,
+                SquadronAddCommand.class
         ));
 
         return builder.build();
@@ -94,7 +94,6 @@ public class BotAnimeCards {
 
     private JDA buildDiscordAPI(String token) throws LoginException {
         commandClient = buildCommandClient();
-        eventWaiter = new EventWaiter();
         return JDABuilder.createDefault(token).addEventListeners(commandClient, eventWaiter).build();
     }
 
