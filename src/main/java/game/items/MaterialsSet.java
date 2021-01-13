@@ -24,17 +24,23 @@ public class MaterialsSet {
         return materialAmounts.getOrDefault(material, 0);
     }
 
-    public void subtractMaterials(MaterialsSet otherMaterials) {
-        // TODO Subtract hashmaps
+    public void subtractMaterials(MaterialsSet other) {
+        for(Material material : Material.values()){
+            incrementAmount(material, -other.getAmount(material));
+        }
     }
 
-    public boolean containsNotLessThan(MaterialsSet itemCost) {
-        // TODO compare hashmaps
+    public boolean containsNotLessThan(MaterialsSet other) {
+        for(Material material : Material.values()){
+            if (getAmount(material) < other.getAmount(material)){
+                return false;
+            }
+        }
         return true;
     }
 
     public void incrementAmount(Material material, int increment) {
-        int newAmount = materialAmounts.getOrDefault(material, 0) + increment;
-        materialAmounts.put(material, newAmount);
+        int newAmount = getAmount(material) + increment;
+        setAmount(material, newAmount);
     }
 }
