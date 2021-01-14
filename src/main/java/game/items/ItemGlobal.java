@@ -1,6 +1,6 @@
 package game.items;
 
-public class ItemGlobal {
+public class ItemGlobal implements game.DisplayableStats {
     private String id;
     private final String name;
     private final float attack;
@@ -41,11 +41,35 @@ public class ItemGlobal {
         return String.format("%s: %s attack %s defense", name, attack, defense);
     }
 
+    public float getAttack() {
+        return attack;
+    }
+
     public float getDefense() {
         return defense;
     }
 
     public MaterialsSet getMaterialsCost() {
         return cost;
+    }
+
+    public float getItemPower() {
+        return attack + defense;
+    }
+
+    @Override
+    public String getNameStatsString() {
+        if (attack <= 0){
+            return name + ": d-" + defense;
+        }else if (defense <= 0){
+            return name + ": a-" + attack;
+        }else{
+            return name + ": a-" + attack + " d-" + defense;
+        }
+    }
+
+    @Override
+    public String getIdName() {
+        return id + " - " + name;
     }
 }

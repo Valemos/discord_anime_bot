@@ -13,7 +13,7 @@ public class MappedObjectManager<A, B> {
         this.mappedObjectClass = mappedObjectClass;
     }
 
-    private void addElement(A key, B element) {
+    protected void addElement(A key, B element) {
         playerStocksMap.put(key, element);
     }
 

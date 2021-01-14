@@ -1,16 +1,15 @@
 package bot.commands.user.wishlist;
 
-import bot.commands.AbstractCommand;
+import bot.commands.AbstractCommandOptionalPlayer;
 import bot.commands.MenuCreator;
-import bot.commands.OptionalIdentifierArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.wishlist.WishList;
 
-public class WishListCommand extends AbstractCommand<OptionalIdentifierArguments> {
+public class WishListCommand extends AbstractCommandOptionalPlayer {
 
     public WishListCommand(AnimeCardsGame game) {
-        super(game, OptionalIdentifierArguments.class);
+        super(game);
         name = "wishlist";
         aliases = new String[]{"wl"};
         guildOnly = false;
@@ -18,9 +17,11 @@ public class WishListCommand extends AbstractCommand<OptionalIdentifierArguments
 
     @Override
     protected void handle(CommandEvent event) {
-        String playerId = commandArgs.getSelectedOrPlayerId(player);
+        if(tryFindPlayerArgument(event)){
+            return;
+        }
 
-        WishList wishList = game.getWishList(playerId);
+        WishList wishList = game.getWishList(requestedPlayer.getId());
         MenuCreator.showMenuForCardStats(wishList.getCards(), event, game);
     }
 }

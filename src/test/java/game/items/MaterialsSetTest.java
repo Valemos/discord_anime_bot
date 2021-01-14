@@ -1,6 +1,5 @@
 package game.items;
 
-import game.Material;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

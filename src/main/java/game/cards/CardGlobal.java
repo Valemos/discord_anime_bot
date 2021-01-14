@@ -1,6 +1,6 @@
 package game.cards;
 
-public class CardGlobal {
+public class CardGlobal implements game.DisplayableStats {
 
     CharacterInfo characterInfo;
     CardStatsGlobal stats;
@@ -34,9 +34,15 @@ public class CardGlobal {
         return characterInfo.getFullName();
     }
 
-    public String getOneLineStatsString() {
+    @Override
+    public String getNameStatsString() {
         return characterInfo.getFullName()
                 + ": "
                 + stats.getStatsForPickDelay(0).getOneLineString();
+    }
+
+    @Override
+    public String getIdName() {
+        return getId() + " - " + getFullName();
     }
 }

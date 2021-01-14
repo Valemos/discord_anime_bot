@@ -3,7 +3,7 @@ package bot.commands.user.squadron;
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.PatrolActivity;
+import game.squadron.PatrolActivity;
 import game.items.MaterialsSet;
 
 public class PatrolStopCommand extends AbstractCommandNoArguments {

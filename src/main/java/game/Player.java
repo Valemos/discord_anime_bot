@@ -3,6 +3,7 @@ package game;
 import bot.CommandPermissions;
 import game.cards.CardPersonal;
 import game.cards.CardsPersonalManager;
+import game.items.ItemGlobal;
 import game.items.ItemsPersonalManager;
 import game.items.MaterialsSet;
 import game.squadron.Squadron;
@@ -59,5 +60,9 @@ public class Player {
 
     public Squadron getSquadron() {
         return squadron;
+    }
+
+    public void addItem(ItemGlobal newItem) {
+        itemsPersonalManager.addItem(id, newItem);
     }
 }

@@ -2,6 +2,7 @@ package game.cards;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardsPersonalManager {
     List<CardPersonal> cards;
@@ -14,8 +15,8 @@ public class CardsPersonalManager {
         this.cards = cards;
     }
 
-    public List<CardPersonal> getCards() {
-        return cards;
+    public List<CardPersonal> getCards(String playerId) {
+        return cards.stream().filter(c -> c.getPlayerId().equals(playerId)).collect(Collectors.toList());
     }
 
     public CardPersonal getCardById(String cardId) {

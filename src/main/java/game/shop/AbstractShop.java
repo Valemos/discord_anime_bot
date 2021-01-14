@@ -32,7 +32,7 @@ public abstract class AbstractShop {
 
             if (playerMaterials.containsNotLessThan(itemCost)){
                 player.getMaterials().subtractMaterials(itemCost);
-                player.getInventoryItems().addItem(lastItemBought);
+                player.addItem(lastItemBought);
                 return true;
             }
         }

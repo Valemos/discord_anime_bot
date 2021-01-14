@@ -13,6 +13,7 @@ import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import bot.commands.MenuCreator;
+import game.squadron.PatrolActivity;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StocksManager;
@@ -117,11 +118,8 @@ public class AnimeCardsGame {
         return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
     }
 
-    public CardsPersonalManager getCardsPersonalManager(Player player) {
-        if (player != null){
-            return player.getCardsManager();
-        }
-        return null;
+    public CardsPersonalManager getCardsPersonalManager() {
+        return cardsPersonalManager;
     }
 
     public StocksManager getSeriesStocksManager() {
@@ -145,8 +143,12 @@ public class AnimeCardsGame {
         return MenuCreator.getShopMenu(eventWaiter, armorShop, user);
     }
 
-    public ItemsGlobalManager getItemsCollection() {
+    public ItemsGlobalManager getItemsGlobal() {
         return itemsGlobalManager;
+    }
+
+    public ItemsPersonalManager getItemsPersonal() {
+        return itemsPersonalManager;
     }
 
     public ItemsShop getItemsShop() {

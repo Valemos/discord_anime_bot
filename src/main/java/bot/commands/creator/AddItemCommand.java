@@ -1,10 +1,9 @@
 package bot.commands.creator;
 
-import bot.CommandPermissions;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.Material;
+import game.items.Material;
 import game.items.MaterialsSet;
 import game.items.ItemGlobal;
 import org.kohsuke.args4j.Argument;

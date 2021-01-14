@@ -1,4 +1,4 @@
-package game;
+package game.items;
 
 public enum Material {
     GOLD("Gold"),

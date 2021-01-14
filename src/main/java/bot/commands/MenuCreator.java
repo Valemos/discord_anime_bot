@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
+import game.DisplayableStats;
 import game.cards.CardGlobal;
 import game.items.ItemGlobal;
 import game.shop.AbstractShop;
@@ -35,22 +36,28 @@ public class MenuCreator {
     }
 
     public static void showMenuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game) {
-        showMenuForCardsWithMapper(cards, event, game, "Card ids list",
-                card -> card.getId() + " " + card.getFullName()
+        showMenuWithMapper(cards, event, game, "Card ids list",
+                DisplayableStats::getIdName
         );
     }
 
     public static void showMenuForCardStats(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game) {
-        showMenuForCardsWithMapper(cards, event, game, "Cards list",
-                CardGlobal::getOneLineStatsString
+        showMenuWithMapper(cards, event, game, "Cards list",
+                DisplayableStats::getNameStatsString
         );
     }
 
-    private static void showMenuForCardsWithMapper(List<CardGlobal> cards,
-                                                   CommandEvent event,
-                                                   AnimeCardsGame game,
-                                                   String title,
-                                                   Function<CardGlobal, String> mapper){
+    public static void showMenuForItemStats(List<ItemGlobal> items, CommandEvent event, AnimeCardsGame game) {
+        showMenuWithMapper(items, event, game, "Items list",
+                DisplayableStats::getNameStatsString
+        );
+    }
+
+    private static void showMenuWithMapper(List<? extends DisplayableStats> cards,
+                                           CommandEvent event,
+                                           AnimeCardsGame game,
+                                           String title,
+                                           Function<DisplayableStats, String> mapper){
 
         Paginator cardsMenu = new Paginator.Builder()
                 .setEventWaiter(game.getEventWaiter())

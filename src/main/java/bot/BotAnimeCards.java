@@ -1,6 +1,9 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.commands.user.inventory.InspectCardCommand;
+import bot.commands.user.inventory.InventoryCommand;
+import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.wishlist.*;
 import bot.commands.creator.AddItemCommand;
 import bot.commands.creator.AddCardCommand;
@@ -98,7 +101,10 @@ public class BotAnimeCards {
                 WishCardCommand.class,
                 WishCardByIdCommand.class,
                 WishRemoveCommand.class,
-                WishRemoveByIdCommand.class
+                WishRemoveByIdCommand.class,
+
+                InventoryCommand.class,
+                MaterialsCommand.class
         ));
 
         return builder.build();
@@ -145,7 +151,7 @@ public class BotAnimeCards {
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
 
-        ItemsGlobalManager items = game.getItemsCollection();
+        ItemsGlobalManager items = game.getItemsGlobal();
         items.addItem(new ItemGlobal("item1", 1, 0));
         items.addItem(new ItemGlobal("item2", 2, 0));
         items.addItem(new ItemGlobal("item4", 3, 5));

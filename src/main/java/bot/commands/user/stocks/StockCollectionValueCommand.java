@@ -1,29 +1,30 @@
 package bot.commands.user.stocks;
 
-import bot.commands.AbstractCommand;
-import bot.commands.OptionalIdentifierArguments;
+import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.stocks.StocksPersonal;
 
-public class StockCollectionValueCommand extends AbstractCommand<OptionalIdentifierArguments> {
+public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
 
     public StockCollectionValueCommand(AnimeCardsGame game) {
-        super(game, OptionalIdentifierArguments.class);
+        super(game);
         name = "collectionvalue";
         guildOnly = false;
     }
 
     @Override
     protected void handle(CommandEvent event) {
-        String playerId = commandArgs.getSelectedOrPlayerId(player);
+        if(tryFindPlayerArgument(event)){
+            return;
+        }
 
-        StocksPersonal stocks = game.getStocks(playerId);
+        StocksPersonal stocks = game.getStocks(requestedPlayer.getId());
         float totalValue = 0;
         for (String stockName : stocks.getNames()){
             totalValue += stocks.getStockValue(stockName);
         }
 
-        sendMessage(event, "total stocks for " + playerId + ": " + totalValue);
+        sendMessage(event, "total stocks for " + requestedPlayer.getId() + ": " + totalValue);
     }
 }

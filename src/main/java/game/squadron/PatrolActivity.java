@@ -1,14 +1,11 @@
-package game;
+package game.squadron;
 
+import game.items.Material;
 import game.items.MaterialsSet;
-import game.squadron.PatrolType;
-import game.squadron.Squadron;
-
-import java.util.Random;
 
 public class PatrolActivity {
     private final Squadron squadron;
-    private PatrolType patrolType;
+    private final PatrolType patrolType;
     private boolean isFinished;
 
     public PatrolActivity(Squadron squadron, PatrolType patrolType) {

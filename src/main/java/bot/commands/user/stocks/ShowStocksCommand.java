@@ -1,25 +1,26 @@
 package bot.commands.user.stocks;
 
-import bot.commands.AbstractCommand;
-import bot.commands.OptionalIdentifierArguments;
+import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
 import game.stocks.StocksPersonal;
 
-public class ShowStocksCommand extends AbstractCommand<OptionalIdentifierArguments> {
+public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
 
     public ShowStocksCommand(AnimeCardsGame game) {
-        super(game, OptionalIdentifierArguments.class);
+        super(game);
         name = "stocks";
         guildOnly = false;
     }
 
     @Override
     protected void handle(CommandEvent event) {
-        String playerId = commandArgs.getSelectedOrPlayerId(player);
+        if(tryFindPlayerArgument(event)){
+            return;
+        }
 
-        StocksPersonal stocks = game.getStocks(playerId);
+        StocksPersonal stocks = game.getStocks(requestedPlayer.getId());
 
         String[] stockItems = stocks.getNames().stream()
                 .sorted((name1, name2) ->

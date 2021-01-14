@@ -1,6 +1,5 @@
 package game.squadron;
 
-import game.HealthState;
 import game.cards.CardPersonal;
 
 import java.util.ArrayList;

@@ -44,12 +44,18 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
 
         Player requestedPlayer = commandArgs.userId != null ? game.getPlayerById(commandArgs.userId) : player;
 
-        CardsPersonalManager collection = game.getCardsPersonalManager(requestedPlayer);
-        if (collection == null){
+        if (requestedPlayer == null){
             event.getChannel().sendMessage("player not found").queue();
             return;
         }
-        List<CardPersonal> cards = sortCards(filterCards(collection.getCards())).collect(Collectors.toList());
+
+        CardsPersonalManager collection = game.getCardsPersonalManager();
+        List<CardPersonal> cards =
+                sortCards(
+                        filterCards(
+                                collection.getCards(requestedPlayer.getId())
+                        )
+                ).collect(Collectors.toList());
         displayCards(event, cards);
     }
 
