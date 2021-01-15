@@ -16,7 +16,7 @@ public class ExchangeForStockCommand extends AbstractCommand<MultipleIdentifiers
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
 
         StringBuilder messageBuilder = new StringBuilder();
         for (String cardId : commandArgs.multipleIds){

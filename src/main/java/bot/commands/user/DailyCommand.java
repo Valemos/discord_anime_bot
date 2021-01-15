@@ -18,7 +18,7 @@ public class DailyCommand extends AbstractCommandNoArguments {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         int goldReceived = getRandomGold();
         player.getMaterials().addAmount(Material.GOLD, 100);
         sendMessage(event, String.format("you received %s gold!", goldReceived));

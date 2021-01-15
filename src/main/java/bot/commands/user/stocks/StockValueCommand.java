@@ -14,7 +14,7 @@ public class StockValueCommand extends AbstractCommand<MultipleWordsArguments> {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         String seriesName = commandArgs.getSingleString();
 
         StocksPersonal playerStocks = game.getStocks(player.getId());

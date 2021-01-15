@@ -25,7 +25,7 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         CardGlobal card = game.getCardGlobal(commandArgs.cardName, commandArgs.series);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();

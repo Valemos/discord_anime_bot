@@ -1,8 +1,9 @@
 package game.cards;
 
 import game.Charisma;
+import org.jetbrains.annotations.NotNull;
 
-public class CardStatsGlobal {
+public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
     int cardId;
     int amountCardsPrinted;
@@ -73,5 +74,10 @@ public class CardStatsGlobal {
         }else{
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull CardStatsGlobal o) {
+        return Integer.compare(cardFightsTotal, o.cardFightsTotal);
     }
 }

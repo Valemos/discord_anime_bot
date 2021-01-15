@@ -19,8 +19,8 @@ public class DropCommand extends AbstractCommandNoArguments {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
-        CardsGlobalManager collection = game.getCollection();
+    public void handle(CommandEvent event) {
+        CardsGlobalManager collection = game.getCardsGlobalManager();
         List<CardGlobal> cards = collection.getRandomCards(3);
         displayCards(cards, event.getChannel());
     }

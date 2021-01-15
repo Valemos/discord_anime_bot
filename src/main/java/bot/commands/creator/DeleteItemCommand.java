@@ -1,6 +1,5 @@
 package bot.commands.creator;
 
-import bot.CommandPermissions;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -20,7 +19,7 @@ public class DeleteItemCommand extends AbstractCommand<DeleteItemCommand.Argumen
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         if (game.removeItemById(commandArgs.itemId)){
             sendMessage(event, "item deleted");
         }else{

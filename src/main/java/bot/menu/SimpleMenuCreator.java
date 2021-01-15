@@ -38,6 +38,13 @@ public class SimpleMenuCreator {
         return builder.build();
     }
 
+
+    public static void showMenuForCardsTop(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game) {
+        showMenuWithMapper(cards, event, game, "Cards top",
+                DisplayableStats::getIdNameStats
+        );
+    }
+
     public static void showMenuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game) {
         showMenuWithMapper(cards, event, game, "Card ids list",
                 DisplayableStats::getIdName

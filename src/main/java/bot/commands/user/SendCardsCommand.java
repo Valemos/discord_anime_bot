@@ -6,7 +6,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardPersonal;
-import game.contract.ContractInterface;
 import game.contract.SendCardsContract;
 import org.kohsuke.args4j.Argument;
 
@@ -31,7 +30,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         Player targetPlayer = game.getPlayerById(commandArgs.recipientId);
 
         if (targetPlayer == null || targetPlayer == player){

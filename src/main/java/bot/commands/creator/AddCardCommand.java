@@ -28,7 +28,7 @@ public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         CardGlobal new_card = new CardGlobal(
                 commandArgs.name,
                 commandArgs.series,

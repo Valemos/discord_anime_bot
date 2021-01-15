@@ -17,7 +17,7 @@ public class WishCardByIdCommand extends AbstractCommand<MultipleIdentifiersArgu
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         boolean anyCardAdded = false;
 
         WishList wishList = game.getWishList(player.getId());

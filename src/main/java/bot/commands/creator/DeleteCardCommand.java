@@ -26,7 +26,7 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         CardGlobal card;
         if (commandArgs.cardId == null){
             card = game.getCardGlobal(commandArgs.name, commandArgs.series);

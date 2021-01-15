@@ -15,7 +15,7 @@ public class PatrolStopCommand extends AbstractCommandNoArguments {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         PatrolActivity patrol = game.findPatrol(player);
         if (patrol != null){
             MaterialsSet materialsFound = game.finishPatrol(patrol);

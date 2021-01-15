@@ -58,7 +58,7 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertEquals(2, game.getCollection().size());
+        assertEquals(2, game.getCardsGlobalManager().size());
     }
 
     @Test

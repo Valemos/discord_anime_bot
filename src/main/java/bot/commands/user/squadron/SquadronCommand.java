@@ -18,7 +18,7 @@ public class SquadronCommand extends AbstractCommandNoArguments {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         Squadron squadron = game.getSquadron(player);
         if (!squadron.isEmpty()){
             String squadronMessage = squadron.getSortedCards().stream()

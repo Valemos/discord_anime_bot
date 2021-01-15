@@ -35,7 +35,7 @@ public class AddItemCommand extends AbstractCommand<AddItemCommand.Arguments>{
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
 
         MaterialsSet newMaterialsSet = new MaterialsSet();
         newMaterialsSet.setAmount(Material.GOLD, commandArgs.goldPrice);

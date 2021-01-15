@@ -17,7 +17,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         Squadron squadron = game.getSquadron(player);
 
         StringBuilder msgBuilder = new StringBuilder();

@@ -24,7 +24,7 @@ public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         String targetPlayerId = game.getCardPersonalOwner(commandArgs.receiveCardId);
         if (!game.isPlayerExists(targetPlayerId)){
             sendMessage(event, "cannot find player with id " + targetPlayerId);

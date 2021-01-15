@@ -41,7 +41,7 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
 
         Player requestedPlayer = commandArgs.userId != null ? game.getPlayerById(commandArgs.userId) : player;
 

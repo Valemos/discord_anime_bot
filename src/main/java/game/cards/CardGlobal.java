@@ -52,4 +52,8 @@ public class CardGlobal implements DisplayableStats {
     public String getIdNameStats() {
         return getIdName() + stats.getStatsForPickDelay(0).getDescription();
     }
+
+    public static int comparatorPopularity(CardGlobal card1, CardGlobal card2) {
+        return card1.getStats().compareTo(card2.getStats());
+    }
 }

@@ -19,7 +19,7 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         if (game.createNewPatrol(player, commandArgs.patrolType)){
             sendMessage(event, "your heroes started " + commandArgs.patrolType.getTypeName() + " exploration");
         }else{

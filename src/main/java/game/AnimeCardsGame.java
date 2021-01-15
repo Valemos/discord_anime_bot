@@ -107,7 +107,7 @@ public class AnimeCardsGame {
         cardsGlobalManager.removeCardById(id);
     }
 
-    public CardsGlobalManager getCollection() {
+    public CardsGlobalManager getCardsGlobalManager() {
         return cardsGlobalManager;
     }
 
@@ -136,9 +136,15 @@ public class AnimeCardsGame {
         return cardsPersonalManager;
     }
 
-    public StocksManager getSeriesStocksManager() {
-        return stocksManager;
+    public CardPersonal getCardPersonal(String playerId, String cardId) {
+        CardPersonal card = cardsPersonalManager.getCardById(cardId);
+        if(playerId.equals(card.getPlayerId())){
+            return card;
+        }
+
+        return null;
     }
+
 
     public ItemGlobal addItem(ItemGlobal item) {
         itemsGlobalManager.addItem(item);
@@ -169,6 +175,7 @@ public class AnimeCardsGame {
         return itemsShop;
     }
 
+
     public Squadron getSquadron(Player player) {
         Squadron squadron = player.getSquadron();
 
@@ -178,15 +185,6 @@ public class AnimeCardsGame {
         }
 
         return squadron;
-    }
-
-    public CardPersonal getCardPersonal(String playerId, String cardId) {
-        CardPersonal card = cardsPersonalManager.getCardById(cardId);
-        if(playerId.equals(card.getPlayerId())){
-            return card;
-        }
-
-        return null;
     }
 
     public boolean createNewPatrol(Player player, PatrolType patrolType) {
@@ -230,6 +228,7 @@ public class AnimeCardsGame {
                 .findFirst().orElse(null);
     }
 
+
     public float exchangeCardForStock(Player player, CardPersonal card) {
         float cardStockValue = stocksManager.getCardStockValue(card);
 
@@ -246,6 +245,7 @@ public class AnimeCardsGame {
         return stocksManager.getElement(playerId);
     }
 
+
     public void addToWishlist(Player player, CardGlobal card) {
         wishListsManager.addCard(player.getId(), card);
     }
@@ -257,6 +257,7 @@ public class AnimeCardsGame {
     public @NotNull WishList getWishList(String playerId) {
         return wishListsManager.getElement(playerId);
     }
+
 
     public ContractsManager getContractsManager() {
         return contractsManager;

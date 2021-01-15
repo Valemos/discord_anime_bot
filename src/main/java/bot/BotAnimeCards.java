@@ -19,6 +19,7 @@ import bot.commands.user.squadron.PatrolStopCommand;
 import bot.commands.user.squadron.SquadronAddCommand;
 import bot.commands.user.squadron.SquadronCommand;
 import bot.commands.user.stocks.*;
+import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
@@ -28,6 +29,7 @@ import game.items.ItemGlobal;
 import game.items.ItemsGlobalManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.lang.reflect.InvocationTargetException;
@@ -39,7 +41,7 @@ import static java.lang.System.exit;
 
 public class BotAnimeCards {
 
-    JDA discord_api;
+    JDA discordAPI;
     AnimeCardsGame game;
     CommandClient commandClient;
     EventWaiter eventWaiter;
@@ -55,8 +57,8 @@ public class BotAnimeCards {
 
     public boolean authenticate(String token) {
         try{
-            discord_api = buildDiscordAPI(token);
-            discord_api.awaitReady();
+            discordAPI = buildDiscordAPI(token);
+            discordAPI.awaitReady();
             return true;
         }
         catch (LoginException | InterruptedException e2){
@@ -72,68 +74,72 @@ public class BotAnimeCards {
                 .setPrefix("#")
                 .setAlternativePrefix("c#");
 
-        addCommands(builder, Set.of(
-                DropCommand.class,
-                DailyCommand.class,
-                TopCharactersCommand.class,
-
-                AddCardCommand.class,
-                DeleteCardCommand.class,
-                AddItemCommand.class,
-                DeleteItemCommand.class,
-
-                ShowCollectionCommand.class,
-                InspectCardCommand.class,
-
-                ShopCommand.class,
-                ArmorShopCommand.class,
-                BuyCommand.class,
-
-                SquadronCommand.class,
-                SquadronAddCommand.class,
-                PatrolCommand.class,
-                PatrolStopCommand.class,
-
-                ExchangeForStockCommand.class,
-                ShowStocksCommand.class,
-                StockValueCommand.class,
-                StockCollectionValueCommand.class,
-
-                WishListCommand.class,
-                WishCardCommand.class,
-                WishCardByIdCommand.class,
-                WishRemoveCommand.class,
-                WishRemoveByIdCommand.class,
-
-                InventoryCommand.class,
-                MaterialsCommand.class,
-
-                SendCardsCommand.class,
-                TradeCommand.class,
-                MultiTradeCommand.class
-        ));
+        addCommands(builder, getCommands(game));
 
         return builder.build();
     }
 
-    private void addCommands(CommandClientBuilder builder, Set<Class<? extends AbstractCommand<?>>> commands) {
-        try {
-            for (Class<? extends AbstractCommand<?>> command : commands){
-                AbstractCommand<?> commandHandler = command.getConstructor(AnimeCardsGame.class).newInstance(game);
-                builder.addCommands(commandHandler);
-            }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+    AbstractCommand<?>[] getCommands(AnimeCardsGame game) {
+        return new AbstractCommand<?>[]{
+                new DropCommand(game),
+                new DailyCommand(game),
+                new TopCharactersCommand(game),
+
+                new AddCardCommand(game),
+                new DeleteCardCommand(game),
+                new AddItemCommand(game),
+                new DeleteItemCommand(game),
+
+                new ShowCollectionCommand(game),
+                new InspectCardCommand(game),
+
+                new ShopCommand(game),
+                new ArmorShopCommand(game),
+                new BuyCommand(game),
+
+                new SquadronCommand(game),
+                new SquadronAddCommand(game),
+                new PatrolCommand(game),
+                new PatrolStopCommand(game),
+
+                new ExchangeForStockCommand(game),
+                new ShowStocksCommand(game),
+                new StockValueCommand(game),
+                new StockCollectionValueCommand(game),
+
+                new WishListCommand(game),
+                new WishCardCommand(game),
+                new WishCardByIdCommand(game),
+                new WishRemoveCommand(game),
+                new WishRemoveByIdCommand(game),
+
+                new InventoryCommand(game),
+                new MaterialsCommand(game),
+
+                new SendCardsCommand(game),
+                new TradeCommand(game),
+                new MultiTradeCommand(game)
+        };
+    }
+
+    void addCommands(CommandClientBuilder builder, Command ... commands) {
+        for (Command command : commands){
+            builder.addCommand(command);
         }
     }
 
-    private JDA buildDiscordAPI(String token) throws LoginException {
+    JDA buildDiscordAPI(String token) throws LoginException {
         commandClient = buildCommandClient();
+        return buildJDA(token);
+    }
+
+    @NotNull
+    JDA buildJDA(String token) throws LoginException {
         return JDABuilder.createDefault(token).addEventListeners(commandClient, eventWaiter).build();
     }
 
     public void shutdown(){
-        discord_api.shutdown();
+        discordAPI.shutdown();
     }
 
     public boolean loadExternalSettings() {
@@ -143,7 +149,6 @@ public class BotAnimeCards {
     public void loadDefaultSettings() {
         Player tester = game.createNewPlayer("409754559775375371");
         Player tester2 = game.createNewPlayer("347162620996091904");
-
 
         CardGlobal card1 = new CardGlobal(
                 "Riko",
@@ -170,7 +175,7 @@ public class BotAnimeCards {
         items.addItem(new ItemGlobal("item4", 3, 5));
         items.addItem(new ItemGlobal("item5", 3, 6));
 
-        for (CardGlobal card : game.getCollection().getAllCards()){
+        for (CardGlobal card : game.getCardsGlobalManager().getAllCards()){
             game.pickPersonalCardDelay(tester, card.getId(), 1);
             game.pickPersonalCardDelay(tester2, card.getId(), 1);
         }
@@ -178,11 +183,11 @@ public class BotAnimeCards {
 
     public void waitForShutdown() {
         try {
-            discord_api.awaitStatus(JDA.Status.SHUTTING_DOWN);
+            discordAPI.awaitStatus(JDA.Status.SHUTTING_DOWN);
 
             // clear all resources and exit
 
-            discord_api.awaitStatus(JDA.Status.SHUTDOWN);
+            discordAPI.awaitStatus(JDA.Status.SHUTDOWN);
             exit(0);
 
         } catch (InterruptedException e) {

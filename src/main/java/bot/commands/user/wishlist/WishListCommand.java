@@ -16,7 +16,7 @@ public class WishListCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         if(tryFindPlayerArgument(event)){
             return;
         }

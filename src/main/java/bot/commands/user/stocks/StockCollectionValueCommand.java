@@ -14,7 +14,7 @@ public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    protected void handle(CommandEvent event) {
+    public void handle(CommandEvent event) {
         if(tryFindPlayerArgument(event)){
             return;
         }

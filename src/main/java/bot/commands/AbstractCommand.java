@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
-import net.dv8tion.jda.api.entities.Invite;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.kohsuke.args4j.CmdLineException;
@@ -70,7 +69,7 @@ public abstract class AbstractCommand<T> extends Command {
         return false;
     }
 
-    protected abstract void handle(CommandEvent event);
+    public abstract void handle(CommandEvent event);
 
     protected static void sendMessage(CommandEvent event, String message) {
         event.getChannel().sendMessage(message).queue();
