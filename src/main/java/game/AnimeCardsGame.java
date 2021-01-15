@@ -1,18 +1,22 @@
 package game;
 
+import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
 import game.cards.CardsGlobalManager;
 import game.cards.CardsPersonalManager;
-import game.items.ItemsPersonalManager;
+import game.contract.CardForCardContract;
+import game.contract.ContractsManager;
+import game.contract.MultiTradeContract;
+import game.contract.SendCardsContract;
 import game.items.ItemGlobal;
 import game.items.ItemsGlobalManager;
+import game.items.ItemsPersonalManager;
 import game.items.MaterialsSet;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
-import bot.commands.MenuCreator;
 import game.squadron.PatrolActivity;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
@@ -42,6 +46,8 @@ public class AnimeCardsGame {
     StocksManager stocksManager;
     WishListsManager wishListsManager;
 
+    ContractsManager contractsManager;
+
     private final List<PatrolActivity> currentPatrols;
 
 
@@ -54,6 +60,14 @@ public class AnimeCardsGame {
 
         cardsPersonalManager = new CardsPersonalManager();
         itemsPersonalManager = new ItemsPersonalManager();
+        stocksManager = new StocksManager();
+        wishListsManager = new WishListsManager();
+
+        contractsManager = new ContractsManager(List.of(
+                SendCardsContract.class,
+                CardForCardContract.class,
+                MultiTradeContract.class
+        ));
 
         currentPatrols = new LinkedList<>();
     }
@@ -136,11 +150,11 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return MenuCreator.getShopMenu(eventWaiter, itemsShop, user);
+        return SimpleMenuCreator.getShopMenu(eventWaiter, itemsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
-        return MenuCreator.getShopMenu(eventWaiter, armorShop, user);
+        return SimpleMenuCreator.getShopMenu(eventWaiter, armorShop, user);
     }
 
     public ItemsGlobalManager getItemsGlobal() {
@@ -166,8 +180,13 @@ public class AnimeCardsGame {
         return squadron;
     }
 
-    public CardPersonal getCardPersonal(Player player, String cardId) {
-        return player.getCardsManager().getCardById(cardId);
+    public CardPersonal getCardPersonal(String playerId, String cardId) {
+        CardPersonal card = cardsPersonalManager.getCardById(cardId);
+        if(playerId.equals(card.getPlayerId())){
+            return card;
+        }
+
+        return null;
     }
 
     public boolean createNewPatrol(Player player, PatrolType patrolType) {
@@ -213,7 +232,8 @@ public class AnimeCardsGame {
 
     public float exchangeCardForStock(Player player, CardPersonal card) {
         float cardStockValue = stocksManager.getCardStockValue(card);
-        if (cardsPersonalManager.removeCard(player.getId(), card)){
+
+        if (cardsPersonalManager.removeCard(player.getId(), card.getCardId())){
             String seriesTitle = card.getCharacterInfo().getSeriesTitle();
             stocksManager.addStockValue(player.getId(), seriesTitle, cardStockValue);
             return cardStockValue;
@@ -236,6 +256,18 @@ public class AnimeCardsGame {
 
     public @NotNull WishList getWishList(String playerId) {
         return wishListsManager.getElement(playerId);
+    }
+
+    public ContractsManager getContractsManager() {
+        return contractsManager;
+    }
+
+    public String getCardPersonalOwner(String receiveCardId) {
+        return cardsPersonalManager.getCardById(receiveCardId).getPlayerId();
+    }
+
+    public boolean isPlayerExists(String id) {
+        return getPlayerById(id) != null;
     }
 }
 

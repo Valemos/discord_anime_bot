@@ -1,10 +1,9 @@
 package bot.commands.user.inventory;
 
 import bot.commands.AbstractCommandOptionalPlayer;
-import bot.commands.MenuCreator;
+import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.Player;
 import game.items.ItemsPersonalManager;
 
 public class InventoryCommand extends AbstractCommandOptionalPlayer {
@@ -24,7 +23,7 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
 
         ItemsPersonalManager itemsManager = game.getItemsPersonal();
 
-        MenuCreator.showMenuForItemStats(
+        SimpleMenuCreator.showMenuForItemStats(
                 itemsManager.getElement(requestedPlayer.getId()).sortedByPower(),
                 event,
                 game

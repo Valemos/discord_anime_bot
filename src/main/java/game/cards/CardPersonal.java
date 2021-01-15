@@ -1,8 +1,10 @@
 package game.cards;
 
+import game.DisplayableStats;
+
 import java.util.Objects;
 
-public class CardPersonal {
+public class CardPersonal implements DisplayableStats {
     String cardId;
     String playerId; // TODO replace with database query in personal collections
 
@@ -69,10 +71,6 @@ public class CardPersonal {
         return powerLevel;
     }
 
-    public String getOneLineRepresentationString() {
-        return characterInfo.getFullName() + ": " + stats.getOneLineString();
-    }
-
     public String getName() {
         return characterInfo.characterName;
     }
@@ -83,5 +81,24 @@ public class CardPersonal {
 
     public float getApprovalRating(){
         return stats.approvalRating;
+    }
+
+    @Override
+    public String getNameStats() {
+        return characterInfo.getFullName() + ": " + stats.getDescription();
+    }
+
+    @Override
+    public String getIdName() {
+        return cardId + " - " + characterInfo.getFullName();
+    }
+
+    @Override
+    public String getIdNameStats() {
+        return getIdName() + ": " + stats.getDescription();
+    }
+
+    public static int comparatorPowerLevel(CardPersonal card1, CardPersonal card2) {
+        return Float.compare(card1.getPowerLevel(), card2.getPowerLevel());
     }
 }

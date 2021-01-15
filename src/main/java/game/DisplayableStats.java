@@ -1,6 +1,7 @@
 package game;
 
 public interface DisplayableStats {
-    String getNameStatsString();
+    String getNameStats();
     String getIdName();
+    String getIdNameStats();
 }

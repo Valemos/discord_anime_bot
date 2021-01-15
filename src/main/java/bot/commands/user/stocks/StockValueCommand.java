@@ -1,29 +1,21 @@
 package bot.commands.user.stocks;
 
 import bot.commands.AbstractCommand;
+import bot.commands.arguments.MultipleWordsArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.stocks.StocksPersonal;
-import org.kohsuke.args4j.Argument;
 
-import java.util.List;
-
-public class StockValueCommand extends AbstractCommand<StockValueCommand.Arguments> {
-
-    public static class Arguments{
-        @Argument(usage = "series name to search for")
-        List<String> seriesNameWords;
-    }
-
+public class StockValueCommand extends AbstractCommand<MultipleWordsArguments> {
     public StockValueCommand(AnimeCardsGame game) {
-        super(game, Arguments.class);
+        super(game, MultipleWordsArguments.class);
         name = "seriesvalue";
         guildOnly = false;
     }
 
     @Override
     protected void handle(CommandEvent event) {
-        String seriesName = String.join(" ", commandArgs.seriesNameWords);
+        String seriesName = commandArgs.getSingleString();
 
         StocksPersonal playerStocks = game.getStocks(player.getId());
         String stockName = playerStocks.findByNamePart(seriesName);

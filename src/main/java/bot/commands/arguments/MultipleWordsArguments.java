@@ -1,4 +1,4 @@
-package bot.commands;
+package bot.commands.arguments;
 
 import org.kohsuke.args4j.Argument;
 

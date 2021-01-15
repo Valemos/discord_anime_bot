@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemsGlobalManager {
+    // TODO change shop items to "potions" and extra drop and grab
+
     List<ItemGlobal> items = new ArrayList<>();
     private int currentItemId = 0;
 

@@ -29,7 +29,7 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
         CardGlobal card = game.getCardGlobal(commandArgs.cardName, commandArgs.series);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();
-            b.addField("Card info", card.getNameStatsString(), true);
+            b.addField("Card info", card.getNameStats(), true);
             b.setImage(card.getCharacterInfo().getImageUrl());
             event.getChannel().sendMessage(b.build()).queue();
         }else{

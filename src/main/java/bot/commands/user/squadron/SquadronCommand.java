@@ -6,7 +6,6 @@ import game.AnimeCardsGame;
 import game.cards.CardPersonal;
 import game.squadron.Squadron;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class SquadronCommand extends AbstractCommandNoArguments {
@@ -23,7 +22,7 @@ public class SquadronCommand extends AbstractCommandNoArguments {
         Squadron squadron = game.getSquadron(player);
         if (!squadron.isEmpty()){
             String squadronMessage = squadron.getSortedCards().stream()
-                    .map(CardPersonal::getOneLineRepresentationString)
+                    .map(CardPersonal::getNameStats)
                     .collect(Collectors.joining("\n"));
             sendMessage(event, squadronMessage);
         }else{

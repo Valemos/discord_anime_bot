@@ -1,7 +1,7 @@
 package bot.commands.user.squadron;
 
 import bot.commands.AbstractCommand;
-import bot.commands.MultipleIdentifiersArguments;
+import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardPersonal;
@@ -27,7 +27,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
                 break;
             }
 
-            CardPersonal card = game.getCardPersonal(player, cardId);
+            CardPersonal card = game.getCardPersonal(player.getId(), cardId);
 
             if (card != null){
                 squadron.addCard(card);

@@ -1,7 +1,8 @@
-package bot.commands.user.stocks;
+package bot.commands.user.inventory;
 
 import bot.commands.AbstractCommand;
 import bot.commands.SortingType;
+import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
@@ -20,7 +21,7 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
 
     public static class Arguments {
 
-        @Argument(usage = "user id to show collection for")
+        @Argument(metaVar = "user-id", usage = "user id to show collection for")
         String userId;
 
         @Option(name = "-series", aliases = {"-s"})
@@ -52,11 +53,14 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
         CardsPersonalManager collection = game.getCardsPersonalManager();
         List<CardPersonal> cards =
                 sortCards(
-                        filterCards(
-                                collection.getCards(requestedPlayer.getId())
-                        )
+                        collection.getCards(
+                                requestedPlayer.getId(),
+                                commandArgs.filterName,
+                                commandArgs.filterSeries
+                        ).stream()
                 ).collect(Collectors.toList());
-        displayCards(event, cards);
+
+        SimpleMenuCreator.showMenuForPersonalCardStats(cards, event, game);
     }
 
     private Stream<CardPersonal> sortCards(Stream<CardPersonal> cardStream) {
@@ -64,12 +68,12 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
             return cardStream;
         }
 
-        Comparator<CardPersonal> comparator = getCardComparatorFromList(commandArgs.sortingTypes);
+        Comparator<CardPersonal> comparator = getCardComparators(commandArgs.sortingTypes);
 
         return cardStream.sorted(comparator);
     }
 
-    private Comparator<CardPersonal> getCardComparatorFromList(List<SortingType> sortingTypes) {
+    private Comparator<CardPersonal> getCardComparators(List<SortingType> sortingTypes) {
         Comparator<CardPersonal> comparator = getComparator(sortingTypes.get(0));
         for (int i = 1; i < sortingTypes.size(); i++) {
             comparator.thenComparing(getComparator(sortingTypes.get(1)));
@@ -90,31 +94,5 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
         } else {
             return Comparator.comparing(CardPersonal::getCardId);
         }
-    }
-
-    private Stream<CardPersonal> filterCards(List<CardPersonal> cards) {
-        Stream<CardPersonal> cardStream = cards.stream();
-
-        if (commandArgs.filterName != null){
-            cardStream = cardStream.filter((card) -> card.getName().equals(commandArgs.filterName));
-        }
-
-        if (commandArgs.filterSeries != null){
-            cardStream = cardStream.filter((card) -> card.getSeries().equals(commandArgs.filterSeries));
-        }
-
-        return cardStream;
-    }
-
-    private void displayCards(CommandEvent event, List<CardPersonal> cards) {
-        StringBuilder b = new StringBuilder();
-        b.append("User collection");
-        int counter = 1;
-        for (CardPersonal card : cards){
-            b.append('\n').append(counter++).append('.');
-            b.append(card.getOneLineRepresentationString());
-        }
-
-        event.getChannel().sendMessage(b.toString()).queue();
     }
 }

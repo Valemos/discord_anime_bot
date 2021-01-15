@@ -45,9 +45,8 @@ public class Squadron {
 
     public List<CardPersonal> getSortedCards() {
         return cardsStateMap.keySet().stream()
-                .sorted((c1, c2) ->
-                        Float.compare(c1.getPowerLevel(), c2.getPowerLevel())
-                ).collect(Collectors.toList());
+                .sorted(CardPersonal::comparatorPowerLevel)
+                .collect(Collectors.toList());
     }
 
     public String getPlayerId() {

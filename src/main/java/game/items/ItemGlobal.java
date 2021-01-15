@@ -1,6 +1,8 @@
 package game.items;
 
-public class ItemGlobal implements game.DisplayableStats {
+import game.DisplayableStats;
+
+public class ItemGlobal implements DisplayableStats {
     private String id;
     private final String name;
     private final float attack;
@@ -58,7 +60,7 @@ public class ItemGlobal implements game.DisplayableStats {
     }
 
     @Override
-    public String getNameStatsString() {
+    public String getNameStats() {
         if (attack <= 0){
             return name + ": d-" + defense;
         }else if (defense <= 0){
@@ -71,5 +73,10 @@ public class ItemGlobal implements game.DisplayableStats {
     @Override
     public String getIdName() {
         return id + " - " + name;
+    }
+
+    @Override
+    public String getIdNameStats() {
+        return id + " - " + getNameStats();
     }
 }

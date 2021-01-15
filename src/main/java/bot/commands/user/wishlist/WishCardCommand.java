@@ -1,8 +1,8 @@
 package bot.commands.user.wishlist;
 
 import bot.commands.AbstractCommand;
-import bot.commands.MenuCreator;
-import bot.commands.MultipleWordsArguments;
+import bot.menu.SimpleMenuCreator;
+import bot.commands.arguments.MultipleWordsArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
@@ -29,7 +29,7 @@ public class WishCardCommand extends AbstractCommand<MultipleWordsArguments> {
             game.addToWishlist(player, cards.get(0));
             sendMessage(event, "added to wishlist" + cards.get(0).getCharacterInfo().getFullName());
         }else{
-            MenuCreator.showMenuForCardIds(cards, event, game);
+            SimpleMenuCreator.showMenuForCardIds(cards, event, game);
         }
     }
 

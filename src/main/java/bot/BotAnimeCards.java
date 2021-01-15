@@ -4,6 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
+import bot.commands.user.inventory.ShowCollectionCommand;
 import bot.commands.user.wishlist.*;
 import bot.commands.creator.AddItemCommand;
 import bot.commands.creator.AddCardCommand;
@@ -74,6 +75,7 @@ public class BotAnimeCards {
         addCommands(builder, Set.of(
                 DropCommand.class,
                 DailyCommand.class,
+                TopCharactersCommand.class,
 
                 AddCardCommand.class,
                 DeleteCardCommand.class,
@@ -104,7 +106,11 @@ public class BotAnimeCards {
                 WishRemoveByIdCommand.class,
 
                 InventoryCommand.class,
-                MaterialsCommand.class
+                MaterialsCommand.class,
+
+                SendCardsCommand.class,
+                TradeCommand.class,
+                MultiTradeCommand.class
         ));
 
         return builder.build();
@@ -136,31 +142,33 @@ public class BotAnimeCards {
 
     public void loadDefaultSettings() {
         Player tester = game.createNewPlayer("409754559775375371");
-        Player tester2 = game.createNewPlayer("797845777618698240");
+        Player tester2 = game.createNewPlayer("347162620996091904");
 
-        game.addCard(new CardGlobal(
+
+        CardGlobal card1 = new CardGlobal(
                 "Riko",
                 "Made in Abyss",
-                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7"));
-        game.addCard(new CardGlobal(
+                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7");
+
+        CardGlobal card2 = new CardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
-                "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk"));
-        game.addCard(new CardGlobal(
+                "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk");
+
+        CardGlobal card3 = new CardGlobal(
                 "Kaiman",
                 "Dorohedoro",
-                "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x"));
+                "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x");
+
+        game.addCard(card1);
+        game.addCard(card2);
+        game.addCard(card3);
 
         ItemsGlobalManager items = game.getItemsGlobal();
         items.addItem(new ItemGlobal("item1", 1, 0));
         items.addItem(new ItemGlobal("item2", 2, 0));
         items.addItem(new ItemGlobal("item4", 3, 5));
         items.addItem(new ItemGlobal("item5", 3, 6));
-        items.addItem(new ItemGlobal("item6", 0, 1));
-        items.addItem(new ItemGlobal("item7", 15, 0));
-        items.addItem(new ItemGlobal("item100", 15, 10));
-        items.addItem(new ItemGlobal("item1000", 15, 15));
-        items.addItem(new ItemGlobal("item3very long name with spaces", 3, 4));
 
         for (CardGlobal card : game.getCollection().getAllCards()){
             game.pickPersonalCardDelay(tester, card.getId(), 1);

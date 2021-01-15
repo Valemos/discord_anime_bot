@@ -50,7 +50,7 @@ public class CardStatsConstant{
         return approvalRating + dexterity + strength + wisdom;
     }
 
-    public String getOneLineString() {
+    public String getDescription() {
         return charisma.getName() + "\tbase: " + approvalRating + "\td: " + dexterity + "\ts: " + strength + "\tw: " + wisdom;
     }
 }

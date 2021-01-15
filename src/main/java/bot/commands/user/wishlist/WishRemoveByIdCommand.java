@@ -1,7 +1,7 @@
 package bot.commands.user.wishlist;
 
 import bot.commands.AbstractCommand;
-import bot.commands.MultipleIdentifiersArguments;
+import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.wishlist.WishList;
