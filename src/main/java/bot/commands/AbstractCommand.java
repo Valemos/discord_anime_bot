@@ -48,7 +48,7 @@ public abstract class AbstractCommand<T> extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    public void execute(CommandEvent event) {
         String userId = event.getAuthor().getId();
         player = game.getPlayerById(userId);
 

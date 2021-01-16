@@ -1,6 +1,8 @@
 package bot;
 
+import bot.commands.user.DropCommand;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BotAnimeCardsTest {
@@ -8,12 +10,26 @@ class BotAnimeCardsTest {
     static MessageSenderMock sender;
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setSender() throws Exception {
         sender = new MessageSenderMock();
     }
 
-    @Test
-    void testSendRegularMessage() {
-        sender.send("#drop", "1");
+    @BeforeEach
+    void setUp() {
+        sender.resetMocks();
     }
+
+    @Test
+    void testSendNotACommand() {
+        sender.send("not a command");
+        sender.assertCommandNotHandled();
+    }
+
+    @Test
+    void testSendRegularCommand() {
+        sender.send("#drop");
+        sender.assertCommandHandled(DropCommand.class);
+    }
+
+
 }

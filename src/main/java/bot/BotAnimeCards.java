@@ -55,9 +55,14 @@ public class BotAnimeCards {
         return game;
     }
 
+    public JDA getDiscordAPI() {
+        return discordAPI;
+    }
+
     public boolean authenticate(String token) {
         try{
-            discordAPI = buildDiscordAPI(token);
+            commandClient = buildCommandClient();
+            discordAPI = buildJDA(token);
             discordAPI.awaitReady();
             return true;
         }
@@ -67,7 +72,7 @@ public class BotAnimeCards {
         }
     }
 
-    private CommandClient buildCommandClient() {
+    CommandClient buildCommandClient() {
         CommandClientBuilder builder = new CommandClientBuilder();
         builder.setOwnerId("797845777618698240")
                 .setCoOwnerIds("409754559775375371")
@@ -126,11 +131,6 @@ public class BotAnimeCards {
         for (Command command : commands){
             builder.addCommand(command);
         }
-    }
-
-    JDA buildDiscordAPI(String token) throws LoginException {
-        commandClient = buildCommandClient();
-        return buildJDA(token);
     }
 
     @NotNull
