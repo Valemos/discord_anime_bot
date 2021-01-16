@@ -9,13 +9,13 @@ import org.kohsuke.args4j.Argument;
 public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
 
     public static class Args{
-        @Argument(usage = "name of character", required = true)
+        @Argument(metaVar = "name", usage = "name of character", required = true)
         String name;
 
-        @Argument(index = 1, usage = "series where the character from", required = true)
+        @Argument(metaVar = "series", index = 1, usage = "series where the character from", required = true)
         String series;
 
-        @Argument(index = 2, usage = "image url to use for card", required = true)
+        @Argument(metaVar = "image url", index = 2, usage = "image url to use for card", required = true)
         String imageUrl;
     }
 

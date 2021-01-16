@@ -13,7 +13,9 @@ public class WishList {
     }
 
     public void add(CardGlobal card) {
-        cards.add(card);
+        if (!cards.contains(card)){
+            cards.add(card);
+        }
     }
 
     public boolean removeById(String cardId) {

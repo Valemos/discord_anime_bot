@@ -19,9 +19,9 @@ public abstract class AbstractCommandOptionalPlayer extends AbstractCommand<Opti
 
         if (requestedPlayer == null){
             event.getChannel().sendMessage(playerId + " player not found").queue();
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

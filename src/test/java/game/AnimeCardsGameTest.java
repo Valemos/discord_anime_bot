@@ -29,17 +29,6 @@ class AnimeCardsGameTest {
     }
 
     @Test
-    void testNoUserFound() {
-        assertNull(game.getPlayerById("1"));
-    }
-
-    @Test
-    void testPlayerFound() {
-        game.addPlayer(player1);
-        assertEquals(player1, game.getPlayerById(player1.getId()));
-    }
-
-    @Test
     void testCardAdded() {
         game.addCard(card1);
         assertSame(card1, game.getCardGlobalById(card1.getId()));

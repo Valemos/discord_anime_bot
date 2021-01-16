@@ -3,18 +3,12 @@ package game;
 import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
-import game.cards.CardGlobal;
-import game.cards.CardPersonal;
-import game.cards.CardsGlobalManager;
-import game.cards.CardsPersonalManager;
+import game.cards.*;
 import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
 import game.contract.MultiTradeContract;
 import game.contract.SendCardsContract;
-import game.items.ItemGlobal;
-import game.items.ItemsGlobalManager;
-import game.items.ItemsPersonalManager;
-import game.items.MaterialsSet;
+import game.items.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.squadron.PatrolActivity;
@@ -34,42 +28,50 @@ import java.util.List;
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
 
-    private final ItemsShop itemsShop;
-    private final ArmorShop armorShop;
+    private ItemsShop itemsShop;
+    private ArmorShop armorShop;
 
-    private final List<Player> players = new ArrayList<>();
-    CardsGlobalManager cardsGlobalManager;
-    ItemsGlobalManager itemsGlobalManager;
+    private List<Player> players;
+    private CardsGlobalManager cardsGlobalManager;
+    private ItemsGlobalManager itemsGlobalManager;
+    private CardsPersonalManager cardsPersonalManager;
+    private ItemsPersonalManager itemsPersonalManager;
+    private StocksManager stocksManager;
+    private WishListsManager wishListsManager;
+    private MaterialsManager materialsManager;
 
-    CardsPersonalManager cardsPersonalManager;
-    ItemsPersonalManager itemsPersonalManager;
-    StocksManager stocksManager;
-    WishListsManager wishListsManager;
-
-    ContractsManager contractsManager;
-
-    private final List<PatrolActivity> currentPatrols;
+    private ContractsManager contractsManager;
+    private List<PatrolActivity> currentPatrols;
+    private CardDropManager cardDropManager;
 
 
     public AnimeCardsGame(EventWaiter eventWaiter) {
         this.eventWaiter = eventWaiter;
+        reset();
+    }
+
+    public void reset(){
+        players = new ArrayList<>();
         cardsGlobalManager = new CardsGlobalManager();
         itemsGlobalManager = new ItemsGlobalManager();
-        itemsShop = new ItemsShop(itemsGlobalManager);
-        armorShop = new ArmorShop(itemsGlobalManager);
 
         cardsPersonalManager = new CardsPersonalManager();
         itemsPersonalManager = new ItemsPersonalManager();
         stocksManager = new StocksManager();
         wishListsManager = new WishListsManager();
+        materialsManager = new MaterialsManager();
+
+        currentPatrols = new LinkedList<>();
+
+        itemsShop = new ItemsShop(itemsGlobalManager);
+        armorShop = new ArmorShop(itemsGlobalManager);
 
         contractsManager = new ContractsManager(List.of(
                 SendCardsContract.class,
                 CardForCardContract.class,
                 MultiTradeContract.class
         ));
-
-        currentPatrols = new LinkedList<>();
+        cardDropManager = new CardDropManager();
     }
 
     public EventWaiter getEventWaiter() {
@@ -87,6 +89,10 @@ public class AnimeCardsGame {
         players.add(player);
     }
 
+    public List<Player> getAllPlayers() {
+        return players;
+    }
+
     public void addCard(CardGlobal card) {
         cardsGlobalManager.addCard(card);
     }
@@ -96,11 +102,20 @@ public class AnimeCardsGame {
     }
 
     public CardGlobal getCardGlobal(String cardName, String series) {
-        return cardsGlobalManager.getCardByNameAndSeries(cardName, series);
+        return cardsGlobalManager.getFirstCard(cardName, series);
     }
 
+    public CardGlobal getCardGlobalUnique(String name, String series) {
+        List<CardGlobal> cards = cardsGlobalManager.getAllCards(name, series);
+        if (cards.size() == 1){
+            return cards.get(0);
+        }
+        return null;
+    }
+
+
     public List<CardGlobal> getMatchingCardsGlobal(String name, String series) {
-        return cardsGlobalManager.getAllCardsByNameAndSeries(name, series);
+        return cardsGlobalManager.getAllCards(name, series);
     }
 
     public void removeCardById(String id) {
@@ -115,17 +130,23 @@ public class AnimeCardsGame {
         Player player = new Player(
                 playerId,
                 cardsPersonalManager,
-                new MaterialsSet(),
-                itemsPersonalManager
+                itemsPersonalManager,
+                materialsManager
         );
         addPlayer(player);
         return player;
     }
 
-    public void pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
+    public CardPersonal pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
         CardGlobal cardGlobal = getCardGlobalById(globalCardId);
+        if (cardGlobal == null){
+            return null;
+        }
+
+        cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
+        return card;
     }
 
     private CardPersonal getPersonalCardForDelay(CardGlobal card, float delay) {
@@ -269,6 +290,10 @@ public class AnimeCardsGame {
 
     public boolean isPlayerExists(String id) {
         return getPlayerById(id) != null;
+    }
+
+    public CardDropManager getDropManager() {
+        return cardDropManager;
     }
 }
 

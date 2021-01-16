@@ -1,10 +1,12 @@
 package bot.commands;
 
 import bot.CommandPermissions;
+import bot.commands.user.inventory.InspectCardCommand;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.kohsuke.args4j.CmdLineException;
@@ -52,19 +54,19 @@ public abstract class AbstractCommand<T> extends Command {
         String userId = event.getAuthor().getId();
         player = game.getPlayerById(userId);
 
-        if(tryParseArguments(event)){
+        if(tryParseArguments(event.getArgs(), event.getChannel())){
             handle(event);
         }
     }
 
-    private boolean tryParseArguments(CommandEvent event) {
-        String[] args = Commandline.translateCommandline(event.getArgs());
+    public boolean tryParseArguments(String argsString, MessageChannel channel) {
+        String[] args = Commandline.translateCommandline(argsString);
 
         try{
             getNewArgumentsParser(argumentsClass).parseArgument(args);
             return true;
         }catch(CmdLineException e){
-            event.getChannel().sendMessage(e.getMessage()).queue();
+            channel.sendMessage(e.getMessage()).queue();
         }
         return false;
     }
@@ -73,5 +75,13 @@ public abstract class AbstractCommand<T> extends Command {
 
     protected static void sendMessage(CommandEvent event, String message) {
         event.getChannel().sendMessage(message).queue();
+    }
+
+    public boolean isSameCommandClass(Class<? extends AbstractCommand<?>> otherClass){
+        return this.getClass().getCanonicalName().startsWith(otherClass.getCanonicalName());
+    }
+
+    public T getArgumentsObject() {
+        return commandArgs;
     }
 }

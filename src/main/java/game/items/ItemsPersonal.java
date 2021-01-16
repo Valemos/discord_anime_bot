@@ -9,7 +9,7 @@ public class ItemsPersonal extends ArrayList<ItemGlobal> {
         return stream().filter(i -> i.getId().equals(itemId)).findFirst().orElse(null);
     }
 
-    public List<ItemGlobal> sortedByPower() {
+    public List<ItemGlobal> sortedByItemPower() {
         return stream().sorted(
                 (i1, i2) -> Float.compare(
                         i1.getItemPower(),

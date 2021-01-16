@@ -2,7 +2,7 @@ package game.cards;
 
 import game.DisplayableStats;
 
-public class CardGlobal implements DisplayableStats {
+public class CardGlobal implements DisplayableStats, ComparableCard {
 
     CharacterInfo characterInfo;
     CardStatsGlobal stats;
@@ -20,8 +20,19 @@ public class CardGlobal implements DisplayableStats {
         return stats;
     }
 
+    @Override
     public CharacterInfo getCharacterInfo() {
         return characterInfo;
+    }
+
+    @Override
+    public String getName() {
+        return characterInfo.characterName;
+    }
+
+    @Override
+    public String getSeries() {
+        return characterInfo.seriesTitle;
     }
 
     public void setId(String newCardId) {
@@ -50,10 +61,23 @@ public class CardGlobal implements DisplayableStats {
 
     @Override
     public String getIdNameStats() {
-        return getIdName() + stats.getStatsForPickDelay(0).getDescription();
+        return getIdName() + "\n" + stats.getStatsForPickDelay(0).getDescription();
     }
 
-    public static int comparatorPopularity(CardGlobal card1, CardGlobal card2) {
-        return card1.getStats().compareTo(card2.getStats());
+    @Override
+    public String getFullDescription() {
+        return getIdNameStats();
+    }
+
+    public static int comparatorStats(CardGlobal card1, CardGlobal card2) {
+        return card2.getStats().compareTo(card1.getStats());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof CardGlobal){
+            return characterInfo.equals(((CardGlobal) obj).getCharacterInfo());
+        }
+        return false;
     }
 }

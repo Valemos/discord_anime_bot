@@ -1,15 +1,17 @@
 package game.cards;
 
+import bot.commands.SortingType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CardsGlobalManager {
-    List<CardGlobal> cards;
+public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
+
     private int currentCardId = 0;
 
     public CardsGlobalManager() {
@@ -17,7 +19,25 @@ public class CardsGlobalManager {
     }
 
     public CardsGlobalManager(List<CardGlobal> cards) {
-        this.cards = cards;
+        super(cards);
+    }
+
+    @Override
+    protected Comparator<CardGlobal> getComparator(SortingType sortingType) {
+        if (SortingType.FAVOR == sortingType ||
+                SortingType.F == sortingType){
+
+            return (c1, c2) -> Float.compare(c2.getStats().getApprovalRating(), c1.getStats().getApprovalRating());
+
+        } else if (SortingType.PRINT == sortingType ||
+                SortingType.P == sortingType){
+
+            return Comparator.comparingInt(c -> c.getStats().amountCardsPrinted);
+        } else if (SortingType.POWER == sortingType ||
+                SortingType.PW == sortingType){
+            return CardGlobal::comparatorStats;
+        }
+        return Comparator.comparing(CardGlobal::getId);
     }
 
     public void addCard(CardGlobal card) {
@@ -30,20 +50,17 @@ public class CardsGlobalManager {
     }
 
     private boolean isCardExists(CardGlobal card) {
-        return cards.contains(card);
+        if (card.getId() != null){
+            return cards.contains(card);
+        }
+        return false;
     }
 
     private String generateNextCardId() {
         return String.valueOf(++currentCardId);
     }
 
-    public CardGlobal getCardById(String id) {
-        return cards.stream()
-                .filter((card)-> card.getId().equals(id))
-                .findFirst().orElse(null);
-    }
-
-    public List<CardGlobal> getAllCardsByNameAndSeries(String name, String series) {
+    public List<CardGlobal> getAllCards(String name, String series) {
         return filterCardsByName(name,
                 filterCardsBySeries(series,
                         cards.stream()
@@ -51,8 +68,8 @@ public class CardsGlobalManager {
         ).collect(Collectors.toList());
     }
 
-    public CardGlobal getCardByNameAndSeries(String name, String series) {
-        List<CardGlobal> cardsFound = getAllCardsByNameAndSeries(name, series);
+    public CardGlobal getFirstCard(String name, String series) {
+        List<CardGlobal> cardsFound = getAllCards(name, series);
         if (cardsFound.size() == 1){
             return cardsFound.get(0);
         }

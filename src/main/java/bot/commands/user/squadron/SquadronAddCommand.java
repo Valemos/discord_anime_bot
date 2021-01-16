@@ -33,7 +33,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
                 squadron.addCard(card);
                 msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
             }else{
-                msgBuilder.append(cardId).append(" not found in player collection");
+                msgBuilder.append(cardId).append(" not found in player collection\n");
             }
         }
 

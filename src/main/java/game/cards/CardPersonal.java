@@ -4,7 +4,7 @@ import game.DisplayableStats;
 
 import java.util.Objects;
 
-public class CardPersonal implements DisplayableStats {
+public class CardPersonal implements DisplayableStats, ComparableCard {
     String cardId;
     String playerId; // TODO replace with database query in personal collections
 
@@ -36,6 +36,7 @@ public class CardPersonal implements DisplayableStats {
         return stats;
     }
 
+    @Override
     public CharacterInfo getCharacterInfo() {
         return characterInfo;
     }
@@ -57,6 +58,14 @@ public class CardPersonal implements DisplayableStats {
         this.cardId = cardId;
     }
 
+    public float getApprovalRating(){
+        return stats.approvalRating;
+    }
+
+    public int getCardPrint() {
+        return stats.cardPrint;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof CardPersonal){
@@ -71,16 +80,19 @@ public class CardPersonal implements DisplayableStats {
         return powerLevel;
     }
 
+    @Override
     public String getName() {
         return characterInfo.characterName;
     }
 
+    @Override
     public String getSeries() {
         return characterInfo.seriesTitle;
     }
 
-    public float getApprovalRating(){
-        return stats.approvalRating;
+    @Override
+    public String getId() {
+        return characterInfo.getId();
     }
 
     @Override
@@ -98,7 +110,12 @@ public class CardPersonal implements DisplayableStats {
         return getIdName() + ": " + stats.getDescription();
     }
 
+    @Override
+    public String getFullDescription() {
+        return getIdNameStats();
+    }
+
     public static int comparatorPowerLevel(CardPersonal card1, CardPersonal card2) {
-        return Float.compare(card1.getPowerLevel(), card2.getPowerLevel());
+        return Float.compare(card2.getPowerLevel(), card1.getPowerLevel());
     }
 }

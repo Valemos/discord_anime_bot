@@ -8,7 +8,7 @@ import org.kohsuke.args4j.Argument;
 
 public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
     public static class Arguments{
-        @Argument(required = true, usage = "type of world to send current squadron to")
+        @Argument(metaVar = "exploration world \"overworld\" or \"underworld\"", required = true, usage = "type of world to send current squadron to")
         PatrolType patrolType;
     }
 

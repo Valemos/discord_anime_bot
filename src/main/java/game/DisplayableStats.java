@@ -4,4 +4,5 @@ public interface DisplayableStats {
     String getNameStats();
     String getIdName();
     String getIdNameStats();
+    String getFullDescription();
 }

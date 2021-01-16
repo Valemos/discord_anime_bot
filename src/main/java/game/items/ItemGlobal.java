@@ -39,10 +39,6 @@ public class ItemGlobal implements DisplayableStats {
         return description;
     }
 
-    public String getOneLineString() {
-        return String.format("%s: %s attack %s defense", name, attack, defense);
-    }
-
     public float getAttack() {
         return attack;
     }
@@ -62,11 +58,11 @@ public class ItemGlobal implements DisplayableStats {
     @Override
     public String getNameStats() {
         if (attack <= 0){
-            return name + ": d-" + defense;
+            return name + ": def-" + defense;
         }else if (defense <= 0){
-            return name + ": a-" + attack;
+            return name + ": atk-" + attack;
         }else{
-            return name + ": a-" + attack + " d-" + defense;
+            return name + ": atk-" + attack + " def-" + defense;
         }
     }
 
@@ -78,5 +74,14 @@ public class ItemGlobal implements DisplayableStats {
     @Override
     public String getIdNameStats() {
         return id + " - " + getNameStats();
+    }
+
+    @Override
+    public String getFullDescription() {
+        if (description != null && !description.isEmpty()){
+            return getIdNameStats() + '\n' + description;
+        }else{
+            return getIdNameStats();
+        }
     }
 }

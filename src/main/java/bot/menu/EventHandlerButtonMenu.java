@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import bot.commands.MenuEmoji;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Menu;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,8 +17,10 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.exceptions.PermissionException;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
+import org.jetbrains.annotations.NotNull;
 
 public class EventHandlerButtonMenu extends Menu
 {
@@ -74,47 +75,52 @@ public class EventHandlerButtonMenu extends Menu
                 // throw an error when we queue a rest action.
                 RestAction<Void> r = emote==null ? m.addReaction(choices.get(i)) : m.addReaction(emote);
                 if(i+1<choices.size()) {
-                    r.queue(); // If there is still more reactions to add we delay using the EventWaiter
+                    r.queue();
                 }else{
-                    // This is the last reaction added.
-                    r.queue(v -> {
-                        waiter.waitForEvent(MessageReactionAddEvent.class, event -> {
-                            // If the message is not the same as the ButtonMenu
-                            // currently being displayed.
-                            if(!event.getMessageId().equals(m.getId()))
-                                return false;
-
-                            // If the reaction is an Emote we get the Snowflake,
-                            // otherwise we get the unicode value.
-                            String re = event.getReaction().getReactionEmote().isEmote()
-                                    ? event.getReaction().getReactionEmote().getId()
-                                    : event.getReaction().getReactionEmote().getName();
-
-                            // If the value we got is not registered as a button to
-                            // the ButtonMenu being displayed we return false.
-                            if(!choices.contains(re))
-                                return false;
-
-                            // Last check is that the person who added the reaction
-                            // is a valid user.
-                            return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
-                        }, (MessageReactionAddEvent event) -> {
-                            // What happens next is after a valid event
-                            // is fired and processed above.
-
-                            // Preform the specified action with the ReactionEmote
-                            // TODO make event mechanism like in paginator (repeatable)
-                            action.accept(event);
-                            finalAction.accept(m);
-                        }, timeout, unit, () -> finalAction.accept(m));
-                    });
+                    r.queue(v -> selectionMenuWaitReactions(m));
                 }
             }
         });
     }
 
+    private void selectionMenuWaitReactions(Message message) {
+
+        waiter.waitForEvent(MessageReactionAddEvent.class,
+                event -> {
+                    if(!event.getMessageId().equals(message.getId())) return false;
+
+                    String reaction = getReaction(event);
+                    if (!choices.contains(reaction)) return false;
+
+                    return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
+                },
+                event -> handleAcceptReaction(event, message),
+                timeout, unit, () -> finalAction.accept(message));
+    }
+
+    @NotNull
+    private String getReaction(MessageReactionAddEvent event) {
+        return event.getReaction().getReactionEmote().isEmote()
+                ? event.getReaction().getReactionEmote().getId()
+                : event.getReaction().getReactionEmote().getName();
+    }
+
+    private void handleAcceptReaction(MessageReactionAddEvent event, Message message) {
+
+        action.accept(event);
+
+        try {
+            User user = event.getUser();
+            if (user != null){
+                event.getReaction().removeReaction(user).queue();
+            }
+        } catch(PermissionException ignored) {}
+
+        message.editMessage(getMessage()).queue(this::selectionMenuWaitReactions);
+    }
+
     // Generates a ButtonMenu message
-    private Message getMessage()
+    public Message getMessage()
     {
         MessageBuilder mbuilder = new MessageBuilder();
         if(text!=null)
@@ -135,7 +141,7 @@ public class EventHandlerButtonMenu extends Menu
         private String description;
         private final List<String> choices = new LinkedList<>();
         private Consumer<MessageReactionAddEvent> action;
-        private Consumer<Message> finalAction = (m) -> {};
+        private Consumer<Message> finalAction = m -> m.delete().queue();
 
         @Override
         public EventHandlerButtonMenu build()

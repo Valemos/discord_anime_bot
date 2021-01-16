@@ -8,7 +8,7 @@ import org.kohsuke.args4j.Argument;
 
 public class BuyCommand extends AbstractCommand<BuyCommand.Arguments> {
     public static class Arguments {
-        @Argument(required=true)
+        @Argument(metaVar = "item id", required=true)
         String itemId;
     }
 
@@ -22,9 +22,14 @@ public class BuyCommand extends AbstractCommand<BuyCommand.Arguments> {
     public void handle(CommandEvent event) {
         ItemsShop shop = game.getItemsShop();
         if (shop.tryBuyItem(player, commandArgs.itemId)){
-            sendMessage(event, String.format("you bought \"%s\"", shop.getLastItemBought().getName()));
+            sendMessage(event, String.format("you bought \"%s\"", shop.getLastItemSelected().getName()));
         }else{
-            sendMessage(event, "cannot buy this item");
+            sendMessage(event,
+                    "cannot buy this item\nyou have:\n"
+                    + player.getMaterials().getDescriptionMultiline()
+                    + "\nItem costs:\n"
+                    + shop.getLastItemSelected().getMaterialsCost().getDescriptionMultiline()
+            );
         }
     }
 }

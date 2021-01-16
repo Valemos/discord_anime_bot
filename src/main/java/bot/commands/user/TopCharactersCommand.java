@@ -1,6 +1,7 @@
 package bot.commands.user;
 
 import bot.commands.AbstractCommand;
+import bot.commands.SortingType;
 import bot.commands.arguments.MenuPageArguments;
 import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -20,12 +21,8 @@ public class TopCharactersCommand extends AbstractCommand<MenuPageArguments> {
 
     @Override
     public void handle(CommandEvent event) {
-        List<CardGlobal> allCards = game.getCardsGlobalManager().getAllCards();
+        List<CardGlobal> allCards = game.getCardsGlobalManager().getCardsSorted(List.of(SortingType.POWER));
 
-        allCards = allCards.stream()
-                .sorted(CardGlobal::comparatorPopularity)
-                .collect(Collectors.toList());
-
-        SimpleMenuCreator.showMenuForCardsTop(allCards, event, game);
+        SimpleMenuCreator.showMenuForCardsTop(allCards, event, game, commandArgs.pageNumber);
     }
 }

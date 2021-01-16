@@ -5,6 +5,7 @@ import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.inventory.ShowCollectionCommand;
+import bot.commands.user.squadron.*;
 import bot.commands.user.wishlist.*;
 import bot.commands.creator.AddItemCommand;
 import bot.commands.creator.AddCardCommand;
@@ -14,10 +15,6 @@ import bot.commands.user.*;
 import bot.commands.user.shop.ArmorShopCommand;
 import bot.commands.user.shop.BuyCommand;
 import bot.commands.user.shop.ShopCommand;
-import bot.commands.user.squadron.PatrolCommand;
-import bot.commands.user.squadron.PatrolStopCommand;
-import bot.commands.user.squadron.SquadronAddCommand;
-import bot.commands.user.squadron.SquadronCommand;
 import bot.commands.user.stocks.*;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClient;
@@ -25,19 +22,25 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.CardGlobal;
+import game.cards.CardStatsGlobal;
 import game.items.ItemGlobal;
 import game.items.ItemsGlobalManager;
+import game.items.Material;
+import game.items.MaterialsSet;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.lang.System.exit;
+import static java.util.Map.*;
 
 public class BotAnimeCards {
 
@@ -47,7 +50,11 @@ public class BotAnimeCards {
     EventWaiter eventWaiter;
 
     public BotAnimeCards() {
-        eventWaiter = new EventWaiter();
+        this(new EventWaiter());
+    }
+
+    public BotAnimeCards(EventWaiter eventWaiter) {
+        this.eventWaiter = eventWaiter;
         game = new AnimeCardsGame(eventWaiter);
     }
 
@@ -104,6 +111,7 @@ public class BotAnimeCards {
 
                 new SquadronCommand(game),
                 new SquadronAddCommand(game),
+                new SquadronRemoveCommand(game),
                 new PatrolCommand(game),
                 new PatrolStopCommand(game),
 
@@ -146,39 +154,55 @@ public class BotAnimeCards {
         return false;
     }
 
-    public void loadDefaultSettings() {
-        Player tester = game.createNewPlayer("409754559775375371");
+    public void loadDefaultGameSettings(AnimeCardsGame game) {
+        Player tester1 = game.createNewPlayer("409754559775375371");
         Player tester2 = game.createNewPlayer("347162620996091904");
 
-        CardGlobal card1 = new CardGlobal(
+        List<CardGlobal> cards = List.of(
+                new CardGlobal(
                 "Riko",
                 "Made in Abyss",
-                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7");
-
-        CardGlobal card2 = new CardGlobal(
+                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
+                        new CardStatsGlobal(-1, 1000, 10, 1800, Charisma.NEUTRAL)),
+                new CardGlobal(
+                "Reg",
+                "Made in Abyss",
+                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
+                        new CardStatsGlobal(-1, 110, 1, 125, Charisma.NEUTRAL)),
+                new CardGlobal(
+                "Mitty",
+                "Made in Abyss",
+                "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
+                        new CardStatsGlobal(-1, 5, 0, 5, Charisma.NEUTRAL)),
+                new CardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
-                "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk");
-
-        CardGlobal card3 = new CardGlobal(
+                "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk",
+                        new CardStatsGlobal(-1, 100, 80, 115, Charisma.NEUTRAL)),
+                new CardGlobal(
                 "Kaiman",
                 "Dorohedoro",
-                "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x");
+                "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x",
+                        new CardStatsGlobal(-1, 1000, 80, 1300, Charisma.NEUTRAL))
+        );
 
-        game.addCard(card1);
-        game.addCard(card2);
-        game.addCard(card3);
-
-        ItemsGlobalManager items = game.getItemsGlobal();
-        items.addItem(new ItemGlobal("item1", 1, 0));
-        items.addItem(new ItemGlobal("item2", 2, 0));
-        items.addItem(new ItemGlobal("item4", 3, 5));
-        items.addItem(new ItemGlobal("item5", 3, 6));
-
-        for (CardGlobal card : game.getCardsGlobalManager().getAllCards()){
-            game.pickPersonalCardDelay(tester, card.getId(), 1);
+        for (CardGlobal card : cards) {
+            game.addCard(card);
+            game.pickPersonalCardDelay(tester1, card.getId(), 1);
             game.pickPersonalCardDelay(tester2, card.getId(), 1);
         }
+
+        tester1.getMaterials().setAmount(Material.GOLD, 100);
+
+        game.getItemsGlobal().addItem(new ItemGlobal(
+                "some potion 1", 100, 0, "",
+                new MaterialsSet(of(Material.GOLD, 9000))));
+        game.getItemsGlobal().addItem(new ItemGlobal(
+                "some potion 2", 0, 5, "*potion description*",
+                new MaterialsSet(of(Material.GOLD, 50))));
+        game.getItemsGlobal().addItem(new ItemGlobal(
+                "dummy item 1", 8, 0, "*item details*",
+                new MaterialsSet(of(Material.GOLD, 20))));
     }
 
     public void waitForShutdown() {

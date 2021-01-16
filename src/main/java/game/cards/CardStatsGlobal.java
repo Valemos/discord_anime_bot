@@ -7,7 +7,7 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
     int cardId;
     int amountCardsPrinted;
-    int amountCardsDropped;
+    int amountCardsBurned;
     int cardFightsTotal;
     Charisma charisma;
 
@@ -16,19 +16,19 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
         this(-1, 0, 0, 0, Charisma.fromValue(0));
     }
 
-    public CardStatsGlobal(int cardId, int amountCardsPrinted, int amountCardsDropped, int cardFightsTotal, Charisma charisma) {
+    public CardStatsGlobal(int cardId, int amountCardsPrinted, int amountCardsBurned, int cardFightsTotal, Charisma charisma) {
         this.cardId = cardId;
         this.amountCardsPrinted = amountCardsPrinted;
-        this.amountCardsDropped = amountCardsDropped;
+        this.amountCardsBurned = amountCardsBurned;
         this.cardFightsTotal = cardFightsTotal;
         this.charisma = charisma;
     }
 
     public float getApprovalRating(){
-        if (amountCardsDropped != 0){
-            return (amountCardsPrinted - amountCardsDropped) / (float)amountCardsDropped;
+        if (amountCardsBurned != 0){
+            return (amountCardsPrinted - amountCardsBurned) / (float) amountCardsBurned;
         }else{
-            return amountCardsPrinted - amountCardsDropped;
+            return amountCardsPrinted - amountCardsBurned;
         }
     }
 
@@ -51,15 +51,12 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
     public CardStatsConstant getStatsForPickDelay(float delayCardPicked) {
         return new CardStatsConstant(
                 getApprovalRating(),
-                dexterityFunction(delayCardPicked),
+                amountCardsPrinted,
+                delayCardPicked,
                 getStrength(),
                 getWisdom(),
                 getCharisma()
         );
-    }
-
-    private float dexterityFunction(float delayCardPicked) {
-        return delayCardPicked;
     }
 
     @Override
@@ -68,7 +65,7 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
             CardStatsGlobal other = (CardStatsGlobal) obj;
             return cardId == other.cardId &&
                     amountCardsPrinted == other.amountCardsPrinted &&
-                    amountCardsDropped == other.amountCardsDropped &&
+                    amountCardsBurned == other.amountCardsBurned &&
                     cardFightsTotal == other.cardFightsTotal &&
                     charisma == other.charisma;
         }else{
@@ -79,5 +76,9 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
     @Override
     public int compareTo(@NotNull CardStatsGlobal o) {
         return Integer.compare(cardFightsTotal, o.cardFightsTotal);
+    }
+
+    public void incrementCardPrint() {
+        amountCardsPrinted++;
     }
 }

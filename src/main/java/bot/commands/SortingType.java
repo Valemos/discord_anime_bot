@@ -2,5 +2,6 @@ package bot.commands;
 
 public enum SortingType {
     FAVOR, F,
-    PRINT, P
+    PRINT, P,
+    POWER, PW
 }

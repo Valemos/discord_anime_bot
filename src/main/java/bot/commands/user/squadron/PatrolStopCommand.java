@@ -20,10 +20,10 @@ public class PatrolStopCommand extends AbstractCommandNoArguments {
         if (patrol != null){
             MaterialsSet materialsFound = game.finishPatrol(patrol);
             sendMessage(event,
-                    "current patrol was finished, you received\n"
+                    "current patrol has finished, you received\n"
                             + materialsFound.getDescriptionMultiline());
         }else{
-            sendMessage(event, "you have no active patrol");
+            sendMessage(event, "you have no busy squadron");
         }
     }
 }

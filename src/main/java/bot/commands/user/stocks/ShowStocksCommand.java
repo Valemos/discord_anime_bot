@@ -25,19 +25,22 @@ public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
         String[] stockItems = stocks.getNames().stream()
                 .sorted((name1, name2) ->
                         Float.compare(
-                                stocks.getStockValue(name1),
-                                stocks.getStockValue(name2)))
+                                stocks.getStockValue(name2),
+                                stocks.getStockValue(name1)))
                 .map(stocks::getStockStringValue)
                 .toArray(String[]::new);
 
-        Paginator stocksMenu = new Paginator.Builder()
+        Paginator.Builder stocksMenu = new Paginator.Builder()
                 .setEventWaiter(game.getEventWaiter())
                 .setText("Stock values for anime series")
                 .setUsers(event.getAuthor())
-                .setItems(stockItems)
                 .setItemsPerPage(10)
-                .build();
+                .waitOnSinglePage(true);
 
-        stocksMenu.display(event.getChannel());
+        stocksMenu = stockItems.length > 0 ?
+                stocksMenu.addItems(stockItems) :
+                stocksMenu.addItems("No stocks");
+
+        stocksMenu.build().display(event.getChannel());
     }
 }

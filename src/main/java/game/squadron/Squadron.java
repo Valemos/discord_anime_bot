@@ -66,7 +66,7 @@ public class Squadron {
     }
 
     public boolean isFull() {
-        return cardsStateMap.size() < sizeMax;
+        return cardsStateMap.size() == sizeMax;
     }
 
     public float getPowerLevel() {

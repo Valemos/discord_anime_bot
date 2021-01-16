@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public abstract class AbstractShop {
 
     protected final ItemsGlobalManager itemCollection;
-    ItemGlobal lastItemBought;
+    ItemGlobal lastItemSelected;
     private final String messageTitle;
 
     public AbstractShop(ItemsGlobalManager items, String messageTitle) {
@@ -21,18 +21,18 @@ public abstract class AbstractShop {
     }
 
     public boolean tryBuyItem(Player player, String itemId) {
-        lastItemBought = filterItems(itemCollection.getItems().stream())
+        lastItemSelected = filterItems(itemCollection.getItems().stream())
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst().orElse(null);
 
-        if (lastItemBought != null){
+        if (lastItemSelected != null){
 
             MaterialsSet playerMaterials = player.getMaterials();
-            MaterialsSet itemCost = lastItemBought.getMaterialsCost();
+            MaterialsSet itemCost = lastItemSelected.getMaterialsCost();
 
             if (playerMaterials.containsNotLessThan(itemCost)){
                 player.getMaterials().subtractMaterials(itemCost);
-                player.addItem(lastItemBought);
+                player.addItem(lastItemSelected);
                 return true;
             }
         }
@@ -41,8 +41,8 @@ public abstract class AbstractShop {
 
     protected abstract Stream<ItemGlobal> filterItems(Stream<ItemGlobal> stream);
 
-    public ItemGlobal getLastItemBought() {
-        return lastItemBought;
+    public ItemGlobal getLastItemSelected() {
+        return lastItemSelected;
     }
 
     public List<ItemGlobal> getItems() {

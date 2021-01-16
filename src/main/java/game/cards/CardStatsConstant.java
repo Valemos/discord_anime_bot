@@ -8,13 +8,15 @@ import java.util.logging.Logger;
 public class CardStatsConstant{
 
     float approvalRating;
+    int cardPrint;
     float dexterity;
     int strength;
     float wisdom;
     Charisma charisma;
 
-    public CardStatsConstant(float approvalRating, float dexterity, int strength, float wisdom, Charisma charisma) {
+    public CardStatsConstant(float approvalRating, int cardPrint, float dexterity, int strength, float wisdom, Charisma charisma) {
         this.approvalRating = approvalRating;
+        this.cardPrint = cardPrint;
         this.dexterity = dexterity;
         this.strength = strength;
         this.wisdom = wisdom;
@@ -46,11 +48,10 @@ public class CardStatsConstant{
     }
 
     public float getPowerLevel() {
-        // TODO add charisma modifiers to power level formula
-        return approvalRating + dexterity + strength + wisdom;
+        return approvalRating + cardPrint + dexterity + strength + wisdom;
     }
 
     public String getDescription() {
-        return charisma.getName() + "\tbase: " + approvalRating + "\td: " + dexterity + "\ts: " + strength + "\tw: " + wisdom;
+        return "charisma:" + charisma.getName() + " rating: " + approvalRating + " dex: " + dexterity + " str: " + strength + " wis: " + wisdom;
     }
 }

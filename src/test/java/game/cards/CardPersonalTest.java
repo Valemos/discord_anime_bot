@@ -16,7 +16,8 @@ class CardPersonalTest {
                         10,
                         10,
                         10,
+                        10,
                         Charisma.NEUTRAL));
-        assertEquals(40, card.getPowerLevel());
+        assertEquals(50, card.getPowerLevel());
     }
 }

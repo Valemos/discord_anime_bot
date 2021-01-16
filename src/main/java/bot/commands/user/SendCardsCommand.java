@@ -16,10 +16,10 @@ import java.util.stream.Collectors;
 public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments> {
 
     public static class Arguments {
-        @Argument(required = true, metaVar = "recipient-id", usage = "id of player to send cards")
+        @Argument(required = true, metaVar = "recipient id", usage = "id of player to send cards")
         String recipientId;
 
-        @Argument(index = 1, required = true, metaVar = "card-ids", usage = "multiple card ids to send them to player")
+        @Argument(index = 1, required = true, metaVar = "cards id list", usage = "multiple card ids to send them to player")
         List<String> cardIds;
     }
 

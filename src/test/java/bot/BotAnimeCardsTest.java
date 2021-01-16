@@ -1,22 +1,28 @@
 package bot;
 
+import bot.commands.user.DailyCommand;
 import bot.commands.user.DropCommand;
+import game.Player;
+import game.items.Material;
+import game.items.MaterialsSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class BotAnimeCardsTest {
 
-    static MessageSenderMock sender;
+    static BotMessageSenderMock sender;
 
     @BeforeAll
     static void setSender() throws Exception {
-        sender = new MessageSenderMock();
+        sender = new BotMessageSenderMock();
     }
 
     @BeforeEach
     void setUp() {
-        sender.resetMocks();
+        sender.reset();
     }
 
     @Test
@@ -26,10 +32,29 @@ class BotAnimeCardsTest {
     }
 
     @Test
-    void testSendRegularCommand() {
-        sender.send("#drop");
+    void testDropCommandHandled() {
+        sender.sendAndCaptureQueue("#drop");
         sender.assertCommandHandled(DropCommand.class);
     }
 
+    @Test
+    void testDailyCommandHandled() {
+        sender.send("#daily");
+        sender.assertCommandHandled(DailyCommand.class);
+    }
 
+    @Test
+    void testDailyCommandGold() {
+        Player tester = sender.tester1;
+
+        MaterialsSet materials = tester.getMaterials();
+        int startGold = materials.getAmount(Material.GOLD);
+
+        sender.send("#daily");
+        sender.assertCommandHandled(DailyCommand.class);
+
+        materials = tester.getMaterials();
+        int goldDifference = materials.getAmount(Material.GOLD) - startGold;
+        assertTrue(goldDifference >= 50 && goldDifference <= 200);
+    }
 }

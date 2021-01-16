@@ -14,7 +14,7 @@ public class BotDiscordEntryPoint {
         }
 
         if (!bot.loadExternalSettings()){
-            bot.loadDefaultSettings();
+            bot.loadDefaultGameSettings(bot.getGame());
         }
     }
 

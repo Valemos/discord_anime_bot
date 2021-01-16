@@ -29,7 +29,7 @@ public class WishCardCommand extends AbstractCommand<MultipleWordsArguments> {
             game.addToWishlist(player, cards.get(0));
             sendMessage(event, "added to wishlist" + cards.get(0).getCharacterInfo().getFullName());
         }else{
-            SimpleMenuCreator.showMenuForCardIds(cards, event, game);
+            SimpleMenuCreator.showMenuForCardIds(cards, event, game, 1);
         }
     }
 

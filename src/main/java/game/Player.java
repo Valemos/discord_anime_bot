@@ -1,10 +1,10 @@
 package game;
 
-import bot.CommandPermissions;
 import game.cards.CardPersonal;
 import game.cards.CardsPersonalManager;
 import game.items.ItemGlobal;
 import game.items.ItemsPersonalManager;
+import game.items.MaterialsManager;
 import game.items.MaterialsSet;
 import game.squadron.Squadron;
 
@@ -12,17 +12,18 @@ public class Player {
     private final String id;
     private final CardsPersonalManager cardsManager;
     private final ItemsPersonalManager itemsPersonalManager;
-    private final MaterialsSet materialsSet;
+    private final MaterialsManager materialsManager;
     private Squadron squadron;
 
     public Player(String id,
                   CardsPersonalManager cardsManager,
-                  MaterialsSet materialsSet,
-                  ItemsPersonalManager itemsPersonalManager) {
+                  ItemsPersonalManager itemsPersonalManager,
+                  MaterialsManager materialsManager) {
         this.id = id;
         this.cardsManager = cardsManager;
-        this.materialsSet = materialsSet;
         this.itemsPersonalManager = itemsPersonalManager;
+        this.materialsManager = materialsManager;
+        materialsManager.createEmptyMaterials(id);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class Player {
     }
 
     public MaterialsSet getMaterials() {
-        return materialsSet;
+        return materialsManager.get(id);
     }
 
     public void addCard(CardPersonal card) {

@@ -20,8 +20,8 @@ public class DailyCommand extends AbstractCommandNoArguments {
     @Override
     public void handle(CommandEvent event) {
         int goldReceived = getRandomGold();
-        player.getMaterials().addAmount(Material.GOLD, 100);
-        sendMessage(event, String.format("you received %s gold!", goldReceived));
+        player.getMaterials().addAmount(Material.GOLD, goldReceived);
+        sendMessage(event, "you received " + goldReceived + " gold!");
     }
 
     private int getRandomGold() {
@@ -33,6 +33,6 @@ public class DailyCommand extends AbstractCommandNoArguments {
     }
 
     private int getRandomInt(int max) {
-        return new Random(max).nextInt();
+        return new Random().nextInt(max);
     }
 }

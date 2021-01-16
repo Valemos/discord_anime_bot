@@ -2,12 +2,13 @@ package game.items;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MaterialsSet {
 
-    EnumMap<Material, Integer> materialAmounts;
+    Map<Material, Integer> materialAmounts;
     public static final String noMaterialsDescription = "No materials";
 
 
@@ -15,7 +16,7 @@ public class MaterialsSet {
         this(new EnumMap<>(Material.class));
     }
 
-    public MaterialsSet(EnumMap<Material, Integer> materialAmounts) {
+    public MaterialsSet(Map<Material, Integer> materialAmounts) {
         this.materialAmounts = materialAmounts;
     }
 

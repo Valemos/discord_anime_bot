@@ -1,6 +1,5 @@
 package bot.menu;
 
-import bot.commands.MenuEmoji;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.contract.AbstractContract;
@@ -30,7 +29,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> {
                 .setUsers(event.getAuthor())
                 .setText(title)
                 .setChoices(MenuEmoji.CONFIRM, MenuEmoji.DISCARD, MenuEmoji.SHOW_MORE)
-                .setAction(this::handleEmojiChosen)
+                .setAction(this::handleEmojiChosenEvent)
                 .setFinalAction(m -> handleFinish(m.getId(), event.getChannel()))
                 .setDescription(description)
                 .build();
@@ -46,7 +45,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> {
         );
     }
 
-    private void handleEmojiChosen(MessageReactionAddEvent event) {
+    private void handleEmojiChosenEvent(MessageReactionAddEvent event) {
         String emoji = event.getReactionEmote().getEmoji();
         String messageId = event.getMessageId();
 

@@ -36,7 +36,7 @@ public class CharacterInfo {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CharacterInfo){
-            return this.id.equals(((CharacterInfo) obj).id);
+            return getId().equals(((CharacterInfo) obj).getId());
         }
         return false;
     }
