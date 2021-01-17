@@ -13,20 +13,20 @@ public class CooldownSet {
         grab = new Cooldown("Grab", 60);
     }
 
+    public Cooldown getDrop() {
+        return drop;
+    }
+
+    public Cooldown getGrab() {
+        return grab;
+    }
+
     public void useDrop(Instant time){
-        drop.setLastUse(time);
+        drop.setUsed(time);
     }
 
     public void useGrab(Instant time){
-        grab.setLastUse(time);
-    }
-
-    public boolean checkDrop(Instant time){
-        return drop.isAvailable(time);
-    }
-
-    public boolean checkGrab(Instant time){
-        return grab.isAvailable(time);
+        grab.setUsed(time);
     }
 
     public String getDescription(Instant time) {
@@ -34,16 +34,8 @@ public class CooldownSet {
                 grab.getDescription(time);
     }
 
-    public String getDropTimeLeft(Instant time) {
-        return drop.getSecondsLeftString(time);
-    }
-
-    public String getGrabTimeLeft(Instant time) {
-        return grab.getSecondsLeftString(time);
-    }
-
     public void reset() {
-        drop.setLastUse(null);
-        grab.setLastUse(null);
+        drop.setUsed(null);
+        grab.setUsed(null);
     }
 }

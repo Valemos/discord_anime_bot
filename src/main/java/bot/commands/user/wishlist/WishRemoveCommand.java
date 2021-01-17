@@ -1,7 +1,7 @@
 package bot.commands.user.wishlist;
 
 import bot.commands.AbstractCommand;
-import bot.menu.SimpleMenuCreator;
+import bot.menu.BotMenuCreator;
 import bot.commands.arguments.MultipleWordsArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -34,7 +34,7 @@ public class WishRemoveCommand extends AbstractCommand<MultipleWordsArguments> {
                 sendMessage(event, card.getCharacterInfo().getFullName() + " not found in wishlist");
             }
         }else{
-            SimpleMenuCreator.menuForCardIds(cards, event, game, 1);
+            BotMenuCreator.menuForCardIds(cards, event, game, 1);
         }
     }
 }

@@ -14,7 +14,7 @@ public class Cooldown {
         this.amountSeconds = amountSeconds;
     }
 
-    public void setLastUse(Instant lastUse) {
+    public void setUsed(Instant lastUse) {
         this.lastUse = lastUse;
     }
 
@@ -46,5 +46,17 @@ public class Cooldown {
 
     public boolean isAvailable(Instant time) {
         return getSecondsLeft(time) == 0;
+    }
+
+    public boolean tryUse(Instant time) {
+        if (isAvailable(time)){
+            setUsed(time);
+            return true;
+        }
+        return false;
+    }
+
+    public String getVerboseDescription(Instant time) {
+        return "your " + name + " cooldown is " + getSecondsLeftString(time);
     }
 }

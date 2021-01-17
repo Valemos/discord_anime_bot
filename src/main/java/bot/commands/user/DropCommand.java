@@ -4,7 +4,7 @@ package bot.commands.user;
 import bot.CommandPermissions;
 import bot.commands.AbstractCommandNoArguments;
 import bot.menu.EmojiMenuHandler;
-import bot.menu.SimpleMenuCreator;
+import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
@@ -28,17 +28,15 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
         Instant now = Instant.now();
 
         CooldownSet cooldowns = game.getCooldowns(player.getId());
-        if (!cooldowns.checkDrop(now)){
-            sendMessage(event, "your drop cooldown is " + cooldowns.getDropTimeLeft(now));
+        if (!cooldowns.getDrop().tryUse(now)){
+            sendMessage(event, cooldowns.getDrop().getVerboseDescription(now));
             return;
         }
-
-        cooldowns.useDrop(now);
 
         CardsGlobalManager collection = game.getCardsGlobalManager();
         List<CardGlobal> cards = collection.getRandomCards(3);
 
-        SimpleMenuCreator.menuDropCards(cards, game, event, this);
+        BotMenuCreator.menuDropCards(cards, game, event, this);
     }
 
     @Override
@@ -73,12 +71,10 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
         Player player = game.getPlayerById(event.getUserId());
 
         CooldownSet cooldowns = game.getCooldowns(player.getId());
-        if (!cooldowns.checkGrab(now)){
-            sendMessage(event, "your grab cooldown is " + cooldowns.getGrabTimeLeft(now));
+        if (!cooldowns.getGrab().tryUse(now)){
+            sendMessage(event, cooldowns.getGrab().getVerboseDescription(now));
             return;
         }
-
-        cooldowns.useGrab(now);
 
         CardPersonal cardPersonal = game.pickPersonalCardDelay(player, cardGlobal.getId(), 0);
         if (cardPersonal != null){

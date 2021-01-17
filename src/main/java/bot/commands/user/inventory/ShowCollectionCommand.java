@@ -2,7 +2,7 @@ package bot.commands.user.inventory;
 
 import bot.commands.AbstractCommand;
 import bot.commands.SortingType;
-import bot.menu.SimpleMenuCreator;
+import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
@@ -55,6 +55,6 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
                 commandArgs.sortingTypes
         );
 
-        SimpleMenuCreator.menuForPersonalCardStats(cards, event, game, 1);
+        BotMenuCreator.menuForPersonalCardStats(cards, event, game, 1);
     }
 }

@@ -1,7 +1,7 @@
 package game;
 
 import bot.commands.user.CooldownSet;
-import bot.menu.SimpleMenuCreator;
+import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.*;
@@ -183,11 +183,11 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return SimpleMenuCreator.menuShop(eventWaiter, itemsShop, user);
+        return BotMenuCreator.menuShop(eventWaiter, itemsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
-        return SimpleMenuCreator.menuShop(eventWaiter, armorShop, user);
+        return BotMenuCreator.menuShop(eventWaiter, armorShop, user);
     }
 
     public ItemsGlobalManager getItemsGlobal() {

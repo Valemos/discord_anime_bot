@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.List;
 import java.util.function.Function;
 
-public class SimpleMenuCreator {
+public class BotMenuCreator {
 
     public static Paginator menuShop(EventWaiter eventWaiter, AbstractShop shop, User user){
         List<ItemGlobal> shopItems = shop.getItems();

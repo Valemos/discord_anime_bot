@@ -3,7 +3,7 @@ package bot.commands.user;
 import bot.commands.AbstractCommand;
 import bot.commands.SortingType;
 import bot.commands.arguments.MenuPageArguments;
-import bot.menu.SimpleMenuCreator;
+import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
@@ -22,6 +22,6 @@ public class TopCharactersCommand extends AbstractCommand<MenuPageArguments> {
     public void handle(CommandEvent event) {
         List<CardGlobal> allCards = game.getCardsGlobalManager().getCardsSorted(List.of(SortingType.POWER));
 
-        SimpleMenuCreator.menuForCardsTop(allCards, event, game, commandArgs.pageNumber);
+        BotMenuCreator.menuForCardsTop(allCards, event, game, commandArgs.pageNumber);
     }
 }
