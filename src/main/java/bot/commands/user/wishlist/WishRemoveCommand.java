@@ -34,7 +34,7 @@ public class WishRemoveCommand extends AbstractCommand<MultipleWordsArguments> {
                 sendMessage(event, card.getCharacterInfo().getFullName() + " not found in wishlist");
             }
         }else{
-            SimpleMenuCreator.showMenuForCardIds(cards, event, game, 1);
+            SimpleMenuCreator.menuForCardIds(cards, event, game, 1);
         }
     }
 }

@@ -1,6 +1,8 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.menu.EmojiMenuHandler;
+import bot.menu.MenuEmoji;
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
@@ -8,7 +10,9 @@ import game.Player;
 import game.cards.CardGlobal;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.*;
@@ -26,6 +30,10 @@ public class BotMessageSenderMock {
 
     @Mock
     private MessageReceivedEvent mMessageEvent;
+    @Mock
+    private MessageReactionAddEvent mReactionAddEvent;
+    @Mock
+    private MessageReaction.ReactionEmote mReactionEmote;
     @Mock
     private Message mMessage;
     @Mock
@@ -86,17 +94,25 @@ public class BotMessageSenderMock {
     }
 
     private void initMessageEventMock() {
-        when(mMessageEvent.getJDA()).thenReturn(mJDA);
-
         when(mMessageEvent.getMessage()).thenReturn(mMessage);
         when(mMessageEvent.getAuthor()).thenReturn(mUser);
-        when(mTextChannel.canTalk()).thenReturn(true);
+        setEventChannel(mMessageEvent, ChannelType.TEXT);
+        setMessageChannelMock();
+    }
 
-        when(mMessageEvent.getChannelType()).thenReturn(ChannelType.TEXT);
-        when(mMessageEvent.getTextChannel()).thenReturn(mTextChannel);
-        when(mMessageEvent.getChannel()).thenReturn(mMessageChannel);
+    private void setMessageChannelMock() {
         when(mMessageChannel.sendMessage(anyString())).thenReturn(mMessageAction);
         when(mMessageChannel.sendMessage(any(MessageEmbed.class))).thenReturn(mMessageAction);
+        when(mMessageChannel.sendMessage(any(Message.class))).thenReturn(mMessageAction);
+        when(mMessage.editMessage(any(Message.class))).thenReturn(mMessageAction);
+    }
+
+    private void setEventChannel(GenericMessageEvent event, ChannelType channelType) {
+        when(event.getJDA()).thenReturn(mJDA);
+        when(event.getChannel()).thenReturn(mMessageChannel);
+        when(event.getChannelType()).thenReturn(channelType);
+        when(event.getTextChannel()).thenReturn(mTextChannel);
+        when(mTextChannel.canTalk()).thenReturn(true);
     }
 
     private void spyOnCommands() {
@@ -118,27 +134,43 @@ public class BotMessageSenderMock {
     }
 
     public void send(String message) {
-        send(message, tester1.getId());
+        send(message, tester1.getId(), "1");
     }
 
-    public void send(String message, String userId) {
-        when(mMessage.getContentRaw()).thenReturn(message);
-        when(mUser.isBot()).thenReturn(false);
-        when(mUser.getId()).thenReturn(userId);
+    public void send(String message, String userId, String messageId) {
+        setMessageMock(messageId, message);
+        setUserMock(userId);
 
         spyCommandClient.onEvent(mMessageEvent);
     }
 
-    public void sendAndCaptureQueue(String message) {
-        sendAndCaptureQueue(message, tester1.getId());
+    private void setUserMock(String userId) {
+        when(mUser.getId()).thenReturn(userId);
+        when(mUser.isBot()).thenReturn(false);
     }
 
-    public void sendAndCaptureQueue(String message, String userId){
-        doNothing().when(mMessageAction).queue(actionCaptor.capture());
+    private void setMessageMock(String messageId) {
+        setMessageMock(messageId, "");
+    }
 
-        send(message, userId);
+    private void setMessageMock(String messageId, String message) {
+        if (messageId != null) when(mMessage.getId()).thenReturn(messageId);
+        when(mMessage.getContentRaw()).thenReturn(message);
+    }
 
-        when(mMessage.getId()).thenReturn("id");
+    private void setEventMessage(MessageReactionAddEvent event, String messageId, String playerId) {
+        when(event.getMessageId()).thenReturn(messageId);
+        when(event.getUserId()).thenReturn(playerId);
+    }
+
+    public void sendAndCaptureMessage(String message) {
+        sendAndCaptureMessage(message, tester1.getId(), null);
+    }
+
+    public void sendAndCaptureMessage(String message, String userId, String messageId){
+        send(message, userId, messageId);
+
+        verify(mMessageAction).queue(actionCaptor.capture());
         actionCaptor.getValue().accept(mMessage);
     }
 
@@ -176,5 +208,23 @@ public class BotMessageSenderMock {
     public void reset() {
         resetMocks();
         resetGame();
+    }
+
+    public MessageReactionAddEvent getReactionEventMock(MenuEmoji emoji) {
+        when(mReactionAddEvent.getReactionEmote()).thenReturn(mReactionEmote);
+        when(mReactionEmote.getEmoji()).thenReturn(emoji.getEmoji());
+        when(mReactionAddEvent.getChannel()).thenReturn(mMessageChannel);
+        return mReactionAddEvent;
+    }
+
+    public void chooseReactionMenu(Class<? extends AbstractCommand<?>> commandClass, String messageId, String playerId, MenuEmoji emoji) {
+        EmojiMenuHandler command = (EmojiMenuHandler) findSpyCommand(commandClass);
+        setMessageMock(messageId);
+        setUserMock(playerId);
+
+        setEventChannel(mReactionAddEvent, ChannelType.TEXT);
+        setEventMessage(mReactionAddEvent, messageId, playerId);
+
+        command.hReactionAddEvent(getReactionEventMock(emoji), getGame());
     }
 }

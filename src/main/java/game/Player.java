@@ -8,6 +8,8 @@ import game.items.MaterialsManager;
 import game.items.MaterialsSet;
 import game.squadron.Squadron;
 
+import java.util.List;
+
 public class Player {
     private final String id;
     private final CardsPersonalManager cardsManager;
@@ -47,6 +49,7 @@ public class Player {
     }
 
     public void addCard(CardPersonal card) {
+        card.setPlayerId(id);
         cardsManager.addCard(id, card);
     }
 
@@ -65,5 +68,9 @@ public class Player {
 
     public void addItem(ItemGlobal newItem) {
         itemsPersonalManager.addItem(id, newItem);
+    }
+
+    public List<CardPersonal> getCards() {
+        return cardsManager.getCardsPlayer(getId());
     }
 }

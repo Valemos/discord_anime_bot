@@ -32,12 +32,6 @@ class BotAnimeCardsTest {
     }
 
     @Test
-    void testDropCommandHandled() {
-        sender.sendAndCaptureQueue("#drop");
-        sender.assertCommandHandled(DropCommand.class);
-    }
-
-    @Test
     void testDailyCommandHandled() {
         sender.send("#daily");
         sender.assertCommandHandled(DailyCommand.class);

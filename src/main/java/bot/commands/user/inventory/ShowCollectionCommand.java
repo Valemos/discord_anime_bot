@@ -55,6 +55,6 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
                 commandArgs.sortingTypes
         );
 
-        SimpleMenuCreator.showMenuForPersonalCardStats(cards, event, game, 1);
+        SimpleMenuCreator.menuForPersonalCardStats(cards, event, game, 1);
     }
 }

@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
-public abstract class AbstractContractMenu<T extends AbstractContract> {
+public abstract class AbstractContractMenu<T extends AbstractContract> implements EmojiMenuHandler {
     protected final T contract;
     private final Class<T> contractClass;
     AnimeCardsGame game;
@@ -29,8 +29,8 @@ public abstract class AbstractContractMenu<T extends AbstractContract> {
                 .setUsers(event.getAuthor())
                 .setText(title)
                 .setChoices(MenuEmoji.CONFIRM, MenuEmoji.DISCARD, MenuEmoji.SHOW_MORE)
-                .setAction(this::handleEmojiChosenEvent)
-                .setFinalAction(m -> handleFinish(m.getId(), event.getChannel()))
+                .setAction(e -> hReactionAddEvent(e, game))
+                .setFinalAction(m -> hEmojiDiscard(game, event.getChannel(), m.getId()))
                 .setDescription(description)
                 .build();
     }
@@ -45,35 +45,24 @@ public abstract class AbstractContractMenu<T extends AbstractContract> {
         );
     }
 
-    private void handleEmojiChosenEvent(MessageReactionAddEvent event) {
-        String emoji = event.getReactionEmote().getEmoji();
-        String messageId = event.getMessageId();
+    @Override
+    public void hEmojiConfirm(MessageReactionAddEvent event, AnimeCardsGame game) {
 
-        if (MenuEmoji.CONFIRM.getEmoji().equals(emoji)) {
-            handleConfirm(messageId, game, event.getChannel());
-
-        } else if (MenuEmoji.DISCARD.getEmoji().equals(emoji)){
-            handleFinish(messageId, event.getChannel());
-
-        } else if (MenuEmoji.SHOW_MORE.getEmoji().equals(emoji)){
-            handleShowMoreInfo(event);
-        }
-    }
-
-    private void handleConfirm(String messageId, AnimeCardsGame game, MessageChannel channel) {
-        ContractInterface contract = game.getContractsManager().get(contractClass, messageId);
+        ContractInterface contract = game.getContractsManager().get(contractClass, event.getMessageId());
         if (contract != null){
             contract.complete(game);
         }
-        handleFinish(messageId, channel);
+        hEmojiDiscard(event, game);
     }
 
-    private void handleFinish(String messageId, MessageChannel channel) {
+    @Override
+    public void hEmojiDiscard(AnimeCardsGame game, MessageChannel channel, String messageId) {
         channel.sendMessage("contract finished").queue();
         game.getContractsManager().removeContract(contractClass, messageId);
     }
 
-    private void handleShowMoreInfo(MessageReactionAddEvent event) {
+    @Override
+    public void hEmojiShowMore(MessageReactionAddEvent event, AnimeCardsGame game) {
         ContractInterface contract = game.getContractsManager().get(contractClass, event.getMessageId());
         if (contract != null){
             event.getChannel().sendMessage(contract.getMoreInfo()).queue();

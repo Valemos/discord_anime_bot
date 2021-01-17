@@ -22,6 +22,6 @@ public class WishListCommand extends AbstractCommandOptionalPlayer {
         }
 
         WishList wishList = game.getWishList(requestedPlayer.getId());
-        SimpleMenuCreator.showMenuForCardStats(wishList.getCards(), event, game, 1);
+        SimpleMenuCreator.menuForCardStats(wishList.getCards(), event, game, 1);
     }
 }

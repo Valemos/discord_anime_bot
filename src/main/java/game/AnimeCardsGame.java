@@ -142,7 +142,10 @@ public class AnimeCardsGame {
         if (cardGlobal == null){
             return null;
         }
+        return pickPersonalCardDelay(player, cardGlobal, pickDelay);
+    }
 
+    public CardPersonal pickPersonalCardDelay(Player player, CardGlobal cardGlobal, float pickDelay) {
         cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
@@ -177,11 +180,11 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return SimpleMenuCreator.getShopMenu(eventWaiter, itemsShop, user);
+        return SimpleMenuCreator.menuShop(eventWaiter, itemsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
-        return SimpleMenuCreator.getShopMenu(eventWaiter, armorShop, user);
+        return SimpleMenuCreator.menuShop(eventWaiter, armorShop, user);
     }
 
     public ItemsGlobalManager getItemsGlobal() {

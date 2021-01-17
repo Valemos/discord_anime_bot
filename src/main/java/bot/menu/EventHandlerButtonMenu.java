@@ -55,9 +55,6 @@ public class EventHandlerButtonMenu extends Menu
         initialize(message.editMessage(getMessage()));
     }
 
-    // Initializes the ButtonMenu using a Message RestAction
-    // This is either through editing a previously existing Message
-    // OR through sending a new one to a TextChannel.
     private void initialize(RestAction<Message> ra)
     {
         ra.queue(m -> {

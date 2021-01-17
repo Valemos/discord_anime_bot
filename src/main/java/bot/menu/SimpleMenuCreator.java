@@ -13,16 +13,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class SimpleMenuCreator {
 
-    public static Paginator getShopMenu(EventWaiter eventWaiter, AbstractShop shop, User user){
+    public static Paginator menuShop(EventWaiter eventWaiter, AbstractShop shop, User user){
         List<ItemGlobal> shopItems = shop.getItems();
 
         Paginator.Builder builder = new Paginator.Builder()
@@ -44,42 +41,42 @@ public class SimpleMenuCreator {
     }
 
 
-    public static void showMenuForCardsTop(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showMenuWithMapper(cards, event, game, "Cards top",
+    public static void menuForCardsTop(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+        menuWithMapper(cards, event, game, "Cards top",
                 DisplayableStats::getIdNameStats, selectedPage
         );
     }
 
-    public static void showMenuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showMenuWithMapper(cards, event, game, "Card ids list",
+    public static void menuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+        menuWithMapper(cards, event, game, "Card ids list",
                 DisplayableStats::getIdName, selectedPage
         );
     }
 
-    public static void showMenuForCardStats(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showMenuWithMapper(cards, event, game, "Cards list",
+    public static void menuForCardStats(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+        menuWithMapper(cards, event, game, "Cards list",
                 DisplayableStats::getNameStats, selectedPage
         );
     }
 
-    public static void showMenuForPersonalCardStats(List<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showMenuWithMapper(cards, event, game, "Cards collection",
+    public static void menuForPersonalCardStats(List<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+        menuWithMapper(cards, event, game, "Cards collection",
                 DisplayableStats::getIdNameStats, selectedPage
         );
     }
 
-    public static void showMenuForItemStats(List<ItemGlobal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showMenuWithMapper(items, event, game, "Items list",
+    public static void menuForItemStats(List<ItemGlobal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+        menuWithMapper(items, event, game, "Items list",
                 DisplayableStats::getNameStats, selectedPage
         );
     }
 
-    private static void showMenuWithMapper(List<? extends DisplayableStats> cards,
-                                           CommandEvent event,
-                                           AnimeCardsGame game,
-                                           String title,
-                                           Function<DisplayableStats, String> mapper,
-                                           int selectedPage){
+    private static void menuWithMapper(List<? extends DisplayableStats> cards,
+                                       CommandEvent event,
+                                       AnimeCardsGame game,
+                                       String title,
+                                       Function<DisplayableStats, String> mapper,
+                                       int selectedPage){
 
         if (cards.size() > 0){
             Paginator cardsMenu = new Paginator.Builder()
@@ -107,8 +104,7 @@ public class SimpleMenuCreator {
         }
     }
 
-    public static void showDropCards(List<CardGlobal> cards, AnimeCardsGame game, CommandEvent event, Consumer<MessageReactionAddEvent> choiceAction) {
-
+    public static void menuDropCards(List<CardGlobal> cards, AnimeCardsGame game, CommandEvent event, EmojiMenuHandler emojiMenu) {
 
         StringBuilder description = new StringBuilder();
         int counter = 1;
@@ -122,7 +118,7 @@ public class SimpleMenuCreator {
                 .setDescription(description.toString())
                 .setUsers(event.getAuthor())
                 .setChoices(MenuEmoji.ONE, MenuEmoji.TWO, MenuEmoji.THREE)
-                .setAction(choiceAction)
+                .setAction(e -> emojiMenu.hReactionAddEvent(e, game))
                 .build();
 
         Message message = menu.getMessage();

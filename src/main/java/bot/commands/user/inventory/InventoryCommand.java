@@ -23,7 +23,7 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
 
         ItemsPersonalManager itemsManager = game.getItemsPersonal();
 
-        SimpleMenuCreator.showMenuForItemStats(
+        SimpleMenuCreator.menuForItemStats(
                 itemsManager.getElement(requestedPlayer.getId()).sortedByItemPower(),
                 event,
                 game,
