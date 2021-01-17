@@ -96,6 +96,7 @@ public class BotAnimeCards {
                 new DropCommand(game),
                 new DailyCommand(game),
                 new TopCharactersCommand(game),
+                new CooldownCommand(game),
 
                 new AddCardCommand(game),
                 new DeleteCardCommand(game),

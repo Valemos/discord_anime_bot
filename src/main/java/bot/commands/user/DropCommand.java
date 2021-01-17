@@ -13,6 +13,7 @@ import game.cards.CardPersonal;
 import game.cards.CardsGlobalManager;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
+import java.time.Instant;
 import java.util.List;
 
 public class DropCommand extends AbstractCommandNoArguments implements EmojiMenuHandler {
@@ -24,6 +25,15 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
 
     @Override
     public void handle(CommandEvent event) {
+
+        CooldownSet cooldowns = game.getCooldowns(player.getId());
+        Instant now = Instant.now();
+        if (cooldowns.checkDrop(now)){
+            sendMessage(event, "your drop cooldown is " + cooldowns.getDropTimeLeft(now));
+        }
+
+        cooldowns.useDrop(now);
+
         CardsGlobalManager collection = game.getCardsGlobalManager();
         List<CardGlobal> cards = collection.getRandomCards(3);
 
@@ -57,13 +67,21 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
     }
 
     private void grabCard(MessageReactionAddEvent event, CardGlobal cardGlobal) {
-        Player player = this.game.getPlayerById(event.getUserId());
-        CardPersonal cardPersonal = this.game.pickPersonalCardDelay(player, cardGlobal.getId(), 0);
+        Player player = game.getPlayerById(event.getUserId());
 
+        CooldownSet cooldowns = game.getCooldowns(player.getId());
+        Instant now = Instant.now();
+        if (cooldowns.checkDrop(now)){
+            sendMessage(event, "your grab cooldown is " + cooldowns.getDropTimeLeft(now));
+        }
+        
+        cooldowns.useGrab(now);
+
+        CardPersonal cardPersonal = game.pickPersonalCardDelay(player, cardGlobal.getId(), 0);
         if (cardPersonal != null){
-            event.getChannel().sendMessage("you've picked card " + cardPersonal.getIdName()).queue();
+            sendMessage(event, "you've picked card " + cardPersonal.getIdName());
         }else{
-            event.getChannel().sendMessage("cannot find global card " + cardGlobal.getId()).queue();
+            sendMessage(event, "cannot find global card " + cardGlobal.getId());
         }
     }
 }

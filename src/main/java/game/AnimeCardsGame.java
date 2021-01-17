@@ -1,5 +1,6 @@
 package game;
 
+import bot.commands.user.CooldownSet;
 import bot.menu.SimpleMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
@@ -39,6 +40,8 @@ public class AnimeCardsGame {
     private StocksManager stocksManager;
     private WishListsManager wishListsManager;
     private MaterialsManager materialsManager;
+
+    private CooldownManager cooldownManager;
 
     private ContractsManager contractsManager;
     private List<PatrolActivity> currentPatrols;
@@ -297,6 +300,10 @@ public class AnimeCardsGame {
 
     public CardDropManager getDropManager() {
         return cardDropManager;
+    }
+
+    public CooldownSet getCooldowns(String playerId) {
+        return cooldownManager.getElement(playerId);
     }
 }
 
