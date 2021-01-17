@@ -25,11 +25,12 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
 
     @Override
     public void handle(CommandEvent event) {
+        Instant now = Instant.now();
 
         CooldownSet cooldowns = game.getCooldowns(player.getId());
-        Instant now = Instant.now();
-        if (cooldowns.checkDrop(now)){
+        if (!cooldowns.checkDrop(now)){
             sendMessage(event, "your drop cooldown is " + cooldowns.getDropTimeLeft(now));
+            return;
         }
 
         cooldowns.useDrop(now);
@@ -67,14 +68,16 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
     }
 
     private void grabCard(MessageReactionAddEvent event, CardGlobal cardGlobal) {
+        Instant now = Instant.now();
+
         Player player = game.getPlayerById(event.getUserId());
 
         CooldownSet cooldowns = game.getCooldowns(player.getId());
-        Instant now = Instant.now();
-        if (cooldowns.checkDrop(now)){
-            sendMessage(event, "your grab cooldown is " + cooldowns.getDropTimeLeft(now));
+        if (!cooldowns.checkGrab(now)){
+            sendMessage(event, "your grab cooldown is " + cooldowns.getGrabTimeLeft(now));
+            return;
         }
-        
+
         cooldowns.useGrab(now);
 
         CardPersonal cardPersonal = game.pickPersonalCardDelay(player, cardGlobal.getId(), 0);

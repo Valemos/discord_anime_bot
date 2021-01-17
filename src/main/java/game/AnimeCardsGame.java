@@ -41,11 +41,10 @@ public class AnimeCardsGame {
     private WishListsManager wishListsManager;
     private MaterialsManager materialsManager;
 
-    private CooldownManager cooldownManager;
-
     private ContractsManager contractsManager;
     private List<PatrolActivity> currentPatrols;
     private CardDropManager cardDropManager;
+    private CooldownManager cooldownManager;
 
 
     public AnimeCardsGame(EventWaiter eventWaiter) {
@@ -75,6 +74,7 @@ public class AnimeCardsGame {
                 MultiTradeContract.class
         ));
         cardDropManager = new CardDropManager();
+        cooldownManager = new CooldownManager();
     }
 
     public EventWaiter getEventWaiter() {

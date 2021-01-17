@@ -35,11 +35,11 @@ public class CooldownSet {
     }
 
     public String getDropTimeLeft(Instant time) {
-        return drop.getTimeLeftString(time);
+        return drop.getSecondsLeftString(time);
     }
 
     public String getGrabTimeLeft(Instant time) {
-        return grab.getTimeLeftString(time);
+        return grab.getSecondsLeftString(time);
     }
 
     public void reset() {

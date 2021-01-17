@@ -23,20 +23,28 @@ public class Cooldown {
     }
 
     public String getDescription(Instant time) {
-        return name + ": " + getTimeLeftString(time);
+        return name + ": " + getSecondsLeftString(time);
     }
 
-    public String getTimeLeftString(Instant time) {
+    public String getSecondsLeftString(Instant time) {
+        long seconds = getSecondsLeft(time);
+        return seconds > 0 ? String.valueOf(seconds) : "ready";
+    }
+
+    public long getSecondsLeft(Instant time) {
         if (lastUse == null){
-            return "available";
+            return 0;
         }
-        return Duration.between(lastUse, time).toString().substring(2);
+
+        long duration = Duration.between(lastUse, time).toSeconds();
+        if (duration > amountSeconds){
+            return 0;
+        }
+
+        return amountSeconds - duration;
     }
 
     public boolean isAvailable(Instant time) {
-        if (lastUse == null){
-            return true;
-        }
-        return Duration.between(lastUse, time).toSeconds() < amountSeconds;
+        return getSecondsLeft(time) == 0;
     }
 }
