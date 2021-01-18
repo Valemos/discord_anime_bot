@@ -28,10 +28,11 @@ public class MaterialsSet {
         return materialAmounts.getOrDefault(material, 0);
     }
 
-    public void subtractMaterials(MaterialsSet other) {
+    public MaterialsSet subtractMaterials(MaterialsSet other) {
         for(Material material : Material.values()){
             addAmount(material, -other.getAmount(material));
         }
+        return this;
     }
 
     public boolean containsNotLessThan(MaterialsSet other) {
@@ -48,10 +49,11 @@ public class MaterialsSet {
         setAmount(material, newAmount);
     }
 
-    public void addMaterials(MaterialsSet materials) {
+    public MaterialsSet addMaterials(MaterialsSet materials) {
         for (Material m : Material.values()){
             addAmount(m, materials.getAmount(m));
         }
+        return this;
     }
 
     public String getDescriptionMultiline() {

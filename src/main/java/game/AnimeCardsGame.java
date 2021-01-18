@@ -244,7 +244,7 @@ public class AnimeCardsGame {
         Player player = getPlayerById(patrol.getSquadron().getPlayerId());
         MaterialsSet materials = patrol.getMaterialsFound();
 
-        player.getMaterials().addMaterials(materials);
+        player.addMaterials(materials);
         patrol.setFinished(true);
 
         return materials;

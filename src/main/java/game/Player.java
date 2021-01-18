@@ -73,4 +73,12 @@ public class Player {
     public List<CardPersonal> getCards() {
         return cardsManager.getCardsPlayer(getId());
     }
+
+    public void subtractMaterials(MaterialsSet materials) {
+        materialsManager.subtractMaterials(id, materials);
+    }
+
+    public void addMaterials(MaterialsSet materials) {
+        materialsManager.addMaterials(id, materials);
+    }
 }

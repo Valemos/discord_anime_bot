@@ -12,7 +12,7 @@ public class MultiTradeContractMenu extends AbstractContractMenu<MultiTradeContr
 
     @Override
     public void sendMenu(CommandEvent event) {
-        EventHandlerButtonMenu menu = buildMenu(event, "Trading", contract.getDescription());
+        EventHandlerButtonMenu menu = buildMenu(event, "Trading", contract.getMoreInfo());
         displayMenu(event.getChannel(), menu);
     }
 }

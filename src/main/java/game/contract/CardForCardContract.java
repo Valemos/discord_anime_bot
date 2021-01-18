@@ -1,6 +1,7 @@
 package game.contract;
 
 import game.AnimeCardsGame;
+import game.Player;
 import game.cards.CardPersonal;
 
 public class CardForCardContract extends AbstractContract {
@@ -15,25 +16,21 @@ public class CardForCardContract extends AbstractContract {
     }
 
     @Override
-    public void complete(AnimeCardsGame game) {
+    public boolean finish(AnimeCardsGame game) {
+        Player sender = getSender(game);
+        Player recipient = getRecipient(game);
 
-    }
+        sender.addCard(cardReceiving);
+        recipient.addCard(cardSending);
 
-    @Override
-    public void discard() {
-
+        return true;
     }
 
     @Override
     public String getMoreInfo() {
-        return null;
-    }
-
-    public CardPersonal getCardSending() {
-        return cardSending;
-    }
-
-    public CardPersonal getCardReceiving() {
-        return cardReceiving;
+        return "Card of player " + senderId + '\n' +
+                cardSending.getIdNameStats() + '\n' +
+                "Card of player " + recipientId + '\n' +
+                cardReceiving.getIdNameStats();
     }
 }

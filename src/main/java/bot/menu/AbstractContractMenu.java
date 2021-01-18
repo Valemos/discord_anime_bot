@@ -49,15 +49,22 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
     public void hEmojiConfirm(MessageReactionAddEvent event, AnimeCardsGame game) {
 
         ContractInterface contract = game.getContractsManager().get(contractClass, event.getMessageId());
-        if (contract != null){
-            contract.complete(game);
+        if (contract == null) {
+            event.getChannel().sendMessage("contract invalid").queue();
+            return;
         }
-        hEmojiDiscard(event, game);
+
+        contract.confirm(game, event.getUserId());
+
+        if (contract.isFinished()){
+            event.getChannel().sendMessage("contract finished").queue();
+        }
     }
 
     @Override
     public void hEmojiDiscard(AnimeCardsGame game, MessageChannel channel, String messageId) {
-        channel.sendMessage("contract finished").queue();
+        ContractInterface contract = game.getContractsManager().get(contractClass, messageId);
+        contract.discard();
         game.getContractsManager().removeContract(contractClass, messageId);
     }
 

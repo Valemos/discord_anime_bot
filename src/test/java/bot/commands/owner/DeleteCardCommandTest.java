@@ -1,4 +1,4 @@
-package bot.commands.creator;
+package bot.commands.owner;
 
 import bot.BotMessageSenderMock;
 import game.cards.CardGlobal;

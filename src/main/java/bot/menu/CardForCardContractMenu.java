@@ -12,13 +12,7 @@ public class CardForCardContractMenu extends AbstractContractMenu<CardForCardCon
 
     @Override
     public void sendMenu(CommandEvent event) {
-
-        String description =
-                "Card of player " + contract.getSenderId() + '\n' +
-                contract.getCardSending().getIdNameStats() + '\n' +
-                "Card of player " + contract.getRecipientId() + '\n' +
-                contract.getCardReceiving().getIdNameStats();
-
+        String description = contract.getMoreInfo();
         EventHandlerButtonMenu menu = buildMenu(event, "Exchange cards", description);
         displayMenu(event.getChannel(), menu);
     }

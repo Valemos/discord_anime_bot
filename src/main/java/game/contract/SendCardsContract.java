@@ -1,9 +1,11 @@
 package game.contract;
 
 import game.AnimeCardsGame;
+import game.Player;
 import game.cards.CardPersonal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SendCardsContract extends AbstractContract implements ContractInterface {
 
@@ -15,18 +17,26 @@ public class SendCardsContract extends AbstractContract implements ContractInter
     }
 
     @Override
-    public void complete(AnimeCardsGame game) {
-
+    public boolean isConfirmed() {
+        return senderConfirmed;
     }
 
     @Override
-    public void discard() {
+    public boolean finish(AnimeCardsGame game) {
+        Player recipient = getRecipient(game);
 
+        for (CardPersonal card : cards) {
+            recipient.addCard(card);
+        }
+
+        return true;
     }
 
     @Override
     public String getMoreInfo() {
-        return "more contract info";
+        return cards.stream()
+                .map(CardPersonal::getFullDescription)
+                .collect(Collectors.joining("\n"));
     }
 
     public List<CardPersonal> getCards() {

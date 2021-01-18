@@ -19,4 +19,16 @@ public class MaterialsManager {
         }
         return materials;
     }
+
+    public void set(String playerId, MaterialsSet newMaterials) {
+        materialsMap.put(playerId, newMaterials);
+    }
+
+    public void addMaterials(String playerId, MaterialsSet materials) {
+        get(playerId).addMaterials(materials);
+    }
+
+    public void subtractMaterials(String playerId, MaterialsSet materials) {
+        get(playerId).subtractMaterials(materials);
+    }
 }

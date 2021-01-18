@@ -1,4 +1,4 @@
-package bot.commands.creator;
+package bot.commands.owner;
 
 import bot.BotAnimeCards;
 import bot.commands.AbstractCommandNoArguments;
@@ -11,6 +11,7 @@ public class ShutdownCommand extends AbstractCommandNoArguments {
         super(bot.getGame());
         this.bot = bot;
         name = "shutdown";
+        ownerCommand = true;
     }
 
     @Override

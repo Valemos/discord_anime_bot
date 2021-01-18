@@ -3,7 +3,8 @@ package bot;
 import bot.commands.AbstractCommand;
 import bot.commands.admin.GrabTimeCommand;
 import bot.commands.admin.PrefixCommand;
-import bot.commands.creator.*;
+import bot.commands.admin.ResetCooldownsCommand;
+import bot.commands.owner.*;
 import bot.commands.user.carddrop.CardDropCommand;
 import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
@@ -29,6 +30,7 @@ import game.items.Material;
 import game.items.MaterialsSet;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.events.StatusChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
@@ -37,7 +39,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.lang.System.exit;
 import static java.util.Map.*;
 
 public class BotAnimeCards {
@@ -174,6 +175,11 @@ public class BotAnimeCards {
     }
 
     public void shutdown(){
+        eventWaiter.waitForEvent(StatusChangeEvent.class,
+                event -> event.getNewStatus() == JDA.Status.SHUTDOWN,
+                event -> System.exit(0)
+        );
+
         discordAPI.shutdown();
     }
 
