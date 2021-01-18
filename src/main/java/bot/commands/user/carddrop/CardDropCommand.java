@@ -1,26 +1,21 @@
-package bot.commands.user;
+package bot.commands.user.carddrop;
 
 
 import bot.CommandPermissions;
 import bot.commands.AbstractCommandNoArguments;
-import bot.menu.EmojiMenuHandler;
-import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardDropActivity;
 import game.cooldown.CooldownSet;
-import game.Player;
 import game.cards.CardGlobal;
-import game.cards.CardPersonal;
 import game.cards.CardsGlobalManager;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.time.Instant;
 import java.util.List;
 
-public class DropCommand extends AbstractCommandNoArguments {
+public class CardDropCommand extends AbstractCommandNoArguments {
 
-    public DropCommand(AnimeCardsGame game) {
+    public CardDropCommand(AnimeCardsGame game) {
         super(game, CommandPermissions.USER);
         name = "drop";
     }
@@ -40,6 +35,6 @@ public class DropCommand extends AbstractCommandNoArguments {
 
 
         CardDropActivity cardDrop = new CardDropActivity(cards);
-        cardDrop.showMenu(event.getChannel(), game);
+        cardDrop.createMenu(event.getChannel(), game);
     }
 }

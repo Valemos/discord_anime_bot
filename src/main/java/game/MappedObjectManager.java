@@ -18,15 +18,15 @@ public class MappedObjectManager<K, V> {
         elementsMap.put(key, element);
     }
 
-    public void removeElement(K key) {
+    public synchronized void removeElement(K key) {
         elementsMap.remove(key);
     }
 
-    public boolean isElementExists(K key) {
+    public synchronized boolean isElementExists(K key) {
         return elementsMap.containsKey(key);
     }
 
-    public V getElement(K key) {
+    public synchronized V getElement(K key) {
         return elementsMap.getOrDefault(key, null);
     }
 

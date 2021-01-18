@@ -4,6 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.commands.admin.GrabTimeCommand;
 import bot.commands.admin.PrefixCommand;
 import bot.commands.creator.*;
+import bot.commands.user.carddrop.CardDropCommand;
 import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
@@ -119,11 +120,12 @@ public class BotAnimeCards {
 
     AbstractCommand<?>[] getCommands(AnimeCardsGame game) {
         return new AbstractCommand<?>[]{
+                new ShutdownCommand(this),
                 new PrefixCommand(this),
                 new ResetCooldownsCommand(game),
                 new GrabTimeCommand(game),
 
-                new DropCommand(game),
+                new CardDropCommand(game),
                 new DailyCommand(game),
                 new TopCharactersCommand(game),
                 new CooldownCommand(game),
@@ -229,21 +231,4 @@ public class BotAnimeCards {
                 "dummy item 1", 8, 0, "*item details*",
                 new MaterialsSet(of(Material.GOLD, 20))));
     }
-
-    public void waitForShutdown() {
-        try {
-            discordAPI.awaitStatus(JDA.Status.SHUTTING_DOWN);
-
-            // clear all resources and exit
-
-            discordAPI.awaitStatus(JDA.Status.SHUTDOWN);
-            exit(0);
-
-        } catch (InterruptedException e) {
-            Logger.getGlobal().log(Level.INFO, "shutdown await interrupted");
-            exit(1);
-        }
-    }
-
-
 }

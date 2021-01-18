@@ -1,7 +1,6 @@
 package bot;
 
 import bot.commands.user.DailyCommand;
-import bot.commands.user.DropCommand;
 import game.Player;
 import game.items.Material;
 import game.items.MaterialsSet;

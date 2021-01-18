@@ -1,6 +1,7 @@
 package game.cards;
 
 
+import bot.commands.user.carddrop.CardDropTimer;
 import game.MappedObjectManager;
 
 import java.util.List;
@@ -8,8 +9,9 @@ import java.util.Timer;
 
 public class CardDropManager extends MappedObjectManager<String, CardDropActivity> {
 
-    int fightSeconds = 10;
-    Timer fightTimer;
+    long fightSeconds = 10;
+    private final Timer fightTimer;
+
 
     public CardDropManager() {
         super(CardDropActivity.class);
@@ -18,11 +20,7 @@ public class CardDropManager extends MappedObjectManager<String, CardDropActivit
 
     public void add(String messageId, CardDropActivity cardDropActivity) {
         addElement(messageId, cardDropActivity);
-
-        fightTimer.scheduleAtFixedRate(
-                new DropCardTimer(this, messageId, fightSeconds),
-                0, 1000
-        );
+        fightTimer.schedule(new CardDropTimer(this, messageId, fightSeconds),fightSeconds * 1000);
     }
 
     public List<CardGlobal> getCards(String messageId) {
@@ -30,5 +28,9 @@ public class CardDropManager extends MappedObjectManager<String, CardDropActivit
             return getElement(messageId).getCards();
         }
         return null;
+    }
+
+    public long getFightSeconds() {
+        return fightSeconds;
     }
 }
