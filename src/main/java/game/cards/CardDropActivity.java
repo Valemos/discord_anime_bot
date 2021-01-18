@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class CardDropActivity {
 
-    private CardDropMenu menu;
+    private final CardDropMenu menu;
     List<CardGlobal> cards;
 
     private Instant timeStarted;
@@ -40,6 +40,10 @@ public class CardDropActivity {
 
     public List<CardGlobal> getCards() {
         return cards;
+    }
+
+    public CardDropMenu getMenu() {
+        return menu;
     }
 
     public void finishFight() {

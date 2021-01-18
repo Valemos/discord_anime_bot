@@ -49,8 +49,11 @@ public class Player {
     }
 
     public void addCard(CardPersonal card) {
-        card.setPlayerId(id);
-        cardsManager.addCard(id, card);
+        if (card.getPlayerId() == null){
+            cardsManager.addCard(id, card);
+        }else{
+            card.setPlayerId(id);
+        }
     }
 
     public ItemsPersonalManager getInventoryItems() {

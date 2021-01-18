@@ -18,7 +18,7 @@ public class CardDropMenu implements EmojiMenuHandler {
     private EventHandlerButtonMenu menu;
     private Message menuMessage;
 
-    private CardDropActivity cardDrop;
+    private final CardDropActivity cardDrop;
 
     public CardDropMenu(CardDropActivity cardDrop) {
         this.cardDrop = cardDrop;

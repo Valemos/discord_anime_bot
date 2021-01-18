@@ -54,7 +54,7 @@ class CardDropCommandTest {
         List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
 
 
-        sender.chooseReactionMenu(CardDropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
+        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
         List<CardPersonal> newCollection = tester.getCards();
 
         assertNotEquals(newCollection, prevCollection);
@@ -89,7 +89,7 @@ class CardDropCommandTest {
         sender.sendAndCaptureMessage("#drop", tester.getId(), "111");
         List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
 
-        sender.chooseReactionMenu(CardDropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
+        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
         List<CardPersonal> collection1 = tester.getCards();
         CardPersonal card1 = collection1.get(collection1.size() - 1);
         assertEquals(1, collection1.size() - prevSize);
@@ -101,7 +101,7 @@ class CardDropCommandTest {
 
         sender.getGame().getCooldowns(tester.getId()).reset();
 
-        sender.chooseReactionMenu(CardDropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
+        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
         List<CardPersonal> collection2 = tester.getCards();
         CardPersonal card2 = collection2.get(collection2.size() - 1);
         assertEquals(1, collection2.size() - collection1.size());

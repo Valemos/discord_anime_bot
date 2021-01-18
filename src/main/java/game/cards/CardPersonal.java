@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class CardPersonal implements DisplayableStats, ComparableCard {
     String cardId;
-    String playerId; // TODO replace with database query in personal collections
+    String playerId;
 
     CharacterInfo characterInfo;
     CardStatsConstant stats;

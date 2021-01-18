@@ -34,7 +34,6 @@ public class CardsPersonalManager extends AbstractCardsManager<CardPersonal> {
     }
 
     public void addCard(String playerId, CardPersonal card) {
-        // TODO add database query to get card id
         card.setCardId(getNextCardId());
         card.setPlayerId(playerId);
         cards.add(card);

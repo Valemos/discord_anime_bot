@@ -226,14 +226,17 @@ public class BotMessageSenderMock {
         return mReactionAddEvent;
     }
 
-    public void chooseReactionMenu(Class<? extends AbstractCommand<?>> commandClass, String messageId, String playerId, MenuEmoji emoji) {
-        EmojiMenuHandler command = (EmojiMenuHandler) findSpyCommand(commandClass);
+    public void chooseDropMenuReaction(String messageId, String playerId, MenuEmoji emoji) {
+        chooseMenuReaction(getGame().getDropManager().getElement(messageId).getMenu(), messageId, playerId, emoji);
+    }
+
+    public void chooseMenuReaction(EmojiMenuHandler menu, String messageId, String playerId, MenuEmoji emoji) {
         setMessageMock(messageId);
         setUserMock(playerId);
 
         setEventChannel(mReactionAddEvent, ChannelType.TEXT);
         setEventMessage(mReactionAddEvent, messageId, playerId);
 
-        command.hReactionAddEvent(getReactionEventMock(emoji), getGame());
+        menu.hReactionAddEvent(getReactionEventMock(emoji), getGame());
     }
 }
