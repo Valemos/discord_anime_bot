@@ -13,7 +13,7 @@ public class StocksManager extends game.MappedObjectManager<String, StocksPerson
     }
 
     public void addStockValue(String playerId, String seriesTitle, float stockValue) {
-        StocksPersonal stocks = getElement(playerId);
+        StocksPersonal stocks = getElementOrCreate(playerId);
         stocks.add(seriesTitle, stockValue);
     }
 }

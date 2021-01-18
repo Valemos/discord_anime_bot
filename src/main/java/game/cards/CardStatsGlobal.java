@@ -1,6 +1,5 @@
 package game.cards;
 
-import game.Charisma;
 import org.jetbrains.annotations.NotNull;
 
 public class CardStatsGlobal implements Comparable<CardStatsGlobal> {

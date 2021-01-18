@@ -35,12 +35,12 @@ class DropCommandTest {
 
     @Test
     void testCardsDropped() {
-        assertNull(sender.getGame().getDropManager().get("1000"));
+        assertNull(sender.getGame().getDropManager().getCards("1000"));
 
         sender.sendAndCaptureMessage("#drop", sender.tester1.getId(), "1000");
         sender.assertCommandHandled(DropCommand.class);
 
-        assertNotNull(sender.getGame().getDropManager().get("1000"));
+        assertNotNull(sender.getGame().getDropManager().getCards("1000"));
     }
 
     @Test
@@ -50,7 +50,7 @@ class DropCommandTest {
 
         sender.sendAndCaptureMessage("#drop", tester.getId(), "111");
         sender.assertCommandHandled(DropCommand.class);
-        List<CardGlobal> dropped = sender.getGame().getDropManager().get("111");
+        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
 
 
         sender.chooseReactionMenu(DropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
@@ -65,13 +65,28 @@ class DropCommandTest {
     }
 
     @Test
+    void testCooldown() {
+        Player tester = sender.tester1;
+        sender.sendAndCaptureMessage("#drop", tester.getId(), "11");
+        assertNotNull(sender.getGame().getDropManager().getCards("11"));
+
+        sender.sendAndCaptureMessage("#drop", tester.getId(), "15");
+        assertNull(sender.getGame().getDropManager().getCards("15"));
+
+        sender.getGame().getCooldowns(tester.getId()).getDrop().setUsed(null);
+
+        sender.sendAndCaptureMessage("#drop", tester.getId(), "12");
+        assertNotNull(sender.getGame().getDropManager().getCards("12"));
+    }
+
+    @Test
     void grabTheSameCharacter() {
 
         Player tester = sender.tester1;
         int prevSize = tester.getCards().size();
 
         sender.sendAndCaptureMessage("#drop", tester.getId(), "111");
-        List<CardGlobal> dropped = sender.getGame().getDropManager().get("111");
+        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
 
         sender.chooseReactionMenu(DropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
         List<CardPersonal> collection1 = tester.getCards();
@@ -83,6 +98,7 @@ class DropCommandTest {
                 card1.getCharacterInfo()
         );
 
+        sender.getGame().getCooldowns(tester.getId()).reset();
 
         sender.chooseReactionMenu(DropCommand.class,"111", tester.getId(), MenuEmoji.ONE);
         List<CardPersonal> collection2 = tester.getCards();

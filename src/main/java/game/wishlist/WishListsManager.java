@@ -10,12 +10,12 @@ public class WishListsManager extends MappedObjectManager<String, WishList> {
     }
 
     public void addCard(String playerId, CardGlobal card) {
-        WishList wishList = getElement(playerId);
+        WishList wishList = getElementOrCreate(playerId);
         wishList.add(card);
     }
 
     public boolean removeCard(String playerId, CardGlobal card) {
-        WishList wishList = getElement(playerId);
+        WishList wishList = getElementOrCreate(playerId);
         return wishList.removeById(card.getId());
     }
 }

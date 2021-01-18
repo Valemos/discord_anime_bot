@@ -1,22 +1,34 @@
 package game.cards;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import game.MappedObjectManager;
 
-public class CardDropManager {
-    private final Map<String, List<CardGlobal>> cardDropsMap;
+import java.util.List;
+import java.util.Timer;
+
+public class CardDropManager extends MappedObjectManager<String, CardDropActivity> {
+
+    int fightSeconds = 10;
+    Timer fightTimer;
 
     public CardDropManager() {
-        this.cardDropsMap = new HashMap<>();
+        super(CardDropActivity.class);
+        fightTimer = new Timer(true);
     }
 
-    public void add(String messageId, List<CardGlobal> cards) {
-        cardDropsMap.put(messageId, cards);
+    public void add(String messageId, CardDropActivity cardDropActivity) {
+        addElement(messageId, cardDropActivity);
+
+        fightTimer.scheduleAtFixedRate(
+                new DropCardTimer(this, messageId, fightSeconds),
+                0, 1000
+        );
     }
 
-    public List<CardGlobal> get(String messageId) {
-        return cardDropsMap.getOrDefault(messageId, null);
+    public List<CardGlobal> getCards(String messageId) {
+        if (isElementExists(messageId)){
+            return getElement(messageId).getCards();
+        }
+        return null;
     }
 }

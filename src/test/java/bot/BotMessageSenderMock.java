@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.*;
@@ -36,6 +37,8 @@ public class BotMessageSenderMock {
     private MessageReaction.ReactionEmote mReactionEmote;
     @Mock
     private Message mMessage;
+    @Mock
+    private RestAction<Void> mVoidRestAction;
     @Mock
     private User mUser;
     @Mock
@@ -104,7 +107,6 @@ public class BotMessageSenderMock {
         when(mMessageChannel.sendMessage(anyString())).thenReturn(mMessageAction);
         when(mMessageChannel.sendMessage(any(MessageEmbed.class))).thenReturn(mMessageAction);
         when(mMessageChannel.sendMessage(any(Message.class))).thenReturn(mMessageAction);
-        when(mMessage.editMessage(any(Message.class))).thenReturn(mMessageAction);
     }
 
     private void setEventChannel(GenericMessageEvent event, ChannelType channelType) {
@@ -156,6 +158,8 @@ public class BotMessageSenderMock {
     private void setMessageMock(String messageId, String message) {
         if (messageId != null) when(mMessage.getId()).thenReturn(messageId);
         when(mMessage.getContentRaw()).thenReturn(message);
+        when(mMessage.editMessage(any(Message.class))).thenReturn(mMessageAction);
+        when(mMessage.addReaction(anyString())).thenReturn(mVoidRestAction);
     }
 
     private void setEventMessage(MessageReactionAddEvent event, String messageId, String playerId) {
@@ -170,7 +174,7 @@ public class BotMessageSenderMock {
     public void sendAndCaptureMessage(String message, String userId, String messageId){
         send(message, userId, messageId);
 
-        verify(mMessageAction).queue(actionCaptor.capture());
+        verify(mMessageAction, atLeast(1)).queue(actionCaptor.capture());
         actionCaptor.getValue().accept(mMessage);
     }
 
@@ -180,9 +184,13 @@ public class BotMessageSenderMock {
                 .findFirst().orElseThrow(RuntimeException::new);
     }
 
-    public void assertCommandHandled(Class<? extends AbstractCommand<?>> commandClass){
+    public void assertCommandHandled(Class<? extends AbstractCommand<?>> commandClass) {
+        assertCommandHandled(commandClass, 1);
+    }
+
+    public void assertCommandHandled(Class<? extends AbstractCommand<?>> commandClass, int timesCalled){
         AbstractCommand<?> spyCommand = findSpyCommand(commandClass);
-        verify(spyCommand).handle(any());
+        verify(spyCommand, times(timesCalled)).handle(any());
     }
 
     public void assertCommandNotHandled() {
@@ -214,6 +222,7 @@ public class BotMessageSenderMock {
         when(mReactionAddEvent.getReactionEmote()).thenReturn(mReactionEmote);
         when(mReactionEmote.getEmoji()).thenReturn(emoji.getEmoji());
         when(mReactionAddEvent.getChannel()).thenReturn(mMessageChannel);
+
         return mReactionAddEvent;
     }
 

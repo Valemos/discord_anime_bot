@@ -3,9 +3,6 @@ package game.items;
 import game.MappedObjectManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ItemsPersonalManager extends MappedObjectManager<String, ItemsPersonal> {
 
     public ItemsPersonalManager() {
@@ -13,12 +10,12 @@ public class ItemsPersonalManager extends MappedObjectManager<String, ItemsPerso
     }
 
     public void addItem(String playerId, ItemGlobal item) {
-        @NotNull ItemsPersonal items = getElement(playerId);
+        @NotNull ItemsPersonal items = getElementOrCreate(playerId);
         items.add(item);
     }
 
     public ItemGlobal getItem(String playerId, String itemId){
-        @NotNull ItemsPersonal items = getElement(playerId);
+        @NotNull ItemsPersonal items = getElementOrCreate(playerId);
         return items.getById(itemId);
     }
 }

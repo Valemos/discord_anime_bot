@@ -7,6 +7,8 @@ import bot.menu.EmojiMenuHandler;
 import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
+import game.cards.CardDropActivity;
+import game.cooldown.CooldownSet;
 import game.Player;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
@@ -16,7 +18,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import java.time.Instant;
 import java.util.List;
 
-public class DropCommand extends AbstractCommandNoArguments implements EmojiMenuHandler {
+public class DropCommand extends AbstractCommandNoArguments {
 
     public DropCommand(AnimeCardsGame game) {
         super(game, CommandPermissions.USER);
@@ -36,51 +38,8 @@ public class DropCommand extends AbstractCommandNoArguments implements EmojiMenu
         CardsGlobalManager collection = game.getCardsGlobalManager();
         List<CardGlobal> cards = collection.getRandomCards(3);
 
-        BotMenuCreator.menuDropCards(cards, game, event, this);
-    }
 
-    @Override
-    public void hEmojiOne(MessageReactionAddEvent event, AnimeCardsGame game) {
-        chooseCardForGrab(event, game, 0);
-    }
-
-    @Override
-    public void hEmojiTwo(MessageReactionAddEvent event, AnimeCardsGame game) {
-        chooseCardForGrab(event, game, 1);
-    }
-
-    @Override
-    public void hEmojiThree(MessageReactionAddEvent event, AnimeCardsGame game) {
-        chooseCardForGrab(event, game, 2);
-    }
-
-    private void chooseCardForGrab(MessageReactionAddEvent event, AnimeCardsGame game, int cardIndex) {
-        List<CardGlobal> cards = game.getDropManager().get(event.getMessageId());
-
-        if (cards == null){
-            event.getChannel().sendMessage("cannot grab any more").queue();
-            return;
-        }
-        CardGlobal cardGlobal = cards.get(cardIndex);
-        grabCard(event, cardGlobal);
-    }
-
-    private void grabCard(MessageReactionAddEvent event, CardGlobal cardGlobal) {
-        Instant now = Instant.now();
-
-        Player player = game.getPlayerById(event.getUserId());
-
-        CooldownSet cooldowns = game.getCooldowns(player.getId());
-        if (!cooldowns.getGrab().tryUse(now)){
-            sendMessage(event, cooldowns.getGrab().getVerboseDescription(now));
-            return;
-        }
-
-        CardPersonal cardPersonal = game.pickPersonalCardDelay(player, cardGlobal.getId(), 0);
-        if (cardPersonal != null){
-            sendMessage(event, "you've picked card " + cardPersonal.getIdName());
-        }else{
-            sendMessage(event, "cannot find global card " + cardGlobal.getId());
-        }
+        CardDropActivity cardDrop = new CardDropActivity(cards);
+        cardDrop.showMenu(event.getChannel(), game);
     }
 }

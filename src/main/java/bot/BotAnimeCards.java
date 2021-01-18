@@ -1,16 +1,15 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.commands.admin.GrabTimeCommand;
+import bot.commands.admin.PrefixCommand;
+import bot.commands.creator.*;
 import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.inventory.ShowCollectionCommand;
 import bot.commands.user.squadron.*;
 import bot.commands.user.wishlist.*;
-import bot.commands.creator.AddItemCommand;
-import bot.commands.creator.AddCardCommand;
-import bot.commands.creator.DeleteCardCommand;
-import bot.commands.creator.DeleteItemCommand;
 import bot.commands.user.*;
 import bot.commands.user.shop.ArmorShopCommand;
 import bot.commands.user.shop.BuyCommand;
@@ -23,8 +22,8 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.CardGlobal;
 import game.cards.CardStatsGlobal;
+import game.cards.Charisma;
 import game.items.ItemGlobal;
-import game.items.ItemsGlobalManager;
 import game.items.Material;
 import game.items.MaterialsSet;
 import net.dv8tion.jda.api.JDA;
@@ -32,10 +31,8 @@ import net.dv8tion.jda.api.JDABuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +43,7 @@ public class BotAnimeCards {
 
     JDA discordAPI;
     AnimeCardsGame game;
-    CommandClient commandClient;
+    CommandClient commandListener;
     EventWaiter eventWaiter;
 
     public BotAnimeCards() {
@@ -68,7 +65,7 @@ public class BotAnimeCards {
 
     public boolean authenticate(String token) {
         try{
-            commandClient = buildCommandClient();
+            commandListener = buildCommandClient();
             discordAPI = buildJDA(token);
             discordAPI.awaitReady();
             return true;
@@ -80,19 +77,52 @@ public class BotAnimeCards {
     }
 
     CommandClient buildCommandClient() {
-        CommandClientBuilder builder = new CommandClientBuilder();
-        builder.setOwnerId("797845777618698240")
-                .setCoOwnerIds("409754559775375371")
-                .setPrefix("#")
-                .setAlternativePrefix("c#");
-
+        CommandClientBuilder builder = getCommandClientBuilder(null);
         addCommands(builder, getCommands(game));
-
         return builder.build();
+    }
+
+    @NotNull
+    private CommandClientBuilder getCommandClientBuilder(String altPrefix) {
+        CommandClientBuilder builder = new CommandClientBuilder()
+                .setOwnerId("797845777618698240")
+                .setCoOwnerIds("409754559775375371")
+                .setPrefix("#");
+
+        if (altPrefix != null) builder = builder.setAlternativePrefix(altPrefix);
+
+        return builder;
+    }
+
+    public void rebuildCommandClient(String prefix){
+        CommandClientBuilder builder = getCommandClientBuilder(prefix);
+
+        List<Command> commands = commandListener.getCommands();
+        addCommands(builder, commands);
+
+        discordAPI.removeEventListener(commandListener);
+        commandListener = builder.build();
+        discordAPI.addEventListener(commandListener);
+    }
+
+    void addCommands(CommandClientBuilder builder, Collection<Command> commands) {
+        for (Command command : commands){
+            builder.addCommand(command);
+        }
+    }
+
+    void addCommands(CommandClientBuilder builder, Command ... commands) {
+        for (Command command : commands){
+            builder.addCommand(command);
+        }
     }
 
     AbstractCommand<?>[] getCommands(AnimeCardsGame game) {
         return new AbstractCommand<?>[]{
+                new PrefixCommand(this),
+                new ResetCooldownsCommand(game),
+                new GrabTimeCommand(game),
+
                 new DropCommand(game),
                 new DailyCommand(game),
                 new TopCharactersCommand(game),
@@ -136,15 +166,9 @@ public class BotAnimeCards {
         };
     }
 
-    void addCommands(CommandClientBuilder builder, Command ... commands) {
-        for (Command command : commands){
-            builder.addCommand(command);
-        }
-    }
-
     @NotNull
     JDA buildJDA(String token) throws LoginException {
-        return JDABuilder.createDefault(token).addEventListeners(commandClient, eventWaiter).build();
+        return JDABuilder.createDefault(token).addEventListeners(commandListener, eventWaiter).build();
     }
 
     public void shutdown(){
@@ -189,8 +213,8 @@ public class BotAnimeCards {
 
         for (CardGlobal card : cards) {
             game.addCard(card);
-            game.pickPersonalCardDelay(tester1, card.getId(), 1);
-            game.pickPersonalCardDelay(tester2, card.getId(), 1);
+            game.pickPersonalCard(tester1, card.getId(), 1);
+            game.pickPersonalCard(tester2, card.getId(), 1);
         }
 
         tester1.getMaterials().setAmount(Material.GOLD, 100);

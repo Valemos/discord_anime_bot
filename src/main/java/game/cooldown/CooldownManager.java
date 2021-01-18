@@ -1,6 +1,6 @@
-package game;
+package game.cooldown;
 
-import bot.commands.user.CooldownSet;
+import game.MappedObjectManager;
 
 public class CooldownManager extends MappedObjectManager<String, CooldownSet> {
 

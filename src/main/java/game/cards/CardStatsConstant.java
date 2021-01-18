@@ -1,7 +1,5 @@
 package game.cards;
 
-import game.Charisma;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

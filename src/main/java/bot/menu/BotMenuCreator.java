@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
 import game.DisplayableStats;
+import game.cards.CardDropActivity;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
 import game.items.ItemGlobal;
@@ -92,41 +93,14 @@ public class BotMenuCreator {
 
             cardsMenu.paginate(event.getChannel(), selectedPage);
         }else{
-            event.getChannel().sendMessage(
-                    new MessageBuilder()
-                            .append(title)
-                            .setEmbed(
-                                new EmbedBuilder()
-                                        .setDescription("No cards")
-                                        .build())
-                            .build()
-            ).queue();
+            Message message = new MessageBuilder()
+                    .append(title)
+                    .setEmbed(
+                            new EmbedBuilder()
+                                    .setDescription("No cards")
+                                    .build()
+                    ).build();
+            event.getChannel().sendMessage(message).queue();
         }
-    }
-
-    public static void menuDropCards(List<CardGlobal> cards, AnimeCardsGame game, CommandEvent event, EmojiMenuHandler emojiMenu) {
-
-        StringBuilder description = new StringBuilder();
-        int counter = 1;
-        for (CardGlobal card : cards){
-            description.append(counter++).append(". ").append(card.getNameStats()).append('\n');
-        }
-
-        EventHandlerButtonMenu menu = new EventHandlerButtonMenu.Builder()
-                .setEventWaiter(game.getEventWaiter())
-                .setText("Drop cards")
-                .setDescription(description.toString())
-                .setUsers(event.getAuthor())
-                .setChoices(MenuEmoji.ONE, MenuEmoji.TWO, MenuEmoji.THREE)
-                .setAction(e -> emojiMenu.hReactionAddEvent(e, game))
-                .build();
-
-        Message message = menu.getMessage();
-        event.getChannel().sendMessage(message).queue(
-                resultMessage -> {
-                    menu.display(resultMessage);
-                    game.getDropManager().add(resultMessage.getId(), cards);
-                }
-        );
     }
 }

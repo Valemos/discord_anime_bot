@@ -1,4 +1,4 @@
-package game;
+package game.cards;
 
 public enum Charisma {
     CHARISMATIC(1, "Charismatic"),

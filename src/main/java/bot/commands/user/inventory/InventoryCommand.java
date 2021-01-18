@@ -24,7 +24,7 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
         ItemsPersonalManager itemsManager = game.getItemsPersonal();
 
         BotMenuCreator.menuForItemStats(
-                itemsManager.getElement(requestedPlayer.getId()).sortedByItemPower(),
+                itemsManager.getElementOrCreate(requestedPlayer.getId()).sortedByItemPower(),
                 event,
                 game,
                 1

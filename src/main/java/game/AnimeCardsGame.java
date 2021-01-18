@@ -1,6 +1,5 @@
 package game;
 
-import bot.commands.user.CooldownSet;
 import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
@@ -9,6 +8,8 @@ import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
 import game.contract.MultiTradeContract;
 import game.contract.SendCardsContract;
+import game.cooldown.CooldownManager;
+import game.cooldown.CooldownSet;
 import game.items.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
@@ -140,15 +141,15 @@ public class AnimeCardsGame {
         return player;
     }
 
-    public CardPersonal pickPersonalCardDelay(Player player, String globalCardId, float pickDelay) {
+    public CardPersonal pickPersonalCard(Player player, String globalCardId, float pickDelay) {
         CardGlobal cardGlobal = getCardGlobalById(globalCardId);
         if (cardGlobal == null){
             return null;
         }
-        return pickPersonalCardDelay(player, cardGlobal, pickDelay);
+        return pickPersonalCard(player, cardGlobal, pickDelay);
     }
 
-    public CardPersonal pickPersonalCardDelay(Player player, CardGlobal cardGlobal, float pickDelay) {
+    public CardPersonal pickPersonalCard(Player player, CardGlobal cardGlobal, float pickDelay) {
         cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
@@ -269,7 +270,7 @@ public class AnimeCardsGame {
     }
 
     public StocksPersonal getStocks(String playerId) {
-        return stocksManager.getElement(playerId);
+        return stocksManager.getElementOrCreate(playerId);
     }
 
 
@@ -282,7 +283,7 @@ public class AnimeCardsGame {
     }
 
     public @NotNull WishList getWishList(String playerId) {
-        return wishListsManager.getElement(playerId);
+        return wishListsManager.getElementOrCreate(playerId);
     }
 
 
@@ -303,7 +304,7 @@ public class AnimeCardsGame {
     }
 
     public CooldownSet getCooldowns(String playerId) {
-        return cooldownManager.getElement(playerId);
+        return cooldownManager.getElementOrCreate(playerId);
     }
 }
 

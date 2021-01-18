@@ -1,4 +1,4 @@
-package game;
+package game.cooldown;
 
 import java.time.Duration;
 import java.time.Instant;

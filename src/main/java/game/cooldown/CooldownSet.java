@@ -1,6 +1,4 @@
-package bot.commands.user;
-
-import game.Cooldown;
+package game.cooldown;
 
 import java.time.Instant;
 

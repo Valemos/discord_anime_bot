@@ -30,9 +30,13 @@ public class EventHandlerButtonMenu extends Menu
     private final List<String> choices;
     private final Consumer<MessageReactionAddEvent> action;
     private final Consumer<Message> finalAction;
+    private final boolean resetReactionEmotes;
+    private boolean waitingReactions = true;
+    private String additionalInfo;
 
     EventHandlerButtonMenu(EventWaiter waiter, Set<User> users, Set<Role> roles, long timeout, TimeUnit unit,
-                           Color color, String text, String description, List<String> choices, Consumer<MessageReactionAddEvent> action, Consumer<Message> finalAction)
+                           Color color, String text, String description, List<String> choices, Consumer<MessageReactionAddEvent> action, Consumer<Message> finalAction,
+                           boolean resetReactionEmotes, String additionalInfo)
     {
         super(waiter, users, roles, timeout, unit);
         this.color = color;
@@ -41,6 +45,8 @@ public class EventHandlerButtonMenu extends Menu
         this.choices = choices;
         this.action = action;
         this.finalAction = finalAction;
+        this.resetReactionEmotes = resetReactionEmotes;
+        this.additionalInfo = additionalInfo;
     }
 
     @Override
@@ -103,15 +109,20 @@ public class EventHandlerButtonMenu extends Menu
     }
 
     private void handleAcceptReaction(MessageReactionAddEvent event, Message message) {
+        if (!waitingReactions){
+            return;
+        }
 
         action.accept(event);
 
-        try {
-            User user = event.getUser();
-            if (user != null){
-                event.getReaction().removeReaction(user).queue();
-            }
-        } catch(PermissionException ignored) {}
+        if (resetReactionEmotes){
+            try {
+                User user = event.getUser();
+                if (user != null){
+                    event.getReaction().removeReaction(user).queue();
+                }
+            } catch(PermissionException ignored) {}
+        }
 
         message.editMessage(getMessage()).queue(this::selectionMenuWaitReactions);
     }
@@ -124,6 +135,9 @@ public class EventHandlerButtonMenu extends Menu
             mbuilder.append(text);
         if(description!=null)
             mbuilder.setEmbed(new EmbedBuilder().setColor(color).setDescription(description).build());
+        if(additionalInfo !=null)
+            mbuilder.append("\n").append(additionalInfo);
+
         return mbuilder.build();
     }
 
@@ -131,14 +145,28 @@ public class EventHandlerButtonMenu extends Menu
         this.description = description;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void stopWaitingReactions() {
+        waitingReactions = false;
+    }
+
+    public void setAdditionalInfo(String info) {
+        additionalInfo = info;
+    }
+
     public static class Builder extends Menu.Builder<EventHandlerButtonMenu.Builder, EventHandlerButtonMenu>
     {
         private Color color;
         private String text;
         private String description;
+        private String additionalInfo;
         private final List<String> choices = new LinkedList<>();
         private Consumer<MessageReactionAddEvent> action;
         private Consumer<Message> finalAction = m -> m.delete().queue();
+        private boolean resetReactionEmotes = true;
 
         @Override
         public EventHandlerButtonMenu build()
@@ -148,7 +176,7 @@ public class EventHandlerButtonMenu extends Menu
             Checks.check(action != null, "Must provide an action consumer");
             Checks.check(text != null || description != null, "Either text or description must be set");
 
-            return new EventHandlerButtonMenu(waiter, users, roles, timeout, unit, color, text, description, choices, action, finalAction);
+            return new EventHandlerButtonMenu(waiter, users, roles, timeout, unit, color, text, description, choices, action, finalAction, resetReactionEmotes, additionalInfo);
         }
 
         public EventHandlerButtonMenu.Builder setColor(Color color)
@@ -225,6 +253,16 @@ public class EventHandlerButtonMenu extends Menu
         {
             this.choices.clear();
             return addChoices(emotes);
+        }
+
+        public EventHandlerButtonMenu.Builder resetReactionEmotes(boolean resetReactionEmotes) {
+            this.resetReactionEmotes = resetReactionEmotes;
+            return this;
+        }
+
+        public EventHandlerButtonMenu.Builder setAdditionalInfo(String additionalInfo) {
+            this.additionalInfo = additionalInfo;
+            return this;
         }
     }
 }
