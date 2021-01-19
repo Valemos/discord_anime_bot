@@ -1,5 +1,8 @@
 package game.contract;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -7,8 +10,10 @@ import java.util.Objects;
 public class ContractsManager {
 
     HashMap<Class<? extends ContractInterface>, ContractsContainer> containersMap;
+    private final Session dbSession;
 
-    public ContractsManager(List<Class<? extends AbstractContract>> contractClasses) {
+    public ContractsManager(Session dbSession, List<Class<? extends AbstractContract>> contractClasses) {
+        this.dbSession = dbSession;
         containersMap = new HashMap<>();
         for (Class<? extends AbstractContract> contractClass : contractClasses){
             containersMap.put(contractClass, new ContractsContainer());

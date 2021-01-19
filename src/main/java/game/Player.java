@@ -1,31 +1,31 @@
 package game;
 
 import game.cards.CardPersonal;
-import game.cards.CardsPersonalManager;
-import game.items.ItemGlobal;
-import game.items.ItemsPersonalManager;
-import game.items.MaterialsManager;
+import game.cards.SeriesInfo;
 import game.items.MaterialsSet;
-import game.squadron.Squadron;
+import game.stocks.StockValue;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+@Entity
 public class Player {
-    private final String id;
-    private final CardsPersonalManager cardsManager;
-    private final ItemsPersonalManager itemsPersonalManager;
-    private final MaterialsManager materialsManager;
-    private Squadron squadron;
 
-    public Player(String id,
-                  CardsPersonalManager cardsManager,
-                  ItemsPersonalManager itemsPersonalManager,
-                  MaterialsManager materialsManager) {
-        this.id = id;
-        this.cardsManager = cardsManager;
-        this.itemsPersonalManager = itemsPersonalManager;
-        this.materialsManager = materialsManager;
-        materialsManager.createEmptyMaterials(id);
+    @Id
+    private String id;
+
+    @OneToMany(mappedBy="owner")
+    private final List<CardPersonal> cards = new ArrayList<>();
+
+    @Embedded
+    private final MaterialsSet materials = new MaterialsSet();
+
+    @OneToMany(mappedBy="owner")
+    private List<StockValue> stocks;
+
+    public Player() {
     }
 
     @Override
@@ -36,52 +36,46 @@ public class Player {
         return false;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
 
-    public CardsPersonalManager getCardsManager() {
-        return cardsManager;
-    }
-
     public MaterialsSet getMaterials() {
-        return materialsManager.get(id);
+        return materials;
     }
 
     public void addCard(CardPersonal card) {
-        if (card.getPlayerId() == null){
-            cardsManager.addCard(id, card);
-        }else{
-            card.setPlayerId(id);
-        }
-    }
-
-    public ItemsPersonalManager getInventoryItems() {
-        return itemsPersonalManager;
-    }
-
-    public void setSquadron(Squadron squadron) {
-        this.squadron = squadron;
-        squadron.setPlayerId(id);
-    }
-
-    public Squadron getSquadron() {
-        return squadron;
-    }
-
-    public void addItem(ItemGlobal newItem) {
-        itemsPersonalManager.addItem(id, newItem);
+        cards.add(card);
     }
 
     public List<CardPersonal> getCards() {
-        return cardsManager.getCardsPlayer(getId());
+        return cards;
+    }
+
+    public List<StockValue> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<StockValue> stocks) {
+        this.stocks = stocks;
     }
 
     public void subtractMaterials(MaterialsSet materials) {
-        materialsManager.subtractMaterials(id, materials);
+        this.materials.subtractMaterials(materials);
     }
 
     public void addMaterials(MaterialsSet materials) {
-        materialsManager.addMaterials(id, materials);
+        this.materials.addMaterials(materials);
+    }
+
+    public StockValue findStockByName(String seriesName) {
+        return getStocks().stream()
+                .filter((s) -> String.valueOf(s.getSeries().getName()).toLowerCase()
+                        .contains(seriesName.toLowerCase()))
+                .findFirst().orElse(null);
     }
 }

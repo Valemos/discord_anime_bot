@@ -1,6 +1,8 @@
 package game.cards;
 
 import bot.commands.SortingType;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -9,52 +11,20 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CardsPersonalManager extends AbstractCardsManager<CardPersonal> {
-    private int currentCardId = 0;
+    private final Session dbSession;
 
-    public CardsPersonalManager() {
-        this(new ArrayList<>());
-    }
-
-    public CardsPersonalManager(List<CardPersonal> cards) {
-        super(cards);
+    public CardsPersonalManager(Session session) {
+        super(new ArrayList<>());
+        dbSession = session;
     }
 
     protected Stream<CardPersonal> filterByPlayerId(String playerId, Stream<CardPersonal> stream) {
-        return stream.filter(c -> c.getPlayerId().equals(playerId));
+        return stream.filter(c -> c.getOwner().getId().equals(playerId));
     }
 
-    public List<CardPersonal> getCardsPlayer(String playerId) {
-        return filterByPlayerId(playerId, cards.stream()).collect(Collectors.toList());
+    public CardPersonal getById(String cardId) {
+        return dbSession.get(CardPersonal.class, cardId);
     }
-
-    public CardPersonal getCardById(String cardId) {
-        return cards.stream()
-                .filter((card) -> card.getCardId().equals(cardId))
-                .findFirst().orElse(null);
-    }
-
-    public void addCard(String playerId, CardPersonal card) {
-        card.setCardId(getNextCardId());
-        card.setPlayerId(playerId);
-        cards.add(card);
-    }
-
-    private String getNextCardId() {
-        return String.valueOf(++currentCardId);
-    }
-
-    public boolean removeCard(String playerId, String cardId) {
-        return cards.removeIf(c ->
-                c.getCardId().equals(cardId) &&
-                c.getPlayerId().equals(playerId)
-        );
-    }
-
-    public boolean isCardExists(String playerId, String cardId) {
-        return filterByPlayerId(playerId, cards.stream())
-                .allMatch(card -> card.getCardId().equals(cardId));
-    }
-
 
     @Override
     protected Comparator<CardPersonal> getComparator(SortingType sortingType) {
@@ -72,15 +42,22 @@ public class CardsPersonalManager extends AbstractCardsManager<CardPersonal> {
             return (c1, c2) -> Float.compare(c1.getPowerLevel(), c2.getPowerLevel());
         }
 
-        return Comparator.comparing(CardPersonal::getCardId);
+        return Comparator.comparing(CardPersonal::getId);
     }
 
-    public List<CardPersonal> getCardsSorted(String playerId, String name, String series, List<SortingType> sortingTypes) {
+    public List<CardPersonal> getSorted(String playerId, String name, String series, List<SortingType> sortingTypes) {
         return sortCards(sortingTypes,
                 filterBySeries(series,
                         filterByName(name,
                                 filterByPlayerId(playerId,
                                 cards.stream()))))
                 .collect(Collectors.toList());
+    }
+
+    public boolean removeCard(CardPersonal card) {
+        dbSession.beginTransaction();
+        dbSession.delete(card);
+        dbSession.getTransaction().commit();
+        return true;
     }
 }

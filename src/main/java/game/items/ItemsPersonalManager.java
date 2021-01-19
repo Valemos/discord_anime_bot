@@ -1,11 +1,13 @@
 package game.items;
 
 import game.MappedObjectManager;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemsPersonalManager extends MappedObjectManager<String, ItemsPersonal> {
 
-    public ItemsPersonalManager() {
+    public ItemsPersonalManager(Session dbSession) {
         super(ItemsPersonal.class);
     }
 

@@ -1,7 +1,5 @@
 package bot.commands;
 
-import bot.CommandPermissions;
-import bot.commands.user.inventory.InspectCardCommand;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -26,13 +24,8 @@ public abstract class AbstractCommand<T> extends Command {
     protected Player player;
 
     public AbstractCommand(AnimeCardsGame game, Class<T> argumentsClass) {
-        this(game, argumentsClass, CommandPermissions.USER);
-    }
-
-    public AbstractCommand(AnimeCardsGame game, Class<T> argumentsClass, CommandPermissions commandPermissions) {
         this.game = game;
         this.argumentsClass = argumentsClass;
-        userPermissions = commandPermissions.getRequiredPermissions();
     }
 
     @NotNull
@@ -53,7 +46,7 @@ public abstract class AbstractCommand<T> extends Command {
     @Override
     public void execute(CommandEvent event) {
         String userId = event.getAuthor().getId();
-        player = game.getPlayerById(userId);
+        player = game.getPlayer(userId);
 
         if(tryParseArguments(event.getArgs(), event.getChannel())){
             handle(event);

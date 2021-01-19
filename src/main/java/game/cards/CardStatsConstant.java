@@ -1,16 +1,24 @@
 package game.cards;
 
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Embeddable
 public class CardStatsConstant{
 
-    float approvalRating;
-    int cardPrint;
-    float dexterity;
-    int strength;
-    float wisdom;
-    Charisma charisma;
+    float approvalRating = 0;
+    int cardPrint = 0;
+    float dexterity = 0;
+    int strength = 0;
+    float wisdom = 0;
+    @Enumerated(EnumType.ORDINAL)
+    Charisma charisma = Charisma.NEUTRAL;
+
+    public CardStatsConstant() {
+    }
 
     public CardStatsConstant(float approvalRating, int cardPrint, float dexterity, int strength, float wisdom, Charisma charisma) {
         this.approvalRating = approvalRating;

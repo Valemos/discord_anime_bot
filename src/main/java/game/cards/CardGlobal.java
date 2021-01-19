@@ -2,10 +2,23 @@ package game.cards;
 
 import game.DisplayableStats;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
 public class CardGlobal implements DisplayableStats, ComparableCard {
 
+    @Id
+    private String id; //TODO add generate id
+    @OneToOne
     CharacterInfo characterInfo;
+    @Embedded
     CardStatsGlobal stats;
+
+    public CardGlobal() {
+    }
 
     public CardGlobal(String characterName, String seriesName, String imageUrl) {
         this(characterName, seriesName, imageUrl, new CardStatsGlobal());
@@ -27,16 +40,12 @@ public class CardGlobal implements DisplayableStats, ComparableCard {
 
     @Override
     public String getName() {
-        return characterInfo.characterName;
+        return characterInfo.getName();
     }
 
     @Override
     public String getSeries() {
-        return characterInfo.seriesTitle;
-    }
-
-    public void setId(String newCardId) {
-        characterInfo.setId(newCardId);
+        return characterInfo.getSeriesName();
     }
 
     public String getId() {

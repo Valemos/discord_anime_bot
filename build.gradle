@@ -16,19 +16,21 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testCompile "org.mockito:mockito-core:2.22.0"
-    testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: '1.7.4'
-    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.7.4'
 
     compile group: 'org.apache.ant', name: 'ant', version: '1.8.2'
     implementation 'args4j:args4j:2.33'
+
+    implementation 'net.dv8tion:JDA:4.2.0_168'
     implementation 'com.jagrosh:jda-utilities-command:3.0.5'
     implementation 'com.jagrosh:jda-utilities-menu:3.0.5'
-    implementation 'net.dv8tion:JDA:4.2.0_168'
+
+    implementation 'org.hibernate:hibernate-core:5.4.27.Final'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'bot.BotDiscordEntryPoint'
+        attributes 'Main-Class': 'bot.BotAnimeCards'
     }
 
     from {

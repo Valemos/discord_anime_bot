@@ -31,7 +31,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
 
     @Override
     public void handle(CommandEvent event) {
-        Player targetPlayer = game.getPlayerById(commandArgs.recipientId);
+        Player targetPlayer = game.getPlayer(commandArgs.recipientId);
 
         if (targetPlayer == null || targetPlayer == player){
             sendMessage(event,
@@ -42,7 +42,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
         }
 
         List<CardPersonal> cardsSending = commandArgs.cardIds.stream()
-                .map(cardId -> game.getCardPersonal(player.getId(), cardId))
+                .map(cardId -> game.getCardsPersonal().getById(cardId))
                 .filter(Objects::nonNull)
                 .sorted(CardPersonal::comparatorPowerLevel)
                 .collect(Collectors.toList());

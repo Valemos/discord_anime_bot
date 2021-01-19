@@ -1,7 +1,6 @@
 package bot.commands.user.carddrop;
 
 
-import bot.CommandPermissions;
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
@@ -16,7 +15,7 @@ import java.util.List;
 public class CardDropCommand extends AbstractCommandNoArguments {
 
     public CardDropCommand(AnimeCardsGame game) {
-        super(game, CommandPermissions.USER);
+        super(game);
         name = "drop";
     }
 
@@ -30,7 +29,7 @@ public class CardDropCommand extends AbstractCommandNoArguments {
             return;
         }
 
-        CardsGlobalManager collection = game.getCardsGlobalManager();
+        CardsGlobalManager collection = game.getCardsGlobal();
         List<CardGlobal> cards = collection.getRandomCards(3);
 
 

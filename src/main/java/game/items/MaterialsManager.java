@@ -1,10 +1,16 @@
 package game.items;
 
+import org.hibernate.SessionFactory;
+
 import java.util.HashMap;
 
 public class MaterialsManager {
 
     HashMap<String, MaterialsSet> materialsMap = new HashMap<>();
+
+    public MaterialsManager(SessionFactory dbSession) {
+
+    }
 
     public MaterialsSet createEmptyMaterials(String playerId) {
         MaterialsSet materials = new MaterialsSet();

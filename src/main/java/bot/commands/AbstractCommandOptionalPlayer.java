@@ -15,7 +15,7 @@ public abstract class AbstractCommandOptionalPlayer extends AbstractCommand<Opti
 
     public boolean tryFindPlayerArgument(CommandEvent event) {
         String playerId = commandArgs.getSelectedOrPlayerId(player);
-        requestedPlayer = game.getPlayerById(playerId);
+        requestedPlayer = game.getPlayer(playerId);
 
         if (requestedPlayer == null){
             event.getChannel().sendMessage(playerId + " player not found").queue();

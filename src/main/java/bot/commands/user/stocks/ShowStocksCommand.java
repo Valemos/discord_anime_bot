@@ -4,7 +4,7 @@ import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
-import game.stocks.StocksPersonal;
+import game.stocks.StockValue;
 
 public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
 
@@ -20,14 +20,9 @@ public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
             return;
         }
 
-        StocksPersonal stocks = game.getStocks(requestedPlayer.getId());
-
-        String[] stockItems = stocks.getNames().stream()
-                .sorted((name1, name2) ->
-                        Float.compare(
-                                stocks.getStockValue(name2),
-                                stocks.getStockValue(name1)))
-                .map(stocks::getStockStringValue)
+        String[] stockItems = player.getStocks().stream()
+                .sorted((s1, s2) -> Float.compare(s1.getValue(), s2.getValue()))
+                .map(StockValue::getNameValue)
                 .toArray(String[]::new);
 
         Paginator.Builder stocksMenu = new Paginator.Builder()

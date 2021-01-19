@@ -21,7 +21,7 @@ public class WishCardCommand extends AbstractCommand<MultipleWordsArguments> {
     @Override
     public void handle(CommandEvent event) {
         String cardName = commandArgs.getSingleString();
-        List<CardGlobal> cards = game.getMatchingCardsGlobal(cardName, null);
+        List<CardGlobal> cards = game.getCardsGlobal().getFilteredCards(cardName, null);
         if (cards.size() == 0){
             sendMessage(event, "no cards found with name \"" + cardName + '\n');
         }

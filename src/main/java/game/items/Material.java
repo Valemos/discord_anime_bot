@@ -1,5 +1,9 @@
 package game.items;
 
+import org.kohsuke.args4j.spi.Setter;
+
+import java.util.function.Function;
+
 public enum Material {
     GOLD("Gold"),
 

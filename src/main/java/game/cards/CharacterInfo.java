@@ -1,15 +1,26 @@
 package game.cards;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+@Entity
 public class CharacterInfo {
 
-    String id;
-    String characterName;
-    String seriesTitle;
-    String imageUrl;
+    @Id
+    private String id; //TODO add id generation
+    private String name;
+    private String imageUrl;
 
-    public CharacterInfo(String characterName, String seriesTitle, String imageUrl) {
-        this.characterName = characterName;
-        this.seriesTitle = seriesTitle;
+    @OneToOne
+    private SeriesInfo series;
+
+    public CharacterInfo() {
+    }
+
+    public CharacterInfo(String name, String seriesName, String imageUrl) {
+        this.name = name;
+        this.series = new SeriesInfo(seriesName);
         this.imageUrl = imageUrl;
     }
 
@@ -17,16 +28,16 @@ public class CharacterInfo {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return name;
     }
 
-    public String getCharacterName() {
-        return characterName;
+    public String getSeriesName() {
+        return series.getName();
     }
 
-    public String getSeriesTitle() {
-        return seriesTitle;
+    public SeriesInfo getSeries() {
+        return series;
     }
 
     public String getImageUrl() {
@@ -42,6 +53,6 @@ public class CharacterInfo {
     }
 
     public String getFullName() {
-        return characterName + " / " + seriesTitle;
+        return name + " / " + series;
     }
 }

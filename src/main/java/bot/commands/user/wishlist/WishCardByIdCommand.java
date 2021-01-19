@@ -22,7 +22,7 @@ public class WishCardByIdCommand extends AbstractCommand<MultipleIdentifiersArgu
 
         WishList wishList = game.getWishList(player.getId());
         for (String cardId : commandArgs.multipleIds){
-            CardGlobal card = game.getCardGlobalById(cardId);
+            CardGlobal card = game.getCardsGlobal().getById(cardId);
             if (card != null){
                 wishList.add(card);
                 anyCardAdded = true;

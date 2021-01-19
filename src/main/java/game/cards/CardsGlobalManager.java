@@ -1,6 +1,8 @@
 package game.cards;
 
 import bot.commands.SortingType;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -13,13 +15,11 @@ import java.util.stream.Stream;
 public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
     private int currentCardId = 0;
+    private final Session dbSession;
 
-    public CardsGlobalManager() {
-        this(new ArrayList<>());
-    }
-
-    public CardsGlobalManager(List<CardGlobal> cards) {
-        super(cards);
+    public CardsGlobalManager(Session dbSession) {
+        super(new ArrayList<>());
+        this.dbSession = dbSession;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         if (SortingType.FAVOR == sortingType ||
                 SortingType.F == sortingType){
 
-            return (c1, c2) -> Float.compare(c2.getStats().getApprovalRating(), c1.getStats().getApprovalRating());
+            return (c1, c2) -> Float.compare(c2.getStats().calcApprovalRating(), c1.getStats().calcApprovalRating());
 
         } else if (SortingType.PRINT == sortingType ||
                 SortingType.P == sortingType){
@@ -45,7 +45,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
             removeCardById(card.getId());
         }
 
-        card.setId(generateNextCardId());
+        //TODO add fetch query
         cards.add(card);
     }
 
@@ -60,7 +60,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         return String.valueOf(++currentCardId);
     }
 
-    public List<CardGlobal> getAllCards(String name, String series) {
+    public List<CardGlobal> getFilteredCards(String name, String series) {
         return filterCardsByName(name,
                 filterCardsBySeries(series,
                         cards.stream()
@@ -69,7 +69,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
     }
 
     public CardGlobal getFirstCard(String name, String series) {
-        List<CardGlobal> cardsFound = getAllCards(name, series);
+        List<CardGlobal> cardsFound = getFilteredCards(name, series);
         if (cardsFound.size() == 1){
             return cardsFound.get(0);
         }
@@ -78,13 +78,17 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
     @NotNull
     private Stream<CardGlobal> filterCardsByName(String name, Stream<CardGlobal> stream) {
-        return stream.filter((card) -> containsIgnoreCase(card.getCharacterInfo().characterName, name));
+        if (name != null) {
+            return stream.filter((card) -> containsIgnoreCase(card.getCharacterInfo().getName(), name));
+        }else{
+            return stream;
+        }
     }
 
     @NotNull
     private Stream<CardGlobal> filterCardsBySeries(String series, Stream<CardGlobal> stream) {
         if (series != null){
-            return stream.filter((card) -> containsIgnoreCase(card.getCharacterInfo().seriesTitle, series));
+            return stream.filter((card) -> containsIgnoreCase(card.getCharacterInfo().getSeriesName(), series));
         }else{
             return stream;
         }
@@ -118,7 +122,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         return cards.size();
     }
 
-    public List<CardGlobal> getAllCards() {
+    public List<CardGlobal> getFilteredCards() {
         return cards;
     }
 }

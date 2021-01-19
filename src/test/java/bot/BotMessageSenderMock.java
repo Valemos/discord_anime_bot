@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.*;
 
@@ -54,6 +55,9 @@ public class BotMessageSenderMock {
     @Captor
     private ArgumentCaptor<Consumer<? super Message>> actionCaptor;
 
+    @Mock
+    private Session mDbSession;
+
     CommandClientImpl spyCommandClient;
 
     private BotAnimeCards spyBot;
@@ -86,11 +90,11 @@ public class BotMessageSenderMock {
     }
 
     private void initBotSettings() {
-        spyBot.loadDefaultGameSettings(spyBot.getGame());
-        tester1 = spyBot.getGame().getPlayerById("409754559775375371");
-        tester2 = spyBot.getGame().getPlayerById("347162620996091904");
+        spyBot.loadTestGameSettings(spyBot.getGame());
+        tester1 = spyBot.getGame().getPlayer("409754559775375371");
+        tester2 = spyBot.getGame().getPlayer("347162620996091904");
 
-        cardsGlobal = spyBot.getGame().getCardsGlobalManager().getAllCards();
+        cardsGlobal = spyBot.getGame().getCardsGlobal().getFilteredCards();
         cardGlobal1 = cardsGlobal.get(0);
 
         initMessageEventMock();
@@ -205,7 +209,7 @@ public class BotMessageSenderMock {
     }
 
     public void resetGame() {
-        spyBot.getGame().reset();
+        spyBot.getGame().reset(mDbSession);
         initBotSettings();
     }
 

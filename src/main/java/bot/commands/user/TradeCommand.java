@@ -4,6 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.menu.CardForCardContractMenu;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
+import game.Player;
 import game.cards.CardPersonal;
 import game.contract.CardForCardContract;
 import org.kohsuke.args4j.Argument;
@@ -25,14 +26,14 @@ public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
 
     @Override
     public void handle(CommandEvent event) {
-        String targetPlayerId = game.getCardPersonalOwner(commandArgs.receiveCardId);
-        if (!game.isPlayerExists(targetPlayerId)){
-            sendMessage(event, "cannot find player with id " + targetPlayerId);
+        Player targetPlayer = game.getCardPersonalOwner(commandArgs.receiveCardId);
+        if (targetPlayer == null){
+            sendMessage(event, "cannot find card owner for " + commandArgs.receiveCardId);
             return;
         }
 
-        CardPersonal sendCard = game.getCardPersonal(player.getId(), commandArgs.sendCardId);
-        CardPersonal receiveCard = game.getCardPersonal(targetPlayerId, commandArgs.receiveCardId);
+        CardPersonal sendCard = game.getCardsPersonal().getById(commandArgs.sendCardId);
+        CardPersonal receiveCard = game.getCardsPersonal().getById(commandArgs.receiveCardId);
 
         if (sendCard == null){
             sendMessage(event, "your card id is incorrect");
@@ -42,18 +43,17 @@ public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
             return;
         }
 
-        if (player.getId().equals(receiveCard.getPlayerId())){
+        if (player.equals(receiveCard.getOwner())){
             sendMessage(event, "you already own this card");
             return;
         }
 
         CardForCardContract contract = new CardForCardContract(
                 player.getId(),
-                targetPlayerId,
+                targetPlayer.getId(),
                 sendCard,
                 receiveCard
         );
-
 
         CardForCardContractMenu menu = new CardForCardContractMenu(game, contract);
         menu.sendMenu(event);

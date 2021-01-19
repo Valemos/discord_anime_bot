@@ -38,8 +38,8 @@ class AddCardCommandTest {
 
         CardGlobal c = sender.getGame().getCardGlobal("card name", "card series");
         assertNotNull(c);
-        assertEquals("card name", c.getCharacterInfo().getCharacterName());
-        assertEquals("card series", c.getCharacterInfo().getSeriesTitle());
+        assertEquals("card name", c.getCharacterInfo().getName());
+        assertEquals("card series", c.getCharacterInfo().getSeriesName());
         assertEquals("image_url", c.getCharacterInfo().getImageUrl());
     }
 

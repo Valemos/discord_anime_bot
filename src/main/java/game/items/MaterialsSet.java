@@ -1,14 +1,19 @@
 package game.items;
 
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Embeddable
 public class MaterialsSet {
 
+    @ElementCollection(fetch = FetchType.EAGER)
     Map<Material, Integer> materialAmounts;
+
+    @Transient
     public static final String noMaterialsDescription = "No materials";
 
 
@@ -20,6 +25,10 @@ public class MaterialsSet {
         this.materialAmounts = materialAmounts;
     }
 
+    public Map<Material, Integer> getMap() {
+        return materialAmounts;
+    }
+
     public void setAmount(Material material, int newAmount){
         materialAmounts.put(material, newAmount);
     }
@@ -28,16 +37,15 @@ public class MaterialsSet {
         return materialAmounts.getOrDefault(material, 0);
     }
 
-    public MaterialsSet subtractMaterials(MaterialsSet other) {
+    public void subtractMaterials(MaterialsSet other) {
         for(Material material : Material.values()){
             addAmount(material, -other.getAmount(material));
         }
-        return this;
     }
 
-    public boolean containsNotLessThan(MaterialsSet other) {
+    public boolean containsEnough(MaterialsSet other) {
         for(Material material : Material.values()){
-            if (getAmount(material) < other.getAmount(material)){
+            if (this.getAmount(material) < other.getAmount(material)){
                 return false;
             }
         }
@@ -49,13 +57,13 @@ public class MaterialsSet {
         setAmount(material, newAmount);
     }
 
-    public MaterialsSet addMaterials(MaterialsSet materials) {
+    public void addMaterials(MaterialsSet materials) {
         for (Material m : Material.values()){
             addAmount(m, materials.getAmount(m));
         }
-        return this;
     }
 
+    @Transient
     public String getDescriptionMultiline() {
         String description = Arrays.stream(Material.values())
                 .map(this::getMaterialAmountString)
@@ -71,4 +79,5 @@ public class MaterialsSet {
         }
         return null;
     }
+
 }

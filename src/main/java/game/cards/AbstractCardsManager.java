@@ -66,7 +66,7 @@ public abstract class AbstractCardsManager<T extends ComparableCard> {
         return comparator;
     }
 
-    public T getCardById(String id) {
+    public T getById(String id) {
         return cards.stream()
                 .filter((card)-> card.getId().equals(id))
                 .findFirst().orElse(null);

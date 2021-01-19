@@ -28,7 +28,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testNoCardsFound() {
-        List<CardPersonal> result = sender.getGame().getCardsPersonalManager().getCardsFiltered(
+        List<CardPersonal> result = sender.getGame().getCardsPersonal().getCardsFiltered(
                 "unknown", "unknown"
         );
 
@@ -37,7 +37,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterByNameCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonalManager().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
                 "r", null
         );
 
@@ -48,7 +48,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterBySeriesCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonalManager().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
                 null, "made"
         );
 
@@ -59,7 +59,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterByNameAndSeriesCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonalManager().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
                 "r", "made"
         );
 
@@ -71,7 +71,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testCollectionFavorSorting() {
-        List<CardPersonal> collection = sender.getGame().getCardsPersonalManager()
+        List<CardPersonal> collection = sender.getGame().getCardsPersonal()
                 .getCardsSorted(List.of(SortingType.FAVOR));
 
         for (int i = 1; i < collection.size(); i++) {
@@ -81,7 +81,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testCollectionPrintSorting() {
-        List<CardPersonal> collection = sender.getGame().getCardsPersonalManager()
+        List<CardPersonal> collection = sender.getGame().getCardsPersonal()
                 .getCardsSorted(List.of(SortingType.PRINT));
 
         for (int i = 1; i < collection.size(); i++) {

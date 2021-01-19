@@ -2,9 +2,11 @@ package game.cards;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
-    int cardId;
     int amountCardsPrinted;
     int amountCardsBurned;
     int cardFightsTotal;
@@ -12,49 +14,36 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
 
     public CardStatsGlobal() {
-        this(-1, 0, 0, 0, Charisma.fromValue(0));
+        this(0, 0, 0, Charisma.fromValue(0));
     }
 
-    public CardStatsGlobal(int cardId, int amountCardsPrinted, int amountCardsBurned, int cardFightsTotal, Charisma charisma) {
-        this.cardId = cardId;
+    public CardStatsGlobal(int amountCardsPrinted, int amountCardsBurned, int cardFightsTotal, Charisma charisma) {
         this.amountCardsPrinted = amountCardsPrinted;
         this.amountCardsBurned = amountCardsBurned;
         this.cardFightsTotal = cardFightsTotal;
         this.charisma = charisma;
     }
 
-    public float getApprovalRating(){
-        if (amountCardsBurned != 0){
-            return (amountCardsPrinted - amountCardsBurned) / (float) amountCardsBurned;
+    public float calcApprovalRating(){
+        if (getAmountCardsBurned() != 0){
+            return (getAmountCardsPrinted() - getAmountCardsBurned()) / (float) getAmountCardsBurned();
         }else{
-            return amountCardsPrinted - amountCardsBurned;
+            return getAmountCardsPrinted() - getAmountCardsBurned();
         }
-    }
-
-    public int getStrength() {
-        return cardFightsTotal;
-    }
-
-    public float getWisdom() {
-        return wisdomFunction(amountCardsPrinted);
     }
 
     private float wisdomFunction(int amountCardsPrinted) {
         return amountCardsPrinted;
     }
 
-    public Charisma getCharisma() {
-        return charisma;
-    }
-
     public CardStatsConstant getStatsForPickDelay(float delayCardPicked) {
         return new CardStatsConstant(
-                getApprovalRating(),
+                calcApprovalRating(),
                 amountCardsPrinted,
                 delayCardPicked,
-                getStrength(),
-                getWisdom(),
-                getCharisma()
+                cardFightsTotal,
+                wisdomFunction(amountCardsPrinted),
+                charisma
         );
     }
 
@@ -62,8 +51,7 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
     public boolean equals(Object obj) {
         if (obj instanceof CardStatsGlobal){
             CardStatsGlobal other = (CardStatsGlobal) obj;
-            return cardId == other.cardId &&
-                    amountCardsPrinted == other.amountCardsPrinted &&
+            return amountCardsPrinted == other.amountCardsPrinted &&
                     amountCardsBurned == other.amountCardsBurned &&
                     cardFightsTotal == other.cardFightsTotal &&
                     charisma == other.charisma;
@@ -79,5 +67,33 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
     public void incrementCardPrint() {
         amountCardsPrinted++;
+    }
+
+    public int getAmountCardsPrinted() {
+        return amountCardsPrinted;
+    }
+
+    public void setAmountCardsPrinted(int amountCardsPrinted) {
+        this.amountCardsPrinted = amountCardsPrinted;
+    }
+
+    public int getAmountCardsBurned() {
+        return amountCardsBurned;
+    }
+
+    public void setAmountCardsBurned(int amountCardsBurned) {
+        this.amountCardsBurned = amountCardsBurned;
+    }
+
+    public int getCardFightsTotal() {
+        return cardFightsTotal;
+    }
+
+    public void setCardFightsTotal(int cardFightsTotal) {
+        this.cardFightsTotal = cardFightsTotal;
+    }
+
+    public void setCharisma(Charisma charisma) {
+        this.charisma = charisma;
     }
 }

@@ -1,5 +1,8 @@
 package game.items;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,7 @@ public class ItemsGlobalManager {
     List<ItemGlobal> items = new ArrayList<>();
     private int currentItemId = 0;
 
-    public ItemsGlobalManager() {
+    public ItemsGlobalManager(Session dbSession) {
     }
 
     public List<ItemGlobal> getItems() {

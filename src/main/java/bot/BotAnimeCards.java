@@ -22,20 +22,28 @@ import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
-import game.cards.CardGlobal;
-import game.cards.CardStatsGlobal;
-import game.cards.Charisma;
+import game.cards.*;
 import game.items.ItemGlobal;
 import game.items.Material;
 import game.items.MaterialsSet;
+import game.stocks.StockValue;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.StatusChangeEvent;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,10 +51,10 @@ import static java.util.Map.*;
 
 public class BotAnimeCards {
 
-    JDA discordAPI;
-    AnimeCardsGame game;
-    CommandClient commandListener;
-    EventWaiter eventWaiter;
+    private JDA discordAPI;
+    private AnimeCardsGame game;
+    private CommandClient commandListener;
+    private EventWaiter eventWaiter;
 
     public BotAnimeCards() {
         this(new EventWaiter());
@@ -54,7 +62,6 @@ public class BotAnimeCards {
 
     public BotAnimeCards(EventWaiter eventWaiter) {
         this.eventWaiter = eventWaiter;
-        game = new AnimeCardsGame(eventWaiter);
     }
 
     public AnimeCardsGame getGame() {
@@ -183,11 +190,31 @@ public class BotAnimeCards {
         discordAPI.shutdown();
     }
 
-    public boolean loadExternalSettings() {
-        return false;
+    public void loadSettings() {
+        SessionFactory dbSessionFactory = getDatabaseSessionFactory();
+        game = new AnimeCardsGame(eventWaiter, dbSessionFactory.openSession());
     }
 
-    public void loadDefaultGameSettings(AnimeCardsGame game) {
+    public SessionFactory getDatabaseSessionFactory() {
+        Configuration config = new Configuration()
+                .addAnnotatedClass(Player.class)
+                .addAnnotatedClass(CardGlobal.class)
+                .addAnnotatedClass(CardPersonal.class)
+                .addAnnotatedClass(CharacterInfo.class)
+                .addAnnotatedClass(SeriesInfo.class)
+                .addAnnotatedClass(StockValue.class)
+                .configure("hibernate.cfg.xml");
+
+        ServiceRegistry reg = new StandardServiceRegistryBuilder()
+                .applySettings(config.getProperties())
+                .build();
+
+        return config.buildSessionFactory(reg);
+    }
+
+    public void loadTestGameSettings(AnimeCardsGame game) {
+        game.getDatabaseSession().beginTransaction();
+
         Player tester1 = game.createNewPlayer("409754559775375371");
         Player tester2 = game.createNewPlayer("347162620996091904");
 
@@ -196,28 +223,27 @@ public class BotAnimeCards {
                 "Riko",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(-1, 1000, 10, 1800, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(1000, 10, 1800, Charisma.NEUTRAL)),
                 new CardGlobal(
                 "Reg",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(-1, 110, 1, 125, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(110, 1, 125, Charisma.NEUTRAL)),
                 new CardGlobal(
                 "Mitty",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(-1, 5, 0, 5, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(5, 0, 5, Charisma.NEUTRAL)),
                 new CardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
                 "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk",
-                        new CardStatsGlobal(-1, 100, 80, 115, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(100, 80, 115, Charisma.NEUTRAL)),
                 new CardGlobal(
                 "Kaiman",
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x",
-                        new CardStatsGlobal(-1, 1000, 80, 1300, Charisma.NEUTRAL))
-        );
+                        new CardStatsGlobal(1000, 80, 1300, Charisma.NEUTRAL)));
 
         for (CardGlobal card : cards) {
             game.addCard(card);
@@ -236,5 +262,39 @@ public class BotAnimeCards {
         game.getItemsGlobal().addItem(new ItemGlobal(
                 "dummy item 1", 8, 0, "*item details*",
                 new MaterialsSet(of(Material.GOLD, 20))));
+
+        game.getDatabaseSession().getTransaction().commit();
+    }
+
+    private static String loadBotTokenFile() throws IOException {
+        Path filePath = Path.of("token.txt");
+        return Files.readString(filePath);
+    }
+
+
+    public static void main(String[] args) throws IOException {
+
+        String bot_token = loadBotTokenFile();
+        BotAnimeCards bot = new BotAnimeCards();
+
+//        if (!bot.authenticate(bot_token)){
+//            return;
+//        }
+
+        bot.loadSettings();
+        bot.loadTestGameSettings(bot.getGame());
+
+        SessionFactory sf = bot.getDatabaseSessionFactory();
+        Session s = sf.openSession();
+
+        s.beginTransaction();
+        AnimeCardsGame game = new AnimeCardsGame(bot.eventWaiter, s);
+
+        List<Player> pp = game.getAllPlayers();
+        MaterialsSet m = pp.get(0).getMaterials();
+
+
+        s.getTransaction().commit();
+        s.close();
     }
 }

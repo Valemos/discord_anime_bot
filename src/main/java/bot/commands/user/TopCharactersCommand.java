@@ -20,7 +20,7 @@ public class TopCharactersCommand extends AbstractCommand<MenuPageArguments> {
 
     @Override
     public void handle(CommandEvent event) {
-        List<CardGlobal> allCards = game.getCardsGlobalManager().getCardsSorted(List.of(SortingType.POWER));
+        List<CardGlobal> allCards = game.getCardsGlobal().getCardsSorted(List.of(SortingType.POWER));
 
         BotMenuCreator.menuForCardsTop(allCards, event, game, commandArgs.pageNumber);
     }

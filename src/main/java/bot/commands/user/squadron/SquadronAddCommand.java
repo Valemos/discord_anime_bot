@@ -27,9 +27,9 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
                 break;
             }
 
-            CardPersonal card = game.getCardPersonal(player.getId(), cardId);
+            CardPersonal card = game.getCardsPersonal().getById(cardId);
 
-            if (card != null){
+            if (card != null && card.getOwner().equals(player)){
                 squadron.addCard(card);
                 msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
             }else{

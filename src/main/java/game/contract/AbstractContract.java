@@ -54,10 +54,10 @@ public abstract class AbstractContract implements ContractInterface {
     }
 
     protected Player getRecipient(AnimeCardsGame game) {
-        return game.getPlayerById(recipientId);
+        return game.getPlayer(recipientId);
     }
 
     protected Player getSender(AnimeCardsGame game) {
-        return game.getPlayerById(senderId);
+        return game.getPlayer(senderId);
     }
 }

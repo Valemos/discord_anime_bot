@@ -97,7 +97,7 @@ public class BotMenuCreator {
                     .append(title)
                     .setEmbed(
                             new EmbedBuilder()
-                                    .setDescription("No cards")
+                                    .setDescription("Empty")
                                     .build()
                     ).build();
             event.getChannel().sendMessage(message).queue();

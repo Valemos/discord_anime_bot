@@ -1,13 +1,9 @@
 package game.cards;
 
 import bot.commands.user.carddrop.CardDropMenu;
-import bot.menu.EmojiMenuHandler;
-import bot.menu.EventHandlerButtonMenu;
-import bot.menu.MenuEmoji;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cooldown.CooldownSet;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
@@ -64,7 +60,7 @@ public class CardDropActivity {
     public void selectCard(MessageReactionAddEvent event, AnimeCardsGame game, int cardIndex) {
         Instant now = Instant.now();
 
-        Player player = game.getPlayerById(event.getUserId());
+        Player player = game.getPlayer(event.getUserId());
 
         CooldownSet cooldowns = game.getCooldowns(player.getId());
         if (cooldowns.getGrab().tryUse(now)){

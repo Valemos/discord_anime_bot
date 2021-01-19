@@ -40,11 +40,11 @@ class MaterialsSetTest {
         MaterialsSet gold100 = getMaterialsSet(100);
         MaterialsSet gold1000 = getMaterialsSet(1000);
 
-        assertFalse(emptySet.containsNotLessThan(gold100));
-        assertTrue(gold100.containsNotLessThan(emptySet));
+        assertFalse(emptySet.containsEnough(gold100));
+        assertTrue(gold100.containsEnough(emptySet));
 
-        assertFalse(gold100.containsNotLessThan(gold1000));
-        assertTrue(gold1000.containsNotLessThan(gold100));
+        assertFalse(gold100.containsEnough(gold1000));
+        assertTrue(gold1000.containsEnough(gold100));
     }
 
     @Test
@@ -53,11 +53,11 @@ class MaterialsSetTest {
         MaterialsSet m2 = getMaterialsSet(10, 100);
         MaterialsSet m3 = getMaterialsSet(1000, 100);
 
-        assertFalse(m1.containsNotLessThan(m2));
-        assertFalse(m2.containsNotLessThan(m1));
+        assertFalse(m1.containsEnough(m2));
+        assertFalse(m2.containsEnough(m1));
 
-        assertTrue(m3.containsNotLessThan(m1));
-        assertTrue(m3.containsNotLessThan(m2));
+        assertTrue(m3.containsEnough(m1));
+        assertTrue(m3.containsEnough(m2));
     }
 
     @Test
@@ -65,10 +65,10 @@ class MaterialsSetTest {
         MaterialsSet m1 = getMaterialsSet(100, 100);
         MaterialsSet m2 = getMaterialsSet(100, 100);
 
-        assertTrue(m1.containsNotLessThan(m2));
-        assertTrue(m2.containsNotLessThan(m1));
-        assertTrue(m1.containsNotLessThan(m1));
-        assertTrue(m2.containsNotLessThan(m2));
+        assertTrue(m1.containsEnough(m2));
+        assertTrue(m2.containsEnough(m1));
+        assertTrue(m1.containsEnough(m1));
+        assertTrue(m2.containsEnough(m2));
     }
 
     @Test

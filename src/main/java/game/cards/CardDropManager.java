@@ -3,6 +3,8 @@ package game.cards;
 
 import bot.commands.user.carddrop.CardDropTimer;
 import game.MappedObjectManager;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.util.List;
 import java.util.Timer;
@@ -13,7 +15,7 @@ public class CardDropManager extends MappedObjectManager<String, CardDropActivit
     private final Timer fightTimer;
 
 
-    public CardDropManager() {
+    public CardDropManager(Session dbSession) {
         super(CardDropActivity.class);
         fightTimer = new Timer(true);
     }

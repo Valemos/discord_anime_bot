@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Integer.min;
 
+
 public class Squadron {
     String playerId;
     private final int sizeMax;

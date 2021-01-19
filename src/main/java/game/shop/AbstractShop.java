@@ -30,9 +30,10 @@ public abstract class AbstractShop {
             MaterialsSet playerMaterials = player.getMaterials();
             MaterialsSet itemCost = lastItemSelected.getMaterialsCost();
 
-            if (playerMaterials.containsNotLessThan(itemCost)){
+            if (playerMaterials.containsEnough(itemCost)){
                 player.getMaterials().subtractMaterials(itemCost);
-                player.addItem(lastItemSelected);
+//                player.addItem(lastItemSelected);
+                //TODO add item query after items updated
                 return true;
             }
         }

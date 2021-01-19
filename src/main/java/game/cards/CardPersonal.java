@@ -1,39 +1,49 @@
 package game.cards;
 
 import game.DisplayableStats;
+import game.Player;
 
+import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.Objects;
+import java.util.UUID;
 
+@Entity
 public class CardPersonal implements DisplayableStats, ComparableCard {
-    String cardId;
-    String playerId;
 
+    @Id
+    private String cardId;
+
+    @ManyToOne
+    private Player owner;
+
+    @ManyToOne
     CharacterInfo characterInfo;
-    CardStatsConstant stats;
-    CardEquipment cardEquipment;
-    private float powerLevel;
 
+    @Embedded
+    CardStatsConstant stats;
+
+    public CardPersonal() {
+    }
 
     public CardPersonal(CharacterInfo characterInfo, CardStatsConstant stats) {
-        this(characterInfo, stats, new CardEquipment());
-    }
-
-    public CardPersonal(CharacterInfo characterInfo, CardStatsConstant stats, CardEquipment cardEquipment) {
         this.characterInfo = characterInfo;
-        this.cardEquipment = cardEquipment;
-        setStats(stats);
+        this.stats = stats;
     }
 
-    public String getPlayerId() {
-        return playerId;
+    @PrePersist
+    public void generateId() {
+        String uuid_string = UUID.randomUUID().toString().replaceAll("-","");
+        BigInteger big = new BigInteger(uuid_string, 16);
+        cardId = big.toString(36);
     }
 
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
+    public Player getOwner() {
+        return owner;
     }
 
-    public CardStatsConstant getStats() {
-        return stats;
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -43,19 +53,6 @@ public class CardPersonal implements DisplayableStats, ComparableCard {
 
     public void setStats(CardStatsConstant stats) {
         this.stats = stats;
-        updatePowerLevel(stats);
-    }
-
-    private void updatePowerLevel(CardStatsConstant stats) {
-        powerLevel = stats.getPowerLevel() + cardEquipment.getPowerLevel();
-    }
-
-    public String getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(String cardId) {
-        this.cardId = cardId;
     }
 
     public float getApprovalRating(){
@@ -77,22 +74,22 @@ public class CardPersonal implements DisplayableStats, ComparableCard {
     }
 
     public float getPowerLevel(){
-        return powerLevel;
+        return stats.getPowerLevel();
     }
 
     @Override
     public String getName() {
-        return characterInfo.characterName;
+        return characterInfo.getName();
     }
 
     @Override
     public String getSeries() {
-        return characterInfo.seriesTitle;
+        return characterInfo.getSeriesName();
     }
 
     @Override
     public String getId() {
-        return characterInfo.getId();
+        return cardId;
     }
 
     @Override

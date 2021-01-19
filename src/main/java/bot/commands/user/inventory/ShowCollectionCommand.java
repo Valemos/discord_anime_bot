@@ -7,7 +7,6 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardPersonal;
-import game.cards.CardsPersonalManager;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
@@ -40,15 +39,14 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
     @Override
     public void handle(CommandEvent event) {
 
-        Player requestedPlayer = commandArgs.userId != null ? game.getPlayerById(commandArgs.userId) : player;
+        Player requestedPlayer = commandArgs.userId != null ? game.getPlayer(commandArgs.userId) : player;
 
         if (requestedPlayer == null){
             event.getChannel().sendMessage("player not found").queue();
             return;
         }
 
-        CardsPersonalManager collection = game.getCardsPersonalManager();
-        List<CardPersonal> cards = collection.getCardsSorted(
+        List<CardPersonal> cards = game.getCardsPersonal().getSorted(
                 requestedPlayer.getId(),
                 commandArgs.filterName,
                 commandArgs.filterSeries,

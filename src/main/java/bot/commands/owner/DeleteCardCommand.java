@@ -46,7 +46,7 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
             }
         }
         else{
-            card = game.getCardGlobalById(commandArgs.cardId);
+            card = game.getCardsGlobal().getById(commandArgs.cardId);
         }
 
         if (card != null){

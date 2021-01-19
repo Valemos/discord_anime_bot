@@ -3,7 +3,7 @@ package bot.commands.user.stocks;
 import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.stocks.StocksPersonal;
+import game.stocks.StockValue;
 
 public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
 
@@ -19,10 +19,9 @@ public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
             return;
         }
 
-        StocksPersonal stocks = game.getStocks(requestedPlayer.getId());
         float totalValue = 0;
-        for (String stockName : stocks.getNames()){
-            totalValue += stocks.getStockValue(stockName);
+        for (StockValue stock : requestedPlayer.getStocks()){
+            totalValue += stock.getValue();
         }
 
         sendMessage(event, "total stocks for " + requestedPlayer.getId() + ": " + totalValue);

@@ -5,6 +5,7 @@ import bot.commands.arguments.RequiredPlayerArguments;
 import bot.menu.MultiTradeContractMenu;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
+import game.Player;
 import game.contract.MultiTradeContract;
 
 public class MultiTradeCommand extends AbstractCommand<RequiredPlayerArguments> {
@@ -18,13 +19,13 @@ public class MultiTradeCommand extends AbstractCommand<RequiredPlayerArguments> 
 
     @Override
     public void handle(CommandEvent event) {
-        String targetPlayerId = game.getCardPersonalOwner(commandArgs.id);
-        if (!game.isPlayerExists(targetPlayerId)){
-            sendMessage(event, "cannot find player with id " + targetPlayerId);
+        Player targetPlayer = game.getCardPersonalOwner(commandArgs.id);
+        if (targetPlayer == null){
+            sendMessage(event, "cannot find player with id " + commandArgs.id);
             return;
         }
 
-        MultiTradeContract contract = new MultiTradeContract(player.getId(), targetPlayerId);
+        MultiTradeContract contract = new MultiTradeContract(player.getId(), targetPlayer.getId());
         MultiTradeContractMenu menu = new MultiTradeContractMenu(game, contract);
         menu.sendMenu(event);
     }

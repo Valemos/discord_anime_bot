@@ -2,10 +2,12 @@ package game.wishlist;
 
 import game.MappedObjectManager;
 import game.cards.CardGlobal;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 public class WishListsManager extends MappedObjectManager<String, WishList> {
 
-    public WishListsManager() {
+    public WishListsManager(Session dbSession) {
         super(WishList.class);
     }
 
