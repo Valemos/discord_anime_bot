@@ -37,8 +37,9 @@ class AnimeCardsGameTest {
     @Test
     void testCardRemoved() {
         game.addCard(card1);
-        game.removeCardById(card1.getId());
+        assertNotNull(game.getCardsGlobal().getById(card1.getId()));
 
+        game.removeCard(card1);
         assertNull(game.getCardsGlobal().getById(card1.getId()));
     }
 
@@ -47,7 +48,7 @@ class AnimeCardsGameTest {
         game.addCard(card1);
         game.addCard(card2);
 
-        assertEquals(2, game.getCardsGlobal().size());
+        assertEquals(2, game.getCardsGlobal().getAllCards().size());
     }
 
     @Test

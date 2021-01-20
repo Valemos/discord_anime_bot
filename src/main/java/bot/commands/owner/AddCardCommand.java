@@ -29,14 +29,14 @@ public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
 
     @Override
     public void handle(CommandEvent event) {
-        CardGlobal new_card = new CardGlobal(
+        CardGlobal newCard = new CardGlobal(
                 commandArgs.name,
                 commandArgs.series,
                 commandArgs.imageUrl
         );
 
-        game.addCard(new_card);
+        game.addCard(newCard);
 
-        sendMessage(event, "new card added, card id is " + new_card.getCharacterInfo().getId());
+        sendMessage(event, "new card added, card id is " + newCard.getCharacterInfo().getId());
     }
 }

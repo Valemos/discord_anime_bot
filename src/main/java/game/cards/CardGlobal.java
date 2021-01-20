@@ -1,19 +1,21 @@
 package game.cards;
 
 import game.DisplayableStats;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
-public class CardGlobal implements DisplayableStats, ComparableCard {
+public class CardGlobal implements DisplayableStats, DisplayableCard, ComparableCard {
 
     @Id
-    private String id; //TODO add generate id
+    private String id;
+
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     CharacterInfo characterInfo;
+
     @Embedded
     CardStatsGlobal stats;
 
@@ -29,8 +31,23 @@ public class CardGlobal implements DisplayableStats, ComparableCard {
         this.stats = stats;
     }
 
+    @PrePersist
+    public void generateId() {
+        id = ShortUUID.generate();
+    }
+
     public CardStatsGlobal getStats() {
         return stats;
+    }
+
+    @Override
+    public float getApprovalRating() {
+        return stats.getApprovalRating();
+    }
+
+    @Override
+    public int getPrint() {
+        return stats.amountCardsPrinted;
     }
 
     @Override
@@ -49,7 +66,7 @@ public class CardGlobal implements DisplayableStats, ComparableCard {
     }
 
     public String getId() {
-        return characterInfo.getId();
+        return id;
     }
 
     public String getFullName() {
@@ -85,7 +102,7 @@ public class CardGlobal implements DisplayableStats, ComparableCard {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CardGlobal){
-            return characterInfo.equals(((CardGlobal) obj).getCharacterInfo());
+            return id.equals(((CardGlobal) obj).getId());
         }
         return false;
     }

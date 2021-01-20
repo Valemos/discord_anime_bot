@@ -10,7 +10,7 @@ public class SeriesInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private long id;
     private String name;
 
     public SeriesInfo() {
@@ -28,11 +28,11 @@ public class SeriesInfo {
         this.name = name;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 }

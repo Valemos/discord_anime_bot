@@ -4,12 +4,11 @@ import game.DisplayableStats;
 import game.Player;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.stream.Stream;
 
 @Entity
-public class CardPersonal implements DisplayableStats, ComparableCard {
+public class CardPersonal implements DisplayableStats, DisplayableCard, ComparableCard {
 
     @Id
     private String cardId;
@@ -33,9 +32,7 @@ public class CardPersonal implements DisplayableStats, ComparableCard {
 
     @PrePersist
     public void generateId() {
-        String uuid_string = UUID.randomUUID().toString().replaceAll("-","");
-        BigInteger big = new BigInteger(uuid_string, 16);
-        cardId = big.toString(36);
+        cardId = ShortUUID.generate();
     }
 
     public Player getOwner() {
@@ -55,11 +52,17 @@ public class CardPersonal implements DisplayableStats, ComparableCard {
         this.stats = stats;
     }
 
+    @Override
+    public CardStats getStats() {
+        return stats;
+    }
+
     public float getApprovalRating(){
         return stats.approvalRating;
     }
 
-    public int getCardPrint() {
+    @Override
+    public int getPrint() {
         return stats.cardPrint;
     }
 
@@ -112,7 +115,4 @@ public class CardPersonal implements DisplayableStats, ComparableCard {
         return getIdNameStats();
     }
 
-    public static int comparatorPowerLevel(CardPersonal card1, CardPersonal card2) {
-        return Float.compare(card2.getPowerLevel(), card1.getPowerLevel());
-    }
 }

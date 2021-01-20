@@ -3,6 +3,7 @@ package game;
 import game.cards.CardPersonal;
 import game.cards.SeriesInfo;
 import game.items.MaterialsSet;
+import game.squadron.Squadron;
 import game.stocks.StockValue;
 
 import javax.persistence.*;
@@ -24,6 +25,9 @@ public class Player {
 
     @OneToMany(mappedBy="owner")
     private List<StockValue> stocks;
+
+    @OneToOne
+    private Squadron squadron;
 
     public Player() {
     }
@@ -49,6 +53,7 @@ public class Player {
     }
 
     public void addCard(CardPersonal card) {
+        card.setOwner(this);
         cards.add(card);
     }
 
@@ -62,6 +67,14 @@ public class Player {
 
     public void setStocks(List<StockValue> stocks) {
         this.stocks = stocks;
+    }
+
+    public Squadron getSquadron() {
+        return squadron;
+    }
+
+    public void setSquadron(Squadron squadron) {
+        this.squadron = squadron;
     }
 
     public void subtractMaterials(MaterialsSet materials) {

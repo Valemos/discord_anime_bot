@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +44,6 @@ public class AnimeCardsGame {
     private WishListsManager wishListsManager;
 
     private ContractsManager contractsManager;
-    private List<PatrolActivity> currentPatrols;
     private CardDropManager cardDropManager;
     private CooldownManager cooldownManager;
 
@@ -61,8 +61,6 @@ public class AnimeCardsGame {
         cardsPersonalManager = new CardsPersonalManager(dbSession);
         itemsPersonalManager = new ItemsPersonalManager(dbSession);
         wishListsManager = new WishListsManager(dbSession);
-
-        currentPatrols = new LinkedList<>();
 
         itemsShop = new ItemsShop(itemsGlobalManager);
         armorShop = new ArmorShop(itemsGlobalManager);
@@ -118,26 +116,25 @@ public class AnimeCardsGame {
         return cardsGlobalManager;
     }
 
-    public CardGlobal getCardGlobal(String cardName, String series) {
-        return cardsGlobalManager.getFirstCard(cardName, series);
+    public CardGlobal getCardGlobalUnique(String cardName, String series) {
+        return cardsGlobalManager.getUnique(cardName, series);
     }
 
-    public CardGlobal getCardGlobalUnique(String name, String series) {
-        List<CardGlobal> cards = cardsGlobalManager.getFilteredCards(name, series);
-        if (cards.size() == 1){
-            return cards.get(0);
-        }
-        return null;
-    }
-
-    public void removeCardById(String id) {
-        cardsGlobalManager.removeCardById(id);
+    public void removeCard(CardGlobal card) {
+        cardsGlobalManager.removeCard(card);
     }
 
     public CardPersonal pickPersonalCard(Player player, CardGlobal cardGlobal, float pickDelay) {
         cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
+
+        dbSession.beginTransaction();
+        dbSession.update(cardGlobal);
+        dbSession.save(card);
+        dbSession.update(player);
+        dbSession.getTransaction().commit();
+
         return card;
     }
 
@@ -174,58 +171,28 @@ public class AnimeCardsGame {
         return itemsShop;
     }
 
-    public Squadron getSquadron(Player player) {
-//        Squadron squadron = player.getSquadron();
-//
-//        if (squadron == null){
-//            squadron = new Squadron(3);
-//            player.setSquadron(squadron);
-//        }
+    public Squadron getOrCreateSquadron(Player player) {
+        dbSession.beginTransaction();
+        Squadron squadron = player.getSquadron();
 
-        // TODO add squadrons table
+        if (squadron == null){
+            squadron = new Squadron();
+            dbSession.save(squadron);
 
-        return null;
+            player.setSquadron(squadron);
+            dbSession.update(player);
+        }
+
+        dbSession.getTransaction().commit();
+        return squadron;
     }
 
-    public boolean createNewPatrol(Player player, PatrolType patrolType) {
-        Squadron squadron = getSquadron(player);
-        if (squadron != null){
-            PatrolActivity patrol = new PatrolActivity(squadron, patrolType);
-            startPatrol(patrol);
+    public boolean createNewPatrol(Player player, PatrolType patrolType, Instant time) {
+        if (player.getSquadron() != null){
+            player.getSquadron().startPatrol(patrolType, time);
             return true;
         }
-
         return false;
-    }
-
-    private void startPatrol(PatrolActivity patrol) {
-        currentPatrols.add(patrol);
-    }
-
-    private void finishOldestPatrol(){
-        if (currentPatrols.isEmpty()){
-            return;
-        }
-
-        PatrolActivity patrol = currentPatrols.get(0);
-        finishPatrol(patrol);
-        currentPatrols.remove(0);
-    }
-
-    public MaterialsSet finishPatrol(PatrolActivity patrol) {
-        Player player = getPlayer(patrol.getSquadron().getPlayerId());
-        MaterialsSet materials = patrol.getMaterialsFound();
-
-        player.addMaterials(materials);
-        patrol.setFinished(true);
-
-        return materials;
-    }
-
-    public PatrolActivity findPatrol(Player player) {
-        return currentPatrols.stream()
-                .filter(patrol -> patrol.getSquadron().getPlayerId().equals(player.getId()))
-                .findFirst().orElse(null);
     }
 
     public float exchangeCardForStock(CardPersonal card) {
@@ -261,16 +228,23 @@ public class AnimeCardsGame {
         return dbSession.get(CardPersonal.class, cardId).getOwner();
     }
 
-    public boolean isPlayerExists(String id) {
-        return getPlayer(id) != null;
-    }
-
     public CardDropManager getDropManager() {
         return cardDropManager;
     }
 
     public CooldownSet getCooldowns(String playerId) {
         return cooldownManager.getElementOrCreate(playerId);
+    }
+
+    public MaterialsSet finishPatrol(Squadron squadron, Instant time) {
+        dbSession.beginTransaction();
+        MaterialsSet materials = squadron.finishPatrol(time);
+
+        dbSession.update(squadron);
+        dbSession.update(squadron.getOwner());
+
+        dbSession.getTransaction().commit();
+        return materials;
     }
 }
 

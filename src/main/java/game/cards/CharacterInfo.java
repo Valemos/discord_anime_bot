@@ -1,14 +1,13 @@
 package game.cards;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class CharacterInfo {
 
     @Id
-    private String id; //TODO add id generation
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
     private String imageUrl;
 
@@ -24,7 +23,7 @@ public class CharacterInfo {
         this.imageUrl = imageUrl;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -47,7 +46,7 @@ public class CharacterInfo {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CharacterInfo){
-            return getId().equals(((CharacterInfo) obj).getId());
+            return getId() == (((CharacterInfo) obj).getId());
         }
         return false;
     }

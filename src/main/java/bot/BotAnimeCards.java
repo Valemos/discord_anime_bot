@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.commands.SortingType;
 import bot.commands.admin.GrabTimeCommand;
 import bot.commands.admin.PrefixCommand;
 import bot.commands.admin.ResetCooldownsCommand;
@@ -43,7 +44,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,7 +54,7 @@ public class BotAnimeCards {
     private JDA discordAPI;
     private AnimeCardsGame game;
     private CommandClient commandListener;
-    private EventWaiter eventWaiter;
+    private final EventWaiter eventWaiter;
 
     public BotAnimeCards() {
         this(new EventWaiter());
@@ -66,6 +66,10 @@ public class BotAnimeCards {
 
     public AnimeCardsGame getGame() {
         return game;
+    }
+
+    public void setGame(AnimeCardsGame game) {
+        this.game = game;
     }
 
     public JDA getDiscordAPI() {
@@ -212,9 +216,12 @@ public class BotAnimeCards {
         return config.buildSessionFactory(reg);
     }
 
-    public void loadTestGameSettings(AnimeCardsGame game) {
-        game.getDatabaseSession().beginTransaction();
+    public void loadTestGameSettings() {
+        loadSettings();
+        loadTestGameSettings(game);
+    }
 
+    public void loadTestGameSettings(AnimeCardsGame game) {
         Player tester1 = game.createNewPlayer("409754559775375371");
         Player tester2 = game.createNewPlayer("347162620996091904");
 
@@ -248,7 +255,6 @@ public class BotAnimeCards {
         for (CardGlobal card : cards) {
             game.addCard(card);
             game.pickPersonalCard(tester1, card, 1);
-//            game.pickPersonalCard(tester2, card, 1);
         }
 
         tester1.getMaterials().setAmount(Material.GOLD, 100);
@@ -262,8 +268,6 @@ public class BotAnimeCards {
         game.getItemsGlobal().addItem(new ItemGlobal(
                 "dummy item 1", 8, 0, "*item details*",
                 new MaterialsSet(of(Material.GOLD, 20))));
-
-        game.getDatabaseSession().getTransaction().commit();
     }
 
     private static String loadBotTokenFile() throws IOException {
@@ -277,22 +281,28 @@ public class BotAnimeCards {
         String bot_token = loadBotTokenFile();
         BotAnimeCards bot = new BotAnimeCards();
 
-//        if (!bot.authenticate(bot_token)){
-//            return;
-//        }
+        // TODO uncomment authentication
+        if (!bot.authenticate(bot_token)){
+            return;
+        }
 
-        bot.loadSettings();
-        bot.loadTestGameSettings(bot.getGame());
+//        bot.loadSettings();
+        bot.loadTestGameSettings();
 
+//        testBot(bot);
+    }
+
+    private static void testBot(BotAnimeCards bot) {
         SessionFactory sf = bot.getDatabaseSessionFactory();
         Session s = sf.openSession();
 
         s.beginTransaction();
         AnimeCardsGame game = new AnimeCardsGame(bot.eventWaiter, s);
 
-        List<Player> pp = game.getAllPlayers();
-        MaterialsSet m = pp.get(0).getMaterials();
+        List<CardGlobal> cc = game.getCardsGlobal().getAllCards();
+        List<CardGlobal> c = game.getCardsGlobal().getFiltered("riko", null);
 
+        c = game.getCardsGlobal().getCardsSorted(List.of(SortingType.FAVOR, SortingType.PRINT));//"r", "m");
 
         s.getTransaction().commit();
         s.close();
