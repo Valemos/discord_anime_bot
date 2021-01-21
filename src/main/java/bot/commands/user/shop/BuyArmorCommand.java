@@ -2,19 +2,20 @@ package bot.commands.user.shop;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.shop.ItemsShop;
+import game.shop.ArmorShop;
 
-public class BuyCommand extends AbstractBuyCommand {
+public class BuyArmorCommand extends AbstractBuyCommand {
 
-    public BuyCommand(AnimeCardsGame game) {
+    public BuyArmorCommand(AnimeCardsGame game) {
         super(game);
-        name = "buy";
+        name = "buyarmor";
+        aliases = new String[]{"buya"};
         guildOnly = false;
     }
 
     @Override
     public void handle(CommandEvent event) {
-        ItemsShop shop = game.getItemsShop();
+        ArmorShop shop = game.getArmorShop();
         buyItem(event, shop, player, commandArgs.itemId);
     }
 }

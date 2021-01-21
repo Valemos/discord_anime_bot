@@ -55,7 +55,7 @@ public class CooldownSet {
     }
 
     public void reset() {
-        drop.setUsed(null);
-        grab.setUsed(null);
+        drop.reset();
+        grab.reset();
     }
 }

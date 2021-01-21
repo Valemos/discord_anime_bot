@@ -4,12 +4,12 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
+import game.ArmorItemPersonal;
 import game.DisplayableStats;
-import game.cards.CardDropActivity;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import game.items.ItemGlobal;
 import game.shop.AbstractShop;
+import game.shop.items.AbstractShopItem;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class BotMenuCreator {
 
     public static Paginator menuShop(EventWaiter eventWaiter, AbstractShop shop, User user){
-        List<ItemGlobal> shopItems = shop.getItems();
+        List<? extends AbstractShopItem> shopItems = shop.getItems();
 
         Paginator.Builder builder = new Paginator.Builder()
                 .setEventWaiter(eventWaiter)
@@ -32,7 +32,7 @@ public class BotMenuCreator {
 
         if (shopItems.size() > 0){
             builder.setItems(shopItems.stream()
-                    .map(ItemGlobal::getFullDescription)
+                    .map(AbstractShopItem::getFullDescription)
                     .toArray(String[]::new));
         }else{
             builder.setItems("No items in the shop");
@@ -66,7 +66,7 @@ public class BotMenuCreator {
         );
     }
 
-    public static void menuForItemStats(List<ItemGlobal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForItemStats(List<ArmorItemPersonal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(items, event, game, "Items list",
                 DisplayableStats::getNameStats, selectedPage
         );

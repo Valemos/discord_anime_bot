@@ -2,8 +2,8 @@ package bot;
 
 import bot.commands.user.DailyCommand;
 import game.Player;
-import game.items.Material;
-import game.items.MaterialsSet;
+import game.materials.Material;
+import game.materials.MaterialsSet;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

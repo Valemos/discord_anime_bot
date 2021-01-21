@@ -11,6 +11,7 @@ import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.inventory.ShowCollectionCommand;
+import bot.commands.user.shop.BuyArmorCommand;
 import bot.commands.user.squadron.*;
 import bot.commands.user.wishlist.*;
 import bot.commands.user.*;
@@ -24,9 +25,12 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.*;
-import game.items.ItemGlobal;
-import game.items.Material;
-import game.items.MaterialsSet;
+import game.materials.Material;
+import game.materials.MaterialsSet;
+import game.shop.items.AbstractShopItem;
+import game.shop.items.ItemPowerUp;
+import game.shop.items.ArmorItem;
+import game.squadron.SquadronPowerUp;
 import game.squadron.Squadron;
 import game.squadron.SquadronMember;
 import game.stocks.StockValue;
@@ -48,8 +52,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.util.Map.*;
 
 public class BotAnimeCards {
 
@@ -153,8 +155,9 @@ public class BotAnimeCards {
                 new InspectCardCommand(game),
 
                 new ShopCommand(game),
-                new ArmorShopCommand(game),
                 new BuyCommand(game),
+                new ArmorShopCommand(game),
+                new BuyArmorCommand(game),
 
                 new SquadronCommand(game),
                 new SquadronAddCommand(game),
@@ -215,6 +218,12 @@ public class BotAnimeCards {
                 .addAnnotatedClass(StockValue.class)
                 .addAnnotatedClass(Squadron.class)
                 .addAnnotatedClass(SquadronMember.class)
+                .addAnnotatedClass(AbstractShopItem.class)
+                .addAnnotatedClass(ArmorItem.class)
+                .addAnnotatedClass(ArmorItemPersonal.class)
+                .addAnnotatedClass(ItemPowerUp.class)
+                .addAnnotatedClass(SquadronPowerUp.class)
+                .addAnnotatedClass(MaterialsSet.class)
                 .configure(configPath);
 
         ServiceRegistry reg = new StandardServiceRegistryBuilder()
@@ -266,16 +275,6 @@ public class BotAnimeCards {
         }
 
         tester1.getMaterials().setAmount(Material.GOLD, 100);
-
-        game.getItemsGlobal().addItem(new ItemGlobal(
-                "some potion 1", 100, 0, "",
-                new MaterialsSet(of(Material.GOLD, 9000))));
-        game.getItemsGlobal().addItem(new ItemGlobal(
-                "some potion 2", 0, 5, "*potion description*",
-                new MaterialsSet(of(Material.GOLD, 50))));
-        game.getItemsGlobal().addItem(new ItemGlobal(
-                "dummy item 1", 8, 0, "*item details*",
-                new MaterialsSet(of(Material.GOLD, 20))));
     }
 
     private static String loadBotTokenFile() throws IOException {

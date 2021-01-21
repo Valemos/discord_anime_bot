@@ -1,53 +1,64 @@
 package game.shop;
 
+import game.shop.items.AbstractShopItem;
 import game.Player;
-import game.items.ItemsGlobalManager;
-import game.items.ItemGlobal;
-import game.items.MaterialsSet;
+import game.materials.MaterialsSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class AbstractShop {
 
-    protected final ItemsGlobalManager itemCollection;
-    ItemGlobal lastItemSelected;
+    protected final List<? extends AbstractShopItem> items;
+    AbstractShopItem itemBuying;
     private final String messageTitle;
 
-    public AbstractShop(ItemsGlobalManager items, String messageTitle) {
-        this.itemCollection = items;
+    public AbstractShop(String messageTitle, List<? extends AbstractShopItem> items) {
+        this.items = items;
         this.messageTitle = messageTitle;
     }
 
-    public boolean tryBuyItem(Player player, String itemId) {
-        lastItemSelected = filterItems(itemCollection.getItems().stream())
-                .filter(i -> i.getId().equals(itemId))
-                .findFirst().orElse(null);
+    public boolean tryBuyItem(Player player, @NotNull AbstractShopItem item) {
 
-        if (lastItemSelected != null){
+        MaterialsSet playerMaterials = player.getMaterials();
+        MaterialsSet itemCost = item.getItemCost();
 
-            MaterialsSet playerMaterials = player.getMaterials();
-            MaterialsSet itemCost = lastItemSelected.getMaterialsCost();
-
-            if (playerMaterials.containsEnough(itemCost)){
-                player.getMaterials().subtractMaterials(itemCost);
-//                player.addItem(lastItemSelected);
-                //TODO add item query after items updated
-                return true;
-            }
+        if (playerMaterials.containsEnough(itemCost)){
+            player.getMaterials().subtractMaterials(itemCost);
+            item.useFor(player);
+            return true;
         }
         return false;
     }
 
-    protected abstract Stream<ItemGlobal> filterItems(Stream<ItemGlobal> stream);
+    public AbstractShopItem findShopItem(String itemId) {
+        AbstractShopItem item = getItemById(itemId);
+        if (item == null)
+            item = getUniqueByName(itemId);
 
-    public ItemGlobal getLastItemSelected() {
-        return lastItemSelected;
+        return item;
     }
 
-    public List<ItemGlobal> getItems() {
-        return filterItems(itemCollection.getItems().stream()).collect(Collectors.toList());
+    private AbstractShopItem getUniqueByName(String itemName) {
+        List<? extends AbstractShopItem> items = this.items.stream()
+                .filter(i -> String.valueOf(i.getName()).toLowerCase().contains(itemName.toLowerCase()))
+                .collect(Collectors.toList());
+        return items.size() == 1 ? items.get(0) : null;
+    }
+
+    private AbstractShopItem getItemById(String itemId) {
+        return items.stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst().orElse(null);
+    }
+
+    public AbstractShopItem getItemBuying() {
+        return itemBuying;
+    }
+
+    public List<? extends AbstractShopItem> getItems() {
+        return items;
     }
 
     public String getTitle() {

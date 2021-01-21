@@ -3,7 +3,7 @@ package bot.commands.user;
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.items.Material;
+import game.materials.Material;
 
 import java.util.Random;
 

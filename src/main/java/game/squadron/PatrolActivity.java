@@ -1,7 +1,7 @@
 package game.squadron;
 
-import game.items.Material;
-import game.items.MaterialsSet;
+import game.materials.Material;
+import game.materials.MaterialsSet;
 
 import javax.persistence.*;
 import java.time.Duration;

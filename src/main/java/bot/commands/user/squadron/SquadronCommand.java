@@ -4,6 +4,7 @@ import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.squadron.Squadron;
+import game.squadron.SquadronMember;
 
 import java.util.stream.Collectors;
 
@@ -20,10 +21,13 @@ public class SquadronCommand extends AbstractCommandNoArguments {
     public void handle(CommandEvent event) {
         Squadron squadron = game.getOrCreateSquadron(player);
         if (!squadron.isEmpty()){
+
             String squadronMessage = squadron.getSortedMembers().stream()
-                    .map(member -> member.getCard().getNameStats() + " / "
-                                + member.getHealthState().name().toLowerCase())
-                    .collect(Collectors.joining("\n"));
+                    .map(SquadronMember::getDescription)
+                    .collect(Collectors.joining("\n"))
+                    + "\nPower ups:\n"
+                    + squadron.getPowerUpsDescription();
+
             sendMessage(event, squadronMessage);
         }else{
             sendMessage(event, "squadron is empty");

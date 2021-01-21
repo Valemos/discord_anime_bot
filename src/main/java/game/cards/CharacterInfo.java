@@ -56,6 +56,6 @@ public class CharacterInfo {
     }
 
     public String getFullName() {
-        return name + " / " + series;
+        return name + " / " + series.getName();
     }
 }

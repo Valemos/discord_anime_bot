@@ -1,4 +1,4 @@
-package game.items;
+package game.materials;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -10,31 +10,35 @@ import java.util.stream.Collectors;
 @Embeddable
 public class MaterialsSet {
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    Map<Material, Integer> materialAmounts;
+    @ElementCollection
+    @MapKeyColumn(name = "materialtype")
+    Map<Material, Integer> materials = new EnumMap<>(Material.class);
 
     @Transient
     public static final String noMaterialsDescription = "No materials";
 
 
     public MaterialsSet() {
-        this(new EnumMap<>(Material.class));
     }
 
-    public MaterialsSet(Map<Material, Integer> materialAmounts) {
-        this.materialAmounts = materialAmounts;
+    public MaterialsSet(Map<Material, Integer> materials) {
+        this.materials = materials;
     }
 
-    public Map<Material, Integer> getMap() {
-        return materialAmounts;
+    public void setMaterials(Map<Material, Integer> materials) {
+        this.materials = materials;
+    }
+
+    public Map<Material, Integer> getMaterials() {
+        return materials;
     }
 
     public void setAmount(Material material, int newAmount){
-        materialAmounts.put(material, newAmount);
+        materials.put(material, newAmount);
     }
 
     public int getAmount(Material material){
-        return materialAmounts.getOrDefault(material, 0);
+        return materials.getOrDefault(material, 0);
     }
 
     public void subtractMaterials(MaterialsSet other) {

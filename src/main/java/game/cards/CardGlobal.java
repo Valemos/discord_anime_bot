@@ -66,7 +66,7 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
     }
 
     @Override
-    public String getSeries() {
+    public String getSeriesName() {
         return characterInfo.getSeriesName();
     }
 
@@ -97,7 +97,7 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
 
     @Override
     public String getIdName() {
-        return getId() + " - " + getFullName();
+        return "`" + getId() + "` - " + getFullName();
     }
 
     @Override

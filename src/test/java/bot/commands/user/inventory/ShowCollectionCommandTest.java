@@ -53,7 +53,7 @@ class ShowCollectionCommandTest {
         );
 
         for (CardPersonal card : filtered){
-            assertTrue(card.getSeries().toLowerCase().contains("made"));
+            assertTrue(card.getSeriesName().toLowerCase().contains("made"));
         }
     }
 
@@ -65,7 +65,7 @@ class ShowCollectionCommandTest {
 
         for (CardPersonal card : filtered){
             assertTrue(card.getName().toLowerCase().contains("r"));
-            assertTrue(card.getSeries().toLowerCase().contains("made"));
+            assertTrue(card.getSeriesName().toLowerCase().contains("made"));
         }
     }
 

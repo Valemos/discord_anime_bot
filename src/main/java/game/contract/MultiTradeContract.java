@@ -3,7 +3,7 @@ package game.contract;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardPersonal;
-import game.items.MaterialsSet;
+import game.materials.MaterialsSet;
 
 import java.util.LinkedList;
 import java.util.List;

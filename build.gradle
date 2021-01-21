@@ -9,7 +9,6 @@ version '0.5'
 repositories {
     jcenter()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -17,7 +16,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testCompile "org.mockito:mockito-core:2.22.0"
 
-    compile group: 'org.apache.ant', name: 'ant', version: '1.8.2'
+    implementation 'org.apache.ant:ant:1.8.2'
+    implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'args4j:args4j:2.33'
 
     implementation 'net.dv8tion:JDA:4.2.0_168'
@@ -25,7 +25,7 @@ dependencies {
     implementation 'com.jagrosh:jda-utilities-menu:3.0.5'
 
     implementation 'org.hibernate:hibernate-core:5.4.27.Final'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+    implementation 'org.postgresql:postgresql:42.1.4'
 }
 
 jar {

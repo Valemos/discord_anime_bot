@@ -1,4 +1,4 @@
-package game.items;
+package game.materials;
 
 import org.hibernate.SessionFactory;
 

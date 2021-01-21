@@ -1,16 +1,15 @@
 package game;
 
 import game.cards.CardPersonal;
-import game.cards.SeriesInfo;
 import game.cooldown.CooldownSet;
-import game.items.MaterialsSet;
+import game.materials.MaterialsSet;
+import game.shop.items.ArmorItem;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 public class Player {
@@ -29,6 +28,9 @@ public class Player {
 
     @OneToOne
     private Squadron squadron;
+
+    @OneToMany
+    private List<ArmorItemPersonal> armorItems = new ArrayList<>();
 
     @Embedded
     private CooldownSet cooldowns = new CooldownSet();
@@ -52,41 +54,9 @@ public class Player {
         return id;
     }
 
+
     public MaterialsSet getMaterials() {
         return materials;
-    }
-
-    public void addCard(CardPersonal card) {
-        card.setOwner(this);
-        cards.add(card);
-    }
-
-    public List<CardPersonal> getCards() {
-        return cards;
-    }
-
-    public List<StockValue> getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(List<StockValue> stocks) {
-        this.stocks = stocks;
-    }
-
-    public Squadron getSquadron() {
-        return squadron;
-    }
-
-    public void setSquadron(Squadron squadron) {
-        this.squadron = squadron;
-    }
-
-    public CooldownSet getCooldowns() {
-        return cooldowns;
-    }
-
-    public void setCooldowns(CooldownSet cooldowns) {
-        this.cooldowns = cooldowns;
     }
 
     public void subtractMaterials(MaterialsSet materials) {
@@ -97,10 +67,56 @@ public class Player {
         this.materials.addMaterials(materials);
     }
 
+
+    public void addCard(CardPersonal card) {
+        card.setOwner(this);
+        cards.add(card);
+    }
+
+    public List<CardPersonal> getCards() {
+        return cards;
+    }
+
+
+    public List<StockValue> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(List<StockValue> stocks) {
+        this.stocks = stocks;
+    }
+
     public StockValue findStockByName(String seriesName) {
         return getStocks().stream()
                 .filter((s) -> String.valueOf(s.getSeries().getName()).toLowerCase()
                         .contains(seriesName.toLowerCase()))
                 .findFirst().orElse(null);
+    }
+
+
+    public Squadron getSquadron() {
+        return squadron;
+    }
+
+    public void setSquadron(Squadron squadron) {
+        this.squadron = squadron;
+    }
+
+
+    public CooldownSet getCooldowns() {
+        return cooldowns;
+    }
+
+    public void setCooldowns(CooldownSet cooldowns) {
+        this.cooldowns = cooldowns;
+    }
+
+
+    public void addArmorItem(ArmorItemPersonal armorItem) {
+        this.armorItems.add(armorItem);
+    }
+
+    public List<ArmorItemPersonal> getArmorItems() {
+        return armorItems;
     }
 }

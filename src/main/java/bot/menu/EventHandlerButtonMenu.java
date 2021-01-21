@@ -97,8 +97,7 @@ public class EventHandlerButtonMenu extends Menu
 
                     return isValidUser(event.getUser(), event.isFromGuild() ? event.getGuild() : null);
                 },
-                event -> handleAcceptReaction(event, message),
-                timeout, unit, () -> finalAction.accept(message));
+                event -> handleAcceptReaction(event, message));
     }
 
     @NotNull
@@ -176,7 +175,7 @@ public class EventHandlerButtonMenu extends Menu
             Checks.check(action != null, "Must provide an action consumer");
             Checks.check(text != null || description != null, "Either text or description must be set");
 
-            return new EventHandlerButtonMenu(waiter, users, roles, timeout, unit, color, text, description, choices, action, finalAction, resetReactionEmotes, additionalInfo);
+            return new EventHandlerButtonMenu(waiter, users, roles, -1, unit, color, text, description, choices, action, finalAction, resetReactionEmotes, additionalInfo);
         }
 
         public EventHandlerButtonMenu.Builder setColor(Color color)

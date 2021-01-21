@@ -8,9 +8,10 @@ import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
 import game.contract.MultiTradeContract;
 import game.contract.SendCardsContract;
-import game.items.*;
+import game.materials.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
+import game.shop.items.ArmorItem;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
@@ -25,6 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
@@ -34,9 +36,7 @@ public class AnimeCardsGame {
     private ArmorShop armorShop;
 
     private CardsGlobalManager cardsGlobalManager;
-    private ItemsGlobalManager itemsGlobalManager;
     private CardsPersonalManager cardsPersonalManager;
-    private ItemsPersonalManager itemsPersonalManager;
     private WishListsManager wishListsManager;
 
     private ContractsManager contractsManager;
@@ -51,14 +51,21 @@ public class AnimeCardsGame {
 
     public void setSession(Session dbSession){
         cardsGlobalManager = new CardsGlobalManager(dbSession);
-        itemsGlobalManager = new ItemsGlobalManager(dbSession);
 
         cardsPersonalManager = new CardsPersonalManager(dbSession);
-        itemsPersonalManager = new ItemsPersonalManager(dbSession);
         wishListsManager = new WishListsManager(dbSession);
 
-        itemsShop = new ItemsShop(itemsGlobalManager);
-        armorShop = new ArmorShop(itemsGlobalManager);
+        itemsShop = new ItemsShop();
+
+        List<ArmorItem> armorItems = getArmorItems();
+
+        dbSession.beginTransaction();
+        for(ArmorItem armor : armorItems){
+            dbSession.persist(armor);
+        }
+        dbSession.getTransaction().commit();
+
+        armorShop = new ArmorShop(armorItems);
 
         contractsManager = new ContractsManager(dbSession, List.of(
                 SendCardsContract.class,
@@ -66,6 +73,14 @@ public class AnimeCardsGame {
                 MultiTradeContract.class
         ));
         cardDropManager = new CardDropManager(this, dbSession);
+    }
+
+    private List<ArmorItem> getArmorItems() {
+        return List.of(
+                new ArmorItem("Chainmail", 5, Map.of(Material.GOLD, 100)),
+                new ArmorItem("Armored Glove", 2, Map.of(Material.GOLD, 50)),
+                new ArmorItem("Dragon Chestplate", 20, Map.of(Material.GOLD, 850))
+        );
     }
 
     public Session getDatabaseSession() {
@@ -139,15 +154,6 @@ public class AnimeCardsGame {
         return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
     }
 
-    public ItemGlobal addItem(ItemGlobal item) {
-        itemsGlobalManager.addItem(item);
-        return item;
-    }
-
-    public boolean removeItemById(String itemId) {
-        return itemsGlobalManager.removeById(itemId);
-    }
-
     public Paginator getItemShopViewer(User user) {
         return BotMenuCreator.menuShop(eventWaiter, itemsShop, user);
     }
@@ -156,16 +162,12 @@ public class AnimeCardsGame {
         return BotMenuCreator.menuShop(eventWaiter, armorShop, user);
     }
 
-    public ItemsGlobalManager getItemsGlobal() {
-        return itemsGlobalManager;
-    }
-
-    public ItemsPersonalManager getItemsPersonal() {
-        return itemsPersonalManager;
-    }
-
     public ItemsShop getItemsShop() {
         return itemsShop;
+    }
+
+    public ArmorShop getArmorShop() {
+        return armorShop;
     }
 
     public Squadron getOrCreateSquadron(Player player) {
@@ -177,7 +179,7 @@ public class AnimeCardsGame {
             dbSession.save(squadron);
 
             player.setSquadron(squadron);
-            dbSession.update(player);
+            dbSession.persist(player);
         }
 
         dbSession.getTransaction().commit();
@@ -233,8 +235,8 @@ public class AnimeCardsGame {
         dbSession.beginTransaction();
         MaterialsSet materials = squadron.finishPatrol(time);
 
-        dbSession.update(squadron);
-        dbSession.update(squadron.getOwner());
+        dbSession.persist(squadron);
+        dbSession.persist(squadron.getOwner());
 
         dbSession.getTransaction().commit();
         return materials;

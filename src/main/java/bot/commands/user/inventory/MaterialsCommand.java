@@ -3,7 +3,7 @@ package bot.commands.user.inventory;
 import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.items.MaterialsSet;
+import game.materials.MaterialsSet;
 
 public class MaterialsCommand extends AbstractCommandOptionalPlayer {
 

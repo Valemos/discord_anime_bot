@@ -5,7 +5,7 @@ public interface DisplayableCard {
 
     String getName();
 
-    String getSeries();
+    String getSeriesName();
 
     String getId();
 
@@ -14,6 +14,6 @@ public interface DisplayableCard {
     }
 
     static boolean containsSeries(DisplayableCard c, String filterSeries) {
-        return String.valueOf(c.getSeries()).toLowerCase().contains(filterSeries.toLowerCase());
+        return String.valueOf(c.getSeriesName()).toLowerCase().contains(filterSeries.toLowerCase());
     }
 }

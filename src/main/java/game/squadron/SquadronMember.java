@@ -70,4 +70,8 @@ public class SquadronMember implements ComparableCard {
     public int getPrint() {
         return card.getPrint();
     }
+
+    public String getDescription() {
+        return getCard().getNameStats() + " / " + getHealthState().name().toLowerCase();
+    }
 }

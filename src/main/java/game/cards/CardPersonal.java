@@ -1,17 +1,17 @@
 package game.cards;
 
+import bot.ShortUUID;
 import game.DisplayableStats;
 import game.Player;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Entity
 public class CardPersonal implements DisplayableStats, DisplayableCard, ComparableCard {
 
     @Id
-    private String cardId;
+    private String id;
 
     @ManyToOne
     private Player owner;
@@ -32,7 +32,7 @@ public class CardPersonal implements DisplayableStats, DisplayableCard, Comparab
 
     @PrePersist
     public void generateId() {
-        cardId = ShortUUID.generate();
+        id = ShortUUID.generate();
     }
 
     public Player getOwner() {
@@ -86,13 +86,13 @@ public class CardPersonal implements DisplayableStats, DisplayableCard, Comparab
     }
 
     @Override
-    public String getSeries() {
+    public String getSeriesName() {
         return characterInfo.getSeriesName();
     }
 
     @Override
     public String getId() {
-        return cardId;
+        return id;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class CardPersonal implements DisplayableStats, DisplayableCard, Comparab
 
     @Override
     public String getIdName() {
-        return cardId + " - " + characterInfo.getFullName();
+        return "`" + id + "` - " + characterInfo.getFullName();
     }
 
     @Override

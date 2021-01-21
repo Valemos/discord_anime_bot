@@ -66,6 +66,10 @@ public class Cooldown {
         return getSecondsLeft(time) == 0;
     }
 
+    public void reset() {
+        lastUse = null;
+    }
+
     public boolean tryUse(Instant time) {
         if (isAvailable(time)){
             setUsed(time);
