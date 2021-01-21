@@ -31,12 +31,12 @@ class AddCardCommandTest {
 
     @Test
     void testCreateCardCommand() {
-        assertNull(sender.getGame().getCardGlobal("card name", "card series"));
+        assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
 
         sender.send("#addcard \"card name\" \"card series\" image_url");
         sender.assertCommandHandled(AddCardCommand.class);
 
-        CardGlobal c = sender.getGame().getCardGlobal("card name", "card series");
+        CardGlobal c = sender.getGame().getCardGlobalUnique("card name", "card series");
         assertNotNull(c);
         assertEquals("card name", c.getCharacterInfo().getName());
         assertEquals("card series", c.getCharacterInfo().getSeriesName());
@@ -45,12 +45,12 @@ class AddCardCommandTest {
 
     @Test
     void testCreateWithInsufficientParameters() {
-        assertNull(sender.getGame().getCardGlobal("card name", "card series"));
+        assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
 
         sender.send("#addcard \"card name\"");
         sender.assertCommandNotHandled();
 
-        assertNull(sender.getGame().getCardGlobal("card name", null));
-        assertNull(sender.getGame().getCardGlobal("card name", "card series"));
+        assertNull(sender.getGame().getCardGlobalUnique("card name", null));
+        assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
     }
 }

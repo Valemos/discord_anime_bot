@@ -3,15 +3,15 @@ package game.cards;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
-public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
+public class CardStatsGlobal implements CardStats {
 
     int amountCardsPrinted;
     int amountCardsBurned;
     int cardFightsTotal;
     Charisma charisma;
-
 
     public CardStatsGlobal() {
         this(0, 0, 0, Charisma.fromValue(0));
@@ -60,11 +60,6 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
         }
     }
 
-    @Override
-    public int compareTo(@NotNull CardStatsGlobal o) {
-        return Integer.compare(cardFightsTotal, o.cardFightsTotal);
-    }
-
     public void incrementCardPrint() {
         amountCardsPrinted++;
     }
@@ -95,5 +90,22 @@ public class CardStatsGlobal implements Comparable<CardStatsGlobal> {
 
     public void setCharisma(Charisma charisma) {
         this.charisma = charisma;
+    }
+
+    @Override
+    public int compareTo(@NotNull CardStats o) {
+        return 0;
+    }
+
+    @Transient
+    @Override
+    public float getPowerLevel() {
+        return getStatsForPickDelay(0).getPowerLevel();
+    }
+
+    @Transient
+    @Override
+    public float getApprovalRating() {
+        return calcApprovalRating();
     }
 }

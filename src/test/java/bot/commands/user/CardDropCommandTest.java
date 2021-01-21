@@ -28,6 +28,10 @@ class CardDropCommandTest {
         sender.reset();
     }
 
+    private Player tester(BotMessageSenderMock sender) {
+        return sender.getGame().getPlayer(sender.tester1.getId());
+    }
+
     @Test
     void testDropCommandHandled() {
         sender.sendAndCaptureMessage("#drop");
@@ -46,16 +50,18 @@ class CardDropCommandTest {
 
     @Test
     void testCardGrabbedByPlayer() {
-        Player tester = sender.tester1;
-        List<CardPersonal> prevCollection = tester.getCards();
+        List<CardPersonal> prevCollection = List.copyOf(tester(sender).getCards());
 
-        sender.sendAndCaptureMessage("#drop", tester.getId(), "111");
+        String messageId = "111";
+        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), messageId);
         sender.assertCommandHandled(CardDropCommand.class);
-        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
+        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards(messageId);
 
 
-        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
-        List<CardPersonal> newCollection = tester.getCards();
+        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
+        sender.finishDropTimer();
+
+        List<CardPersonal> newCollection = tester(sender).getCards();
 
         assertNotEquals(newCollection, prevCollection);
 
@@ -67,53 +73,44 @@ class CardDropCommandTest {
 
     @Test
     void testCooldown() {
-        Player tester = sender.tester1;
-        sender.sendAndCaptureMessage("#drop", tester.getId(), "11");
+
+        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "11");
         assertNotNull(sender.getGame().getDropManager().getCards("11"));
 
-        sender.sendAndCaptureMessage("#drop", tester.getId(), "15");
+        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "15");
         assertNull(sender.getGame().getDropManager().getCards("15"));
 
-        sender.getGame().getCooldowns(tester.getId()).getDrop().setUsed(null);
+        tester(sender).getCooldowns().getDrop().setUsed(null);
 
-        sender.sendAndCaptureMessage("#drop", tester.getId(), "12");
+        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "12");
         assertNotNull(sender.getGame().getDropManager().getCards("12"));
     }
 
     @Test
-    void grabTheSameCharacter() {
+    void tryGrabMultipleCharacters() {
+        int prevSize = tester(sender).getCards().size();
 
-        Player tester = sender.tester1;
-        int prevSize = tester.getCards().size();
+        String messageId = "111";
+        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), messageId);
+        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards(messageId);
 
-        sender.sendAndCaptureMessage("#drop", tester.getId(), "111");
-        List<CardGlobal> dropped = sender.getGame().getDropManager().getCards("111");
+        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
+        tester(sender).getCooldowns().reset();
+        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
+        tester(sender).getCooldowns().reset();
+        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.TWO);
 
-        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
-        List<CardPersonal> collection1 = tester.getCards();
-        CardPersonal card1 = collection1.get(collection1.size() - 1);
-        assertEquals(1, collection1.size() - prevSize);
+        sender.finishDropTimer();
+
+
+        List<CardPersonal> collection = tester(sender).getCards();
+        CardPersonal card1 = collection.get(collection.size() - 1);
+        assertEquals(1, collection.size() - prevSize);
 
         assertEquals(
                 dropped.get(0).getCharacterInfo(),
                 card1.getCharacterInfo()
         );
 
-        sender.getGame().getCooldowns(tester.getId()).reset();
-
-        sender.chooseDropMenuReaction("111", tester.getId(), MenuEmoji.ONE);
-        List<CardPersonal> collection2 = tester.getCards();
-        CardPersonal card2 = collection2.get(collection2.size() - 1);
-        assertEquals(1, collection2.size() - collection1.size());
-
-        assertEquals(
-                dropped.get(0).getCharacterInfo(),
-                collection2.get(collection2.size() - 2).getCharacterInfo()
-        );
-
-        assertEquals(
-                dropped.get(0).getCharacterInfo(),
-                card2.getCharacterInfo()
-        );
     }
 }

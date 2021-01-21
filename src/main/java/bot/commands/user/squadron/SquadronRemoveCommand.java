@@ -16,10 +16,10 @@ public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersAr
 
     @Override
     public void handle(CommandEvent event) {
-        Squadron squadron = game.getSquadron(player);
+        Squadron squadron = game.getOrCreateSquadron(player);
 
-        if (squadron.getCards().removeIf(
-                (card) -> commandArgs.multipleIds.contains(card.getId())
+        if (squadron.getMembers().removeIf(
+                (member) -> commandArgs.multipleIds.contains(member.getCard().getId())
         )){
             sendMessage(event, "removed cards");
         }else{

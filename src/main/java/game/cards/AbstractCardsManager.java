@@ -4,6 +4,7 @@ import bot.commands.SortingType;
 import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +33,14 @@ public abstract class AbstractCardsManager<T extends DisplayableCard & Comparabl
     public T getById(String id) {
         CriteriaBuilder cb = dbSession.getCriteriaBuilder();
         Root<T> root = getQueryRoot(cb);
-        return dbSession.createQuery(
+
+        try{
+            return dbSession.createQuery(
                     filterQuery.select(root).where(cb.equal(root.get("id"), id))
-                ).getSingleResult();
+            ).getSingleResult();
+        }catch(NoResultException e){
+            return null;
+        }
     }
 
     protected List<T> getFilterResultList(Root<T> root, List<Predicate> predicates) {

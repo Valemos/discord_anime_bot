@@ -2,6 +2,7 @@ package game;
 
 import game.cards.CardPersonal;
 import game.cards.SeriesInfo;
+import game.cooldown.CooldownSet;
 import game.items.MaterialsSet;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
@@ -28,6 +29,9 @@ public class Player {
 
     @OneToOne
     private Squadron squadron;
+
+    @Embedded
+    private CooldownSet cooldowns = new CooldownSet();
 
     public Player() {
     }
@@ -75,6 +79,14 @@ public class Player {
 
     public void setSquadron(Squadron squadron) {
         this.squadron = squadron;
+    }
+
+    public CooldownSet getCooldowns() {
+        return cooldowns;
+    }
+
+    public void setCooldowns(CooldownSet cooldowns) {
+        this.cooldowns = cooldowns;
     }
 
     public void subtractMaterials(MaterialsSet materials) {

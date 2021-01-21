@@ -1,11 +1,11 @@
 package game.cards;
 
-import bot.commands.SortingType;
 import org.hibernate.Session;
 
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -17,14 +17,63 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
     public void addCard(CardGlobal card) {
         dbSession.beginTransaction();
-        dbSession.save(card.getCharacterInfo().getSeries()); // TODO add finding the same series
+
+        CardGlobal cardFound = findEqualCharacterCard(card);
+        if (cardFound != null){
+            card.setCardInfo(cardFound);
+            dbSession.getTransaction().commit();
+            return;
+        }
+
+        SeriesInfo series = findMatchingSeries(card.getCharacterInfo().getSeries());
+        if(series != null){
+            card.getCharacterInfo().setSeries(series);
+        }else{
+            dbSession.save(card.getCharacterInfo().getSeries());
+        }
+
         dbSession.save(card.getCharacterInfo());
         dbSession.save(card);
         dbSession.getTransaction().commit();
     }
 
+    private CardGlobal findEqualCharacterCard(CardGlobal card) {
+        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
+        CriteriaQuery<CardGlobal> q = cb.createQuery(CardGlobal.class);
+        Root<CardGlobal> root = q.from(CardGlobal.class);
+
+        try {
+            return dbSession.createQuery(
+                    q.select(root).where(
+                            cb.equal(cb.lower(root.get("characterInfo").get("name")),
+                                    String.valueOf(card.getName()).toLowerCase())
+                    )
+            ).getSingleResult();
+        }catch(NoResultException | NonUniqueResultException e){
+            return null;
+        }
+    }
+
+    private SeriesInfo findMatchingSeries(SeriesInfo series) {
+        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
+        CriteriaQuery<SeriesInfo> q = cb.createQuery(SeriesInfo.class);
+        Root<SeriesInfo> root = q.from(SeriesInfo.class);
+
+        try {
+            return dbSession.createQuery(
+                    q.select(root).where(
+                            cb.equal(cb.lower(root.get("name")),
+                                    String.valueOf(series.getName()).toLowerCase())
+                    )
+            ).getSingleResult();
+        }catch(NoResultException | NonUniqueResultException e){
+            return null;
+        }
+    }
+
     public void removeCard(CardGlobal card) {
         dbSession.beginTransaction();
+        dbSession.delete(card.getCharacterInfo());
         dbSession.delete(card);
         dbSession.getTransaction().commit();
     }
@@ -45,5 +94,12 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         }
 
         return resultCards;
+    }
+
+    public List<SeriesInfo> getAllSeries() {
+        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
+        CriteriaQuery<SeriesInfo> q = cb.createQuery(SeriesInfo.class);
+
+        return dbSession.createQuery(q.select(q.from(SeriesInfo.class))).list();
     }
 }

@@ -38,14 +38,13 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
             card = game.getCardGlobalUnique(commandArgs.name, commandArgs.series);
 
             if (card == null){
-                sendMessage(event,
-                        String.format(
-                                "card with unique\nname: %s\nseries: %s\nwas not found", commandArgs.name, commandArgs.series
-                        ));
+                sendMessage(event, String.format(
+                        "card with unique\nname: %s\nseries: %s\nwas not found",
+                        commandArgs.name, commandArgs.series
+                ));
                 return;
             }
-        }
-        else{
+        }else{
             card = game.getCardsGlobal().getById(commandArgs.cardId);
         }
 
@@ -54,7 +53,7 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
             game.removeCard(card);
             sendMessage(event, String.format("card \"%s\" was deleted", cardName));
         }else{
-            sendMessage(event, String.format("card with unique id: %s was not found", commandArgs.cardId));
+            sendMessage(event, String.format("card with id: %s was not found", commandArgs.cardId));
         }
     }
 }

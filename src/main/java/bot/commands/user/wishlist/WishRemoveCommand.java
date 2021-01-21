@@ -22,7 +22,7 @@ public class WishRemoveCommand extends AbstractCommand<MultipleWordsArguments> {
     public void handle(CommandEvent event) {
         String cardName = commandArgs.getSingleString();
 
-        List<CardGlobal> cards = game.getCardsGlobal().getFilteredCards(cardName, null);
+        List<CardGlobal> cards = game.getCardsGlobal().getFiltered(cardName, null);
         if (cards.size() == 0){
             sendMessage(event, "no cards found with name \"" + cardName + '\n');
         }

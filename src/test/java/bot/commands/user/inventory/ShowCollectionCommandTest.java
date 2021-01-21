@@ -28,7 +28,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testNoCardsFound() {
-        List<CardPersonal> result = sender.getGame().getCardsPersonal().getCardsFiltered(
+        List<CardPersonal> result = sender.getGame().getCardsPersonal().getFiltered(
                 "unknown", "unknown"
         );
 
@@ -37,7 +37,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterByNameCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getFiltered(
                 "r", null
         );
 
@@ -48,7 +48,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterBySeriesCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getFiltered(
                 null, "made"
         );
 
@@ -59,7 +59,7 @@ class ShowCollectionCommandTest {
 
     @Test
     void testFilterByNameAndSeriesCollection() {
-        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getCardsFiltered(
+        List<CardPersonal> filtered = sender.getGame().getCardsPersonal().getFiltered(
                 "r", "made"
         );
 
@@ -85,7 +85,7 @@ class ShowCollectionCommandTest {
                 .getCardsSorted(List.of(SortingType.PRINT));
 
         for (int i = 1; i < collection.size(); i++) {
-            assertTrue(collection.get(i - 1).getCardPrint() <= collection.get(i).getCardPrint());
+            assertTrue(collection.get(i - 1).getPrint() <= collection.get(i).getPrint());
         }
     }
 }

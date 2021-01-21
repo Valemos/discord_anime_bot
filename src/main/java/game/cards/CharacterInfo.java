@@ -39,6 +39,10 @@ public class CharacterInfo {
         return series;
     }
 
+    public void setSeries(SeriesInfo series) {
+        this.series = series;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

@@ -8,12 +8,9 @@ import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
 import game.contract.MultiTradeContract;
 import game.contract.SendCardsContract;
-import game.cooldown.CooldownManager;
-import game.cooldown.CooldownSet;
 import game.items.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
-import game.squadron.PatrolActivity;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
@@ -27,7 +24,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AnimeCardsGame {
@@ -45,16 +41,15 @@ public class AnimeCardsGame {
 
     private ContractsManager contractsManager;
     private CardDropManager cardDropManager;
-    private CooldownManager cooldownManager;
 
 
     public AnimeCardsGame(EventWaiter eventWaiter, Session dbSession) {
         this.eventWaiter = eventWaiter;
         this.dbSession = dbSession;
-        reset(dbSession);
+        setSession(dbSession);
     }
 
-    public void reset(Session dbSession){
+    public void setSession(Session dbSession){
         cardsGlobalManager = new CardsGlobalManager(dbSession);
         itemsGlobalManager = new ItemsGlobalManager(dbSession);
 
@@ -70,8 +65,7 @@ public class AnimeCardsGame {
                 CardForCardContract.class,
                 MultiTradeContract.class
         ));
-        cardDropManager = new CardDropManager(dbSession);
-        cooldownManager = new CooldownManager(dbSession);
+        cardDropManager = new CardDropManager(this, dbSession);
     }
 
     public Session getDatabaseSession() {
@@ -90,7 +84,7 @@ public class AnimeCardsGame {
     public Player createNewPlayer(String playerId) {
         Player player = new Player();
         player.setId(playerId);
-        dbSession.saveOrUpdate(player);
+        dbSession.save(player);
         return player;
     }
 
@@ -121,18 +115,21 @@ public class AnimeCardsGame {
     }
 
     public void removeCard(CardGlobal card) {
+        cardsPersonalManager.removeCharacterCards(card.getCharacterInfo());
         cardsGlobalManager.removeCard(card);
     }
 
     public CardPersonal pickPersonalCard(Player player, CardGlobal cardGlobal, float pickDelay) {
+        dbSession.beginTransaction();
+
+        cardGlobal = dbSession.load(CardGlobal.class, cardGlobal.getId());
+        player = dbSession.load(Player.class, player.getId());
+
         cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
         player.addCard(card);
 
-        dbSession.beginTransaction();
-        dbSession.update(cardGlobal);
         dbSession.save(card);
-        dbSession.update(player);
         dbSession.getTransaction().commit();
 
         return card;
@@ -230,10 +227,6 @@ public class AnimeCardsGame {
 
     public CardDropManager getDropManager() {
         return cardDropManager;
-    }
-
-    public CooldownSet getCooldowns(String playerId) {
-        return cooldownManager.getElementOrCreate(playerId);
     }
 
     public MaterialsSet finishPatrol(Squadron squadron, Instant time) {

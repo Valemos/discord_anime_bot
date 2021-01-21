@@ -1,15 +1,29 @@
 package game.cooldown;
 
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.Transient;
 import java.time.Duration;
 import java.time.Instant;
 
+@Embeddable
 public class Cooldown {
 
-    private final String name;
+    @Transient
+    private String name;
+    @Transient
     int amountSeconds;
+
     Instant lastUse = null;
 
+    public Cooldown() {
+    }
+
     public Cooldown(String name, int amountSeconds) {
+        set(name, amountSeconds);
+    }
+
+    protected void set(String name, int amountSeconds) {
         this.name = name;
         this.amountSeconds = amountSeconds;
     }
@@ -20,6 +34,10 @@ public class Cooldown {
 
     public Instant getLastUse() {
         return lastUse;
+    }
+
+    public void setLastUse(Instant lastUse) {
+        this.lastUse = lastUse;
     }
 
     public String getDescription(Instant time) {

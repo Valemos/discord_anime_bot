@@ -27,6 +27,8 @@ import game.cards.*;
 import game.items.ItemGlobal;
 import game.items.Material;
 import game.items.MaterialsSet;
+import game.squadron.Squadron;
+import game.squadron.SquadronMember;
 import game.stocks.StockValue;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -78,13 +80,15 @@ public class BotAnimeCards {
 
     public boolean authenticate(String token) {
         try{
+            // all functions must be called in this order
+            if (game == null) loadSettings();
             commandListener = buildCommandClient();
             discordAPI = buildJDA(token);
             discordAPI.awaitReady();
             return true;
         }
         catch (LoginException | InterruptedException e2){
-            Logger.getGlobal().log(Level.SEVERE,"cannot use bot token");
+            Logger.getGlobal().log(Level.SEVERE,"cannot authenticate with provided token");
             return false;
         }
     }
@@ -144,8 +148,6 @@ public class BotAnimeCards {
 
                 new AddCardCommand(game),
                 new DeleteCardCommand(game),
-                new AddItemCommand(game),
-                new DeleteItemCommand(game),
 
                 new ShowCollectionCommand(game),
                 new InspectCardCommand(game),
@@ -195,11 +197,15 @@ public class BotAnimeCards {
     }
 
     public void loadSettings() {
-        SessionFactory dbSessionFactory = getDatabaseSessionFactory();
-        game = new AnimeCardsGame(eventWaiter, dbSessionFactory.openSession());
+        loadSettings("hibernate.cfg.xml");
     }
 
-    public SessionFactory getDatabaseSessionFactory() {
+    public void loadSettings(String configPath) {
+        SessionFactory sessionFactory = getDatabaseSessionFactory(configPath);
+        game = new AnimeCardsGame(eventWaiter, sessionFactory.openSession());
+    }
+
+    public SessionFactory getDatabaseSessionFactory(String configPath) {
         Configuration config = new Configuration()
                 .addAnnotatedClass(Player.class)
                 .addAnnotatedClass(CardGlobal.class)
@@ -207,7 +213,9 @@ public class BotAnimeCards {
                 .addAnnotatedClass(CharacterInfo.class)
                 .addAnnotatedClass(SeriesInfo.class)
                 .addAnnotatedClass(StockValue.class)
-                .configure("hibernate.cfg.xml");
+                .addAnnotatedClass(Squadron.class)
+                .addAnnotatedClass(SquadronMember.class)
+                .configure(configPath);
 
         ServiceRegistry reg = new StandardServiceRegistryBuilder()
                 .applySettings(config.getProperties())
@@ -217,13 +225,13 @@ public class BotAnimeCards {
     }
 
     public void loadTestGameSettings() {
-        loadSettings();
+        if (game == null) loadSettings();
         loadTestGameSettings(game);
     }
 
     public void loadTestGameSettings(AnimeCardsGame game) {
-        Player tester1 = game.createNewPlayer("409754559775375371");
-        Player tester2 = game.createNewPlayer("347162620996091904");
+        Player tester1 = game.getPlayer("409754559775375371");
+        Player tester2 = game.getPlayer("347162620996091904");
 
         List<CardGlobal> cards = List.of(
                 new CardGlobal(
@@ -281,19 +289,18 @@ public class BotAnimeCards {
         String bot_token = loadBotTokenFile();
         BotAnimeCards bot = new BotAnimeCards();
 
-        // TODO uncomment authentication
         if (!bot.authenticate(bot_token)){
             return;
         }
 
-//        bot.loadSettings();
         bot.loadTestGameSettings();
 
 //        testBot(bot);
     }
 
+    @SuppressWarnings("ALL")
     private static void testBot(BotAnimeCards bot) {
-        SessionFactory sf = bot.getDatabaseSessionFactory();
+        SessionFactory sf = bot.getDatabaseSessionFactory("hibernate.cfg.xml");
         Session s = sf.openSession();
 
         s.beginTransaction();

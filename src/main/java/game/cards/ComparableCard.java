@@ -1,11 +1,16 @@
 package game.cards;
 
 public interface ComparableCard {
-    CharacterInfo getCharacterInfo();
 
-    String getName();
+    CardStats getStats();
+    float getApprovalRating();
+    int getPrint();
 
-    String getSeries();
+    static int comparatorFavor(ComparableCard c1, ComparableCard c2){
+        return Float.compare(c2.getApprovalRating(), c1.getApprovalRating());
+    }
 
-    String getId();
+    static int comparatorPower(ComparableCard c1, ComparableCard c2){
+        return Float.compare(c1.getStats().getPowerLevel(), c2.getStats().getPowerLevel());
+    }
 }

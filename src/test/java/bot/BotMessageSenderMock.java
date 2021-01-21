@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.AbstractCommand;
+import bot.commands.user.carddrop.CardDropTimer;
 import bot.menu.EmojiMenuHandler;
 import bot.menu.MenuEmoji;
 import com.jagrosh.jdautilities.command.impl.CommandClientImpl;
@@ -15,13 +16,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 import org.mockito.*;
 
 import javax.security.auth.login.LoginException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -43,6 +45,10 @@ public class BotMessageSenderMock {
     @Mock
     private User mUser;
     @Mock
+    private RestAction<User> mRestActionUser;
+    @Captor
+    private ArgumentCaptor<Consumer<? super User>> userActionCaptor;
+    @Mock
     private EventWaiter mEventWaiter;
     @Mock
     private TextChannel mTextChannel;
@@ -53,10 +59,12 @@ public class BotMessageSenderMock {
     @Mock
     private JDA mJDA;
     @Captor
-    private ArgumentCaptor<Consumer<? super Message>> actionCaptor;
-
+    private ArgumentCaptor<Consumer<? super Message>> messageActionCaptor;
     @Mock
-    private Session mDbSession;
+    private Timer mDropTimer;
+    @Captor
+    private ArgumentCaptor<TimerTask> cardDropCaptor;
+
 
     CommandClientImpl spyCommandClient;
 
@@ -70,6 +78,7 @@ public class BotMessageSenderMock {
     public CardGlobal cardGlobal1;
 
 
+
     public BotMessageSenderMock() throws LoginException {
         MockitoAnnotations.initMocks(this);
 
@@ -81,12 +90,33 @@ public class BotMessageSenderMock {
     private BotAnimeCards initSpyBot() throws LoginException {
 
         spyBot = Mockito.spy(new BotAnimeCards(mEventWaiter));
+        spyBot.loadSettings("hibernate_test.cfg.xml");
         spyOnCommands();
+        setDropTimerMock();
 
         doReturn(mJDA).when(spyBot).buildJDA(any());
 
+
         spyBot.authenticate("");
         return spyBot;
+    }
+
+    private void setDropTimerMock() {
+        spyBot.getGame().getDropManager().setFightTimer(mDropTimer);
+
+    }
+
+    public void finishDropTimer(){
+        verify(mDropTimer, atLeastOnce()).schedule(cardDropCaptor.capture(), anyLong());
+        CardDropTimer dropTimer = (CardDropTimer) cardDropCaptor.getValue();
+        captureNotifyPlayers(dropTimer);
+    }
+
+    private void captureNotifyPlayers(CardDropTimer dropTimer) {
+        when(mJDA.retrieveUserById(anyString())).thenReturn(mRestActionUser);
+        dropTimer.run();
+        verify(mRestActionUser, atLeastOnce()).queue(userActionCaptor.capture());
+        userActionCaptor.getValue().accept(mUser);
     }
 
     private void initBotSettings() {
@@ -94,7 +124,7 @@ public class BotMessageSenderMock {
         tester1 = spyBot.getGame().getPlayer("409754559775375371");
         tester2 = spyBot.getGame().getPlayer("347162620996091904");
 
-        cardsGlobal = spyBot.getGame().getCardsGlobal().getFilteredCards();
+        cardsGlobal = spyBot.getGame().getCardsGlobal().getAllCards();
         cardGlobal1 = cardsGlobal.get(0);
 
         initMessageEventMock();
@@ -108,6 +138,7 @@ public class BotMessageSenderMock {
     }
 
     private void setMessageChannelMock() {
+        when(mMessageChannel.getJDA()).thenReturn(mJDA);
         when(mMessageChannel.sendMessage(anyString())).thenReturn(mMessageAction);
         when(mMessageChannel.sendMessage(any(MessageEmbed.class))).thenReturn(mMessageAction);
         when(mMessageChannel.sendMessage(any(Message.class))).thenReturn(mMessageAction);
@@ -164,6 +195,7 @@ public class BotMessageSenderMock {
         when(mMessage.getContentRaw()).thenReturn(message);
         when(mMessage.editMessage(any(Message.class))).thenReturn(mMessageAction);
         when(mMessage.addReaction(anyString())).thenReturn(mVoidRestAction);
+        when(mMessage.getChannel()).thenReturn(mMessageChannel);
     }
 
     private void setEventMessage(MessageReactionAddEvent event, String messageId, String playerId) {
@@ -172,14 +204,14 @@ public class BotMessageSenderMock {
     }
 
     public void sendAndCaptureMessage(String message) {
-        sendAndCaptureMessage(message, tester1.getId(), null);
+        sendAndCaptureMessage(message, tester1.getId(), "default");
     }
 
     public void sendAndCaptureMessage(String message, String userId, String messageId){
         send(message, userId, messageId);
 
-        verify(mMessageAction, atLeast(1)).queue(actionCaptor.capture());
-        actionCaptor.getValue().accept(mMessage);
+        verify(mMessageAction, atLeast(1)).queue(messageActionCaptor.capture());
+        messageActionCaptor.getValue().accept(mMessage);
     }
 
     public AbstractCommand<?> findSpyCommand(Class<? extends AbstractCommand<?>> commandClass) {
@@ -209,8 +241,8 @@ public class BotMessageSenderMock {
     }
 
     public void resetGame() {
-        spyBot.getGame().reset(mDbSession);
         initBotSettings();
+        getGame().getPlayer(tester1.getId()).getCooldowns().reset();
     }
 
     public BotAnimeCards getBot() {

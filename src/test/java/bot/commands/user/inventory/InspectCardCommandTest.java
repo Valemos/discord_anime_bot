@@ -61,18 +61,18 @@ class InspectCardCommandTest {
 
     @Test
     void testFindGlobalCards() {
-        CardGlobal card1 = sender.getGame().getCardGlobal("riko", null);
+        CardGlobal card1 = sender.getGame().getCardGlobalUnique("riko", null);
         assertNotNull(card1);
 
         assertEquals(sender.cardGlobal1, card1);
 
-        card1 = sender.getGame().getCardGlobal("haruhi suzum", null);
-        CardGlobal card2 = sender.getGame().getCardGlobal("haruhi suzum", "haruhi no");
+        card1 = sender.getGame().getCardGlobalUnique("haruhi suzum", null);
+        CardGlobal card2 = sender.getGame().getCardGlobalUnique("haruhi suzum", "haruhi no");
 
         assertEquals(card1, card2);
 
-        assertNull(sender.getGame().getCardGlobal("unknown card", null));
-        assertNull(sender.getGame().getCardGlobal("unknown card", ""));
-        assertNull(sender.getGame().getCardGlobal("", "unknown series"));
+        assertNull(sender.getGame().getCardGlobalUnique("unknown card", null));
+        assertNull(sender.getGame().getCardGlobalUnique("unknown card", ""));
+        assertNull(sender.getGame().getCardGlobalUnique("", "unknown series"));
     }
 }

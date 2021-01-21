@@ -23,7 +23,7 @@ public class CardDropCommand extends AbstractCommandNoArguments {
     public void handle(CommandEvent event) {
         Instant now = Instant.now();
 
-        CooldownSet cooldowns = game.getCooldowns(player.getId());
+        CooldownSet cooldowns = player.getCooldowns();
         if (!cooldowns.getDrop().tryUse(now)){
             sendMessage(event, cooldowns.getDrop().getVerboseDescription(now));
             return;

@@ -1,22 +1,44 @@
 package game.cooldown;
 
+import javax.persistence.*;
 import java.time.Instant;
 
+@SuppressWarnings("ALL")
+@Embeddable
 public class CooldownSet {
-    private final Cooldown drop;
-    private final Cooldown grab;
+
+    @Embedded
+    @AttributeOverride(name = "lastUse", column = @Column(name = "drop_lastuse"))
+    private Cooldown drop = new Cooldown();
+
+    @Embedded
+    @AttributeOverride(name = "lastUse", column = @Column(name = "grab_lastuse"))
+    private Cooldown grab = new Cooldown();
 
     public CooldownSet() {
-        drop = new Cooldown("Drop", 120);
-        grab = new Cooldown("Grab", 60);
+        setCooldownValues();
+    }
+
+    @PostLoad
+    void setCooldownValues() {
+        drop.set("Drop", 120);
+        grab.set("Grab", 60);
     }
 
     public Cooldown getDrop() {
         return drop;
     }
 
+    public void setDrop(Cooldown drop) {
+        this.drop = drop;
+    }
+
     public Cooldown getGrab() {
         return grab;
+    }
+
+    public void setGrab(Cooldown grab) {
+        this.grab = grab;
     }
 
     public void useDrop(Instant time){

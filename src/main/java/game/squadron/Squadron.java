@@ -1,82 +1,96 @@
 package game.squadron;
 
+import game.Player;
 import game.cards.CardPersonal;
+import game.cards.ComparableCard;
+import game.items.MaterialsSet;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.*;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.Integer.min;
 
-
+@Entity
 public class Squadron {
-    String playerId;
-    private final int sizeMax;
-    HashMap<CardPersonal, HealthState> cardsStateMap;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "squadronId")
+    private long id;
 
-    public Squadron(int sizeMax) {
-        this(null, sizeMax);
+    @OneToOne
+    private Player owner;
+
+    @Embedded
+    private PatrolActivity patrol;
+
+    @Transient
+    private final int sizeMax = 4;
+
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "squadronId", nullable = false)
+    List<SquadronMember> squadronMembers = new ArrayList<>();
+
+    public Squadron() {
     }
 
-    public Squadron(String playerId, int sizeMax) {
-        this.playerId = playerId;
-        this.sizeMax = sizeMax;
-        setCards(new ArrayList<>(sizeMax));
+    public long getId() {
+        return id;
     }
 
-    public Squadron(String playerId, List<CardPersonal> cards) {
-        this.playerId = playerId;
-        sizeMax = cards.size();
-        setCards(cards);
+    public Player getOwner() {
+        return owner;
     }
 
-    public void setCards(List<CardPersonal> cards) {
-        cardsStateMap = new HashMap<>();
-        for (int i = 0; i < min(cards.size(), sizeMax); i++) {
-            cardsStateMap.put(cards.get(i), HealthState.HEALTHY);
-        }
-    }
-
-    public Set<CardPersonal> getCards() {
-        return cardsStateMap.keySet();
-    }
-
-    public List<CardPersonal> getSortedCards() {
-        return cardsStateMap.keySet().stream()
-                .sorted(CardPersonal::comparatorPowerLevel)
+    public List<SquadronMember> getSortedMembers() {
+        return squadronMembers.stream()
+                .sorted(ComparableCard::comparatorPower)
                 .collect(Collectors.toList());
     }
 
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
-
     public boolean isEmpty() {
-        return cardsStateMap.isEmpty();
+        return squadronMembers.isEmpty();
     }
 
     public void addCard(CardPersonal card) {
-        cardsStateMap.put(card, HealthState.HEALTHY);
+        squadronMembers.add(new SquadronMember(card));
     }
 
     public boolean isFull() {
-        return cardsStateMap.size() == sizeMax;
+        return squadronMembers.size() >= sizeMax;
+    }
+
+    public List<SquadronMember> getMembers() {
+        return squadronMembers;
     }
 
     public float getPowerLevel() {
         float totalPowerLevel = 0;
-        for (CardPersonal card : getCards()){
-            float cardPowerLevel = card.getPowerLevel();
-            HealthState cardHealth = cardsStateMap.get(card);
+        for (SquadronMember member : getMembers()){
+            float cardPowerLevel = member.getStats().getPowerLevel();
+            HealthState cardHealth = member.getHealthState();
             totalPowerLevel += cardHealth == HealthState.INJURED ? cardPowerLevel * 0.2 : cardPowerLevel;
         }
         return totalPowerLevel;
     }
+
+    public void startPatrol(PatrolType patrolType, Instant time) {
+        final int hourMillis = 60 * 60 * 1000;
+        patrol = new PatrolActivity(patrolType, hourMillis);
+        patrol.setStarted(time);
+    }
+
+    public MaterialsSet finishPatrol(Instant time) {
+        patrol.setFinished(time);
+        MaterialsSet materials = patrol.getMaterialsFound(this);
+        owner.addMaterials(materials);
+
+        return materials;
+    }
+
 }

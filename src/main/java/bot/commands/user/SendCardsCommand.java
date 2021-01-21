@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardPersonal;
+import game.cards.ComparableCard;
 import game.contract.SendCardsContract;
 import org.kohsuke.args4j.Argument;
 
@@ -44,7 +45,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
         List<CardPersonal> cardsSending = commandArgs.cardIds.stream()
                 .map(cardId -> game.getCardsPersonal().getById(cardId))
                 .filter(Objects::nonNull)
-                .sorted(CardPersonal::comparatorPowerLevel)
+                .sorted(ComparableCard::comparatorPower)
                 .collect(Collectors.toList());
 
         SendCardsContract contract = new SendCardsContract(

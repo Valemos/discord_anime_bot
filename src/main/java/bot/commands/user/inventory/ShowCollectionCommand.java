@@ -6,12 +6,16 @@ import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
+import game.cards.CollectionTransformer;
 import game.cards.CardPersonal;
+import game.cards.DisplayableCard;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand.Arguments> {
 
@@ -46,12 +50,11 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
             return;
         }
 
-        List<CardPersonal> cards = game.getCardsPersonal().getSorted(
-                requestedPlayer.getId(),
-                commandArgs.filterName,
-                commandArgs.filterSeries,
-                commandArgs.sortingTypes
-        );
+        List<CardPersonal> cards = new CollectionTransformer<>(requestedPlayer.getCards().stream())
+                .filterName(commandArgs.filterName)
+                .filterSeries(commandArgs.filterSeries)
+                .sort(commandArgs.sortingTypes)
+                .toList();
 
         BotMenuCreator.menuForPersonalCardStats(cards, event, game, 1);
     }

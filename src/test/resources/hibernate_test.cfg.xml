@@ -5,7 +5,7 @@
 <hibernate-configuration>
   <session-factory>
     <property name="connection.driver_class">org.postgresql.Driver</property>
-    <property name="connection.url">jdbc:postgresql://localhost:5432/cards_game</property>
+    <property name="connection.url">jdbc:postgresql://localhost:5432/test_cards_game</property>
     <property name="connection.username">postgres</property>
     <property name="connection.password">1</property>
 

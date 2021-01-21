@@ -1,5 +1,6 @@
 package game.cards;
 
+import bot.ShortUUID;
 import game.DisplayableStats;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -55,6 +56,10 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
         return characterInfo;
     }
 
+    public void setCharacterInfo(CharacterInfo characterInfo) {
+        this.characterInfo = characterInfo;
+    }
+
     @Override
     public String getName() {
         return characterInfo.getName();
@@ -65,8 +70,18 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
         return characterInfo.getSeriesName();
     }
 
+    public void setCardInfo(CardGlobal card) {
+        id = card.id;
+        characterInfo = card.characterInfo;
+        stats = card.stats;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getFullName() {
@@ -93,10 +108,6 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
     @Override
     public String getFullDescription() {
         return getIdNameStats();
-    }
-
-    public static int comparatorStats(CardGlobal card1, CardGlobal card2) {
-        return card2.getStats().compareTo(card1.getStats());
     }
 
     @Override

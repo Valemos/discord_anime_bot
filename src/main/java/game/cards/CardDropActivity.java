@@ -6,6 +6,7 @@ import game.Player;
 import game.cooldown.CooldownSet;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import org.hibernate.Session;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -42,10 +43,19 @@ public class CardDropActivity {
         return menu;
     }
 
-    public void finishFight() {
+    public void finishFight(AnimeCardsGame game) {
+        Session dbSession = game.getDatabaseSession();
+
         for (String playerId : fightingPlayerCards.keySet()){
+
             CardPersonal card = fightingPlayerCards.get(playerId);
             if(decidePlayerGetsCard(playerId, card)){
+
+                dbSession.beginTransaction();
+                Player player = game.getPlayer(playerId);
+                player.addCard(card);
+                dbSession.getTransaction().commit();
+
                 menu.notifyCardReceived(playerId, card);
             }
         }
@@ -61,8 +71,8 @@ public class CardDropActivity {
         Instant now = Instant.now();
 
         Player player = game.getPlayer(event.getUserId());
+        CooldownSet cooldowns = player.getCooldowns();
 
-        CooldownSet cooldowns = game.getCooldowns(player.getId());
         if (cooldowns.getGrab().tryUse(now)){
             fightForCard(now, game, player, cardIndex);
         }else{

@@ -17,10 +17,11 @@ public class CooldownCommand extends AbstractCommandOptionalPlayer {
 
     @Override
     public void handle(CommandEvent event) {
-        String playerId = commandArgs.getSelectedOrPlayerId(player);
+        if(!tryFindPlayerArgument(event)){
+            return;
+        }
 
-        CooldownSet cooldown = game.getCooldowns(playerId);
-
+        CooldownSet cooldown = requestedPlayer.getCooldowns();
         sendMessage(event, cooldown.getDescription(Instant.now()));
     }
 }

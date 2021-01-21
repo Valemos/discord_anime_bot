@@ -1,5 +1,6 @@
 package bot.commands.arguments;
 
+import com.jagrosh.jdautilities.command.CommandEvent;
 import game.Player;
 import org.kohsuke.args4j.Argument;
 
