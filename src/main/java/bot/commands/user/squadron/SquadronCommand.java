@@ -3,8 +3,8 @@ package bot.commands.user.squadron;
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
+import game.cards.CardPersonal;
 import game.squadron.Squadron;
-import game.squadron.SquadronMember;
 
 import java.util.stream.Collectors;
 
@@ -23,7 +23,7 @@ public class SquadronCommand extends AbstractCommandNoArguments {
         if (!squadron.isEmpty()){
 
             String squadronMessage = squadron.getSortedMembers().stream()
-                    .map(SquadronMember::getDescription)
+                    .map(CardPersonal::getDescription)
                     .collect(Collectors.joining("\n"))
                     + "\nPower ups:\n"
                     + squadron.getPowerUpsDescription();

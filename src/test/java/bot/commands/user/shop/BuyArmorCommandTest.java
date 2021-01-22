@@ -51,13 +51,13 @@ class BuyArmorCommandTest extends MessageSenderTester {
 
     @Test
     void testUnknownArmorPiece() {
-        sender.send("#buyarmor 1000");
+        send("#buyarmor 1000");
         verify(spyShop, never()).tryBuyItem(any(AnimeCardsGame.class), any(Player.class), any(AbstractShopItem.class));
     }
 
     @Test
     void testFindArmorById() {
-        sender.send("#buyarmor " + items.get(1).getId());
+        send("#buyarmor " + items.get(1).getId());
 
         assertFalse(tester().getArmorItems().isEmpty());
         assertEquals(items.get(1), tester().getArmorItems().get(0).getOriginal());
@@ -65,7 +65,7 @@ class BuyArmorCommandTest extends MessageSenderTester {
 
     @Test
     void testUniqueByName() {
-        sender.send("#buyarmor glove");
+        send("#buyarmor glove");
 
         assertFalse(tester().getArmorItems().isEmpty());
         assertEquals(items.get(1), tester().getArmorItems().get(0).getOriginal());
@@ -74,7 +74,7 @@ class BuyArmorCommandTest extends MessageSenderTester {
     @Test
     void testNoUniqueFoundAndNotBought() {
         assertTrue(tester().getArmorItems().isEmpty());
-        sender.send("#buyarmor ch");
+        send("#buyarmor ch");
         assertTrue(tester().getArmorItems().isEmpty());
     }
 }

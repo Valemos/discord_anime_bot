@@ -100,4 +100,27 @@ class CardDropCommandTest extends MessageSenderTester {
         assertTrue(dropped.get(0).getCharacterInfo().equals(card2.getCharacterInfo()) ||
                             dropped.get(1).getCharacterInfo().equals(card2.getCharacterInfo()));
     }
+
+    @Test
+    void grabTheSameCharacterTwice() {
+        int prevSize = tester().getCards().size();
+
+        String messageId = "111";
+        sender.sendAndCaptureMessage("#drop", tester().getId(), messageId);
+
+        CardGlobal card = sender.cardGlobal1;
+
+        sender.getGame().getDropManager().getElement(messageId).setCards(List.of(card, card, card));
+
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
+        tester().getCooldowns().reset();
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.TWO);
+
+        sender.finishDropTimer();
+
+        List<CardPersonal> cards = tester().getCards();
+        assertEquals(2, cards.size() - prevSize);
+        assertEquals(cards.get(cards.size() - 1).getCharacterInfo(),
+                    cards.get(cards.size() - 2).getCharacterInfo());
+    }
 }

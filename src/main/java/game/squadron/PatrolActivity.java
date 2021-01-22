@@ -40,7 +40,7 @@ public class PatrolActivity {
     }
 
     public MaterialsSet getMaterialsFound(Squadron squadron) {
-
+        // TODO add patrolType handling
         long patrolDuration = Duration.between(started, finished).toMillis();
         double percentage = patrolDuration < patrolTime ? patrolDuration / patrolTime : 1.0;
 

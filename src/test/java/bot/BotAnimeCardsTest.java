@@ -15,13 +15,13 @@ class BotAnimeCardsTest extends MessageSenderTester {
 
     @Test
     void testSendNotACommand() {
-        sender.send("not a command");
+        send("not a command");
         sender.assertCommandNotHandled();
     }
 
     @Test
     void testDailyCommandHandled() {
-        sender.send("#daily");
+        send("#daily");
         sender.assertCommandHandled(DailyCommand.class);
     }
 
@@ -32,7 +32,7 @@ class BotAnimeCardsTest extends MessageSenderTester {
         MaterialsSet materials = tester.getMaterials();
         int startGold = materials.getAmount(Material.GOLD);
 
-        sender.send("#daily");
+        send("#daily");
         sender.assertCommandHandled(DailyCommand.class);
 
         materials = tester.getMaterials();

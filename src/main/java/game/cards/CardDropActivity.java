@@ -19,7 +19,7 @@ public class CardDropActivity {
     List<CardGlobal> cards;
 
     private Instant timeStarted;
-    private final Map<CardGlobal, CardFight> cardFights = new HashMap<>();
+    private final Map<Integer, CardFight> cardFights = new HashMap<>();
 
     public CardDropActivity(List<CardGlobal> cards) {
         this.cards = cards;
@@ -43,9 +43,9 @@ public class CardDropActivity {
     }
 
     public void finishFights(AnimeCardsGame game) {
-        for (CardGlobal cardGlobal : cardFights.keySet()){
+        for (int cardGlobalIndex : cardFights.keySet()){
 
-            CardFight cardFight = cardFights.get(cardGlobal);
+            CardFight cardFight = cardFights.get(cardGlobalIndex);
 
             String winnerId = cardFight.findWinner();
             CardPersonal cardPicked = cardFight.giveCardToWinner(game);
@@ -72,13 +72,11 @@ public class CardDropActivity {
     private void fightForCard(Instant timePicked, Player player, int cardIndex) {
         float cardPickDelay = (float) Duration.between(timeStarted, timePicked).toMillis() / 1000;
 
-        CardGlobal card = cards.get(cardIndex);
-
-        CardFight currentFight = cardFights.getOrDefault(card, null);
+        CardFight currentFight = cardFights.getOrDefault(cardIndex, null);
 
         if (currentFight == null) {
-            currentFight = new CardFight(card);
-            cardFights.put(card, currentFight);
+            currentFight = new CardFight(cards.get(cardIndex));
+            cardFights.put(cardIndex, currentFight);
         }
 
         currentFight.fight(player.getId(), cardPickDelay);

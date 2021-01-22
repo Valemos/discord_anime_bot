@@ -12,13 +12,13 @@ class InspectCardCommandTest extends MessageSenderTester {
 
     @Test
     void testInspectNotCorrectCommand() {
-        sender.send("#i");
+        send("#i");
         sender.assertCommandNotHandled();
     }
 
     @Test
     void testInspectCardSingleWord() {
-        sender.send("#i riko");
+        send("#i riko");
         sender.assertCommandHandled(InspectCardCommand.class);
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);
@@ -28,7 +28,7 @@ class InspectCardCommandTest extends MessageSenderTester {
 
     @Test
     void testInspectCardMultipleWords() {
-        sender.send("#i haruhi suzum");
+        send("#i haruhi suzum");
         sender.assertCommandHandled(InspectCardCommand.class);
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);
@@ -38,7 +38,7 @@ class InspectCardCommandTest extends MessageSenderTester {
 
     @Test
     void testInspectCardSeriesMultipleWords() {
-        sender.send("#i haruhi suzum -s \"haruhi no\"");
+        send("#i haruhi suzum -s \"haruhi no\"");
         sender.assertCommandHandled(InspectCardCommand.class);
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);

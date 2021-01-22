@@ -99,6 +99,7 @@ public class Player {
     }
 
     public void setSquadron(Squadron squadron) {
+        squadron.setOwner(this);
         this.squadron = squadron;
     }
 

@@ -3,6 +3,8 @@ package game.cards;
 import bot.ShortUUID;
 import game.DescriptionDisplayable;
 import game.Player;
+import game.squadron.HealthState;
+import game.squadron.Squadron;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -17,10 +19,17 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
     private Player owner;
 
     @ManyToOne
-    CharacterInfo characterInfo;
+    private CharacterInfo characterInfo;
 
     @Embedded
-    CardStatsConstant stats;
+    private CardStatsConstant stats;
+
+    @ManyToOne
+    private Squadron assignedSquadron;
+
+    @Enumerated(EnumType.ORDINAL)
+    private HealthState healthState;
+
 
     public CardPersonal() {
     }
@@ -64,6 +73,30 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
     @Override
     public int getPrint() {
         return stats.cardPrint;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setCharacterInfo(CharacterInfo characterInfo) {
+        this.characterInfo = characterInfo;
+    }
+
+    public Squadron getAssignedSquadron() {
+        return assignedSquadron;
+    }
+
+    public void setAssignedSquadron(Squadron squadron) {
+        this.assignedSquadron = squadron;
+    }
+
+    public HealthState getHealthState() {
+        return healthState;
+    }
+
+    public void setHealthState(HealthState healthState) {
+        this.healthState = healthState;
     }
 
     @Override

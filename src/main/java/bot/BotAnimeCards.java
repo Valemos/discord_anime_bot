@@ -28,7 +28,6 @@ import game.cards.*;
 import game.materials.Material;
 import game.shop.items.*;
 import game.squadron.Squadron;
-import game.squadron.SquadronMember;
 import game.stocks.StockValue;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -213,7 +212,6 @@ public class BotAnimeCards {
                 .addAnnotatedClass(SeriesInfo.class)
                 .addAnnotatedClass(StockValue.class)
                 .addAnnotatedClass(Squadron.class)
-                .addAnnotatedClass(SquadronMember.class)
                 .addAnnotatedClass(ArmorItem.class)
                 .addAnnotatedClass(ArmorItemPersonal.class)
                 .configure(configPath);

@@ -30,7 +30,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
             CardPersonal card = game.getCardsPersonal().getById(cardId);
 
             if (card != null && card.getOwner().equals(player)){
-                squadron.addCard(card);
+                game.addSquadronMember(player, card);
                 msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
             }else{
                 msgBuilder.append(cardId).append(" not found in player collection\n");

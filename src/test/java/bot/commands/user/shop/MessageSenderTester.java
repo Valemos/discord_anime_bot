@@ -23,4 +23,12 @@ public class MessageSenderTester {
     protected Player tester() {
         return sender.tester();
     }
+
+    protected void send(String message){
+        sender.send(message);
+    }
+
+    protected void send(String message, String userId, String messageId){
+        sender.send(message, userId, messageId);
+    }
 }

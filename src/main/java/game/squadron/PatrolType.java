@@ -2,7 +2,9 @@ package game.squadron;
 
 public enum PatrolType {
     OVERWORLD("Overworld"),
-    UNDERWORLD("Underworld");
+    O(""),
+    UNDERWORLD("Underworld"),
+    U("");
 
     private final String typeName;
 

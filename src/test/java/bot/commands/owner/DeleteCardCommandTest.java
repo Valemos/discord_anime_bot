@@ -16,7 +16,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testCardNotDeletedForIncorrectCommand() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard");
+        send("#delcard");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -25,7 +25,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testCardNameNotFoundAndNotDeleted() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard unknown");
+        send("#delcard unknown");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -35,7 +35,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testCardSeriesNotFoundAndNotDeleted() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard -s \"unknown series\"");
+        send("#delcard -s \"unknown series\"");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -44,7 +44,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testCardNameAndSeriesNotFoundAndNotDeleted() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard unknown -s \"unknown series\"");
+        send("#delcard unknown -s \"unknown series\"");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -53,7 +53,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testCardIdNotFoundAndNotDeleted() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard -id 123456");
+        send("#delcard -id 123456");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -62,7 +62,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
     void testNotDeletedWhenNameNotUnique() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());
 
-        sender.send("#delcard r");
+        send("#delcard r");
 
         assertEquals(cards, sender.getGame().getCardsGlobal().getAllCards());
     }
@@ -72,7 +72,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
         List<CardGlobal> cards = sender.getGame().getCardsGlobal().getAllCards();
         assertTrue(cards.contains(sender.cardGlobal1));
 
-        sender.send("#delcard riko");
+        send("#delcard riko");
 
         cards = sender.getGame().getCardsGlobal().getAllCards();
         assertFalse(cards.contains(sender.cardGlobal1));
@@ -83,7 +83,7 @@ class DeleteCardCommandTest extends MessageSenderTester {
         List<CardGlobal> cards = sender.getGame().getCardsGlobal().getAllCards();
         assertTrue(cards.contains(sender.cardGlobal1));
 
-        sender.send("#delcard -id " + sender.cardGlobal1.getId());
+        send("#delcard -id " + sender.cardGlobal1.getId());
 
         cards = sender.getGame().getCardsGlobal().getAllCards();
         assertFalse(cards.contains(sender.cardGlobal1));

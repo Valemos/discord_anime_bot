@@ -32,10 +32,8 @@ public class Squadron {
     @Transient
     public static final int sizeMax = 4;
 
-    @OneToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "squadronId", nullable = false)
-    List<SquadronMember> squadronMembers = new ArrayList<>();
+    @OneToMany(mappedBy = "assignedSquadron")
+    List<CardPersonal> squadronMembers = new ArrayList<>();
 
     public Squadron() {
     }
@@ -48,7 +46,11 @@ public class Squadron {
         return owner;
     }
 
-    public List<SquadronMember> getSortedMembers() {
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public List<CardPersonal> getSortedMembers() {
         return squadronMembers.stream()
                 .sorted(ComparableCard::comparatorPower)
                 .collect(Collectors.toList());
@@ -58,16 +60,21 @@ public class Squadron {
         return squadronMembers.isEmpty();
     }
 
-    public void addCard(CardPersonal card) {
-        squadronMembers.add(new SquadronMember(card));
+    public void addMember(CardPersonal member) {
+        member.setAssignedSquadron(this);
+        squadronMembers.add(member);
     }
 
     public boolean isFull() {
         return squadronMembers.size() >= sizeMax;
     }
 
-    public List<SquadronMember> getMembers() {
+    public List<CardPersonal> getMembers() {
         return squadronMembers;
+    }
+
+    public void setMembers(List<CardPersonal> squadronMembers) {
+        this.squadronMembers = squadronMembers;
     }
 
     public List<PowerUpType> getPowerUps() {
@@ -84,7 +91,7 @@ public class Squadron {
 
     public float getPowerLevel() {
         float totalPowerLevel = 0;
-        for (SquadronMember member : getMembers()){
+        for (CardPersonal member : getMembers()){
             float cardPowerLevel = member.getStats().getPowerLevel();
             HealthState cardHealth = member.getHealthState();
             totalPowerLevel += cardHealth == HealthState.INJURED ? cardPowerLevel * 0.2 : cardPowerLevel;
@@ -102,8 +109,7 @@ public class Squadron {
     }
 
     public void startPatrol(PatrolType patrolType, Instant time) {
-        final int hourMillis = 60 * 60 * 1000;
-        patrol = new PatrolActivity(patrolType, hourMillis);
+        patrol = new PatrolActivity(patrolType, 60 * 60 * 1000);
         patrol.setStarted(time);
     }
 
@@ -116,7 +122,7 @@ public class Squadron {
     }
 
     public void healMembers() {
-        for (SquadronMember member : squadronMembers){
+        for (CardPersonal member : squadronMembers){
             member.setHealthState(HealthState.HEALTHY);
         }
     }

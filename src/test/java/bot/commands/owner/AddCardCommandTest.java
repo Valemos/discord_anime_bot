@@ -11,7 +11,7 @@ class AddCardCommandTest  extends MessageSenderTester {
 
     @Test
     void incorrectCommandArguments() {
-        sender.send("#addcard");
+        send("#addcard");
         sender.assertCommandNotHandled();
     }
 
@@ -19,7 +19,7 @@ class AddCardCommandTest  extends MessageSenderTester {
     void testCreateCardCommand() {
         assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
 
-        sender.send("#addcard \"card name\" \"card series\" image_url");
+        send("#addcard \"card name\" \"card series\" image_url");
         sender.assertCommandHandled(AddCardCommand.class);
 
         CardGlobal c = sender.getGame().getCardGlobalUnique("card name", "card series");
@@ -33,7 +33,7 @@ class AddCardCommandTest  extends MessageSenderTester {
     void testCreateWithInsufficientParameters() {
         assertNull(sender.getGame().getCardGlobalUnique("card name unique", "series unique"));
 
-        sender.send("#addcard \"card name\"");
+        send("#addcard \"card name\"");
         sender.assertCommandNotHandled();
 
         assertNull(sender.getGame().getCardGlobalUnique("card name unique", null));

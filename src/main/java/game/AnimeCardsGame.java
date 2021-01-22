@@ -25,6 +25,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -175,28 +176,32 @@ public class AnimeCardsGame {
         return armorShop;
     }
 
+    @NotNull
     public Squadron getOrCreateSquadron(Player player) {
-        dbSession.beginTransaction();
         Squadron squadron = player.getSquadron();
+        if(squadron == null) squadron = createSquadron(player);
+        return squadron;
+    }
 
-        if (squadron == null){
-            squadron = new Squadron();
-            dbSession.save(squadron);
+    @NotNull
+    private Squadron createSquadron(Player player) {
+        Squadron squadron;
+        dbSession.beginTransaction();
 
-            player.setSquadron(squadron);
-            dbSession.persist(player);
-        }
+        squadron = new Squadron();
+        player.setSquadron(squadron);
+
+        dbSession.save(squadron);
+        dbSession.persist(player);
 
         dbSession.getTransaction().commit();
         return squadron;
     }
 
-    public boolean createNewPatrol(Player player, PatrolType patrolType, Instant time) {
-        if (player.getSquadron() != null){
+    public void createNewPatrol(Player player, PatrolType patrolType, Instant time) {
+        if (player.getSquadron() != null && !player.getSquadron().isEmpty()){
             player.getSquadron().startPatrol(patrolType, time);
-            return true;
         }
-        return false;
     }
 
     public float exchangeCardForStock(CardPersonal card) {
@@ -240,6 +245,44 @@ public class AnimeCardsGame {
 
         dbSession.getTransaction().commit();
         return materials;
+    }
+
+    public void addSquadronMember(Player player, CardPersonal card) {
+        player.getSquadron().addMember(card);
+        dbSession.persist(player.getSquadron());
+    }
+
+    public boolean removeSquadronMembers(Player player, List<String> memberIds) {
+        Squadron squadron = getOrCreateSquadron(player);
+        if(squadron.isEmpty()){
+            return false;
+        }
+
+        dbSession.beginTransaction();
+
+        List<CardPersonal> newMembers = new ArrayList<>(squadron.getMembers().size());
+
+        // delete all members with matching id
+        // else move them to new list
+        long deletedAmount = squadron.getMembers().stream()
+                .filter(member -> {
+                    int memberIdIndex = memberIds.indexOf(member.getId());
+                    if (memberIdIndex != -1) {
+                        newMembers.add(member);
+                        memberIds.remove(memberIdIndex);
+                        return false;
+                    }
+                    return true;
+                })
+                .peek(dbSession::delete)
+                .count();
+
+        squadron.setMembers(newMembers);
+        dbSession.persist(squadron);
+
+        dbSession.getTransaction().commit();
+
+        return deletedAmount > 0;
     }
 }
 
