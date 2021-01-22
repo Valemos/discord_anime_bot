@@ -27,7 +27,6 @@ class BuyCommandTest extends MessageSenderTester{
 
     @BeforeEach
     void setUp() {
-        sender.reset();
 
         spyShop = spy(sender.getGame().getItemsShop());
         doReturn(spyShop).when(sender.getGame()).getItemsShop();

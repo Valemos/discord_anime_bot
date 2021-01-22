@@ -19,6 +19,7 @@ class AnimeCardsGameTest {
     @BeforeEach
     void setUp() {
         bot = new BotAnimeCards();
+        bot.loadSettings("hibernate_test.cfg.xml");
         game = bot.getGame();
         player1 = game.createNewPlayer("1");
         player2 = game.createNewPlayer("2");

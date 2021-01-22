@@ -9,11 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AddCardCommandTest  extends MessageSenderTester {
 
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
-
     @Test
     void incorrectCommandArguments() {
         sender.send("#addcard");
@@ -36,12 +31,12 @@ class AddCardCommandTest  extends MessageSenderTester {
 
     @Test
     void testCreateWithInsufficientParameters() {
-        assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
+        assertNull(sender.getGame().getCardGlobalUnique("card name unique", "series unique"));
 
         sender.send("#addcard \"card name\"");
         sender.assertCommandNotHandled();
 
-        assertNull(sender.getGame().getCardGlobalUnique("card name", null));
-        assertNull(sender.getGame().getCardGlobalUnique("card name", "card series"));
+        assertNull(sender.getGame().getCardGlobalUnique("card name unique", null));
+        assertNull(sender.getGame().getCardGlobalUnique("card name unique", "series unique"));
     }
 }

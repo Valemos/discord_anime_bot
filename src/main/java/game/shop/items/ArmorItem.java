@@ -3,6 +3,7 @@ package game.shop.items;
 import bot.ShortUUID;
 import game.AnimeCardsGame;
 import game.ArmorItemPersonal;
+import game.DescriptionDisplayable;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 import java.util.Map;
 
 @Entity
-public class ArmorItem extends AbstractShopItem {
+public class ArmorItem extends AbstractShopItem implements DescriptionDisplayable {
 
     @Id
     private String id;
@@ -73,6 +74,11 @@ public class ArmorItem extends AbstractShopItem {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getStatsString() {
+        return "armor: " + armorValue;
     }
 
     public float getArmorValue() {

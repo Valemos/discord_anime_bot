@@ -9,7 +9,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractCardsManager<T extends DisplayableCard & ComparableCard> {
+public abstract class AbstractCardsManager<T extends SearchableCard & ComparableCard> {
 
     private final Class<T> cardClass;
     protected final Session dbSession;
@@ -28,6 +28,10 @@ public abstract class AbstractCardsManager<T extends DisplayableCard & Comparabl
         return new CollectionTransformer<>(
                 getFiltered(name, series).stream())
                 .sort(sortingTypes).toList();
+    }
+
+    public void update(T element) {
+        dbSession.persist(element);
     }
 
     public T getById(String id) {
@@ -61,7 +65,7 @@ public abstract class AbstractCardsManager<T extends DisplayableCard & Comparabl
             predicates.add(cb.like(cb.lower(characterInfo.get("name")), name.toLowerCase()));
 
         if(series != null)
-            predicates.add(cb.like(cb.lower(characterInfo.get("series")), series.toLowerCase()));
+            predicates.add(cb.like(cb.lower(characterInfo.get("series").get("name")), series.toLowerCase()));
 
         return predicates;
     }

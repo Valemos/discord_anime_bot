@@ -13,6 +13,7 @@ class CardGlobalTest {
         CardGlobal card = new CardGlobal("", "", "", new CardStatsGlobal());
 
         BotAnimeCards bot = new BotAnimeCards();
+        bot.loadSettings("hibernate_test.cfg.xml");
         AnimeCardsGame game = bot.getGame();
         game.addCard(card);
 

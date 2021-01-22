@@ -1,14 +1,14 @@
 package game.cards;
 
 import bot.ShortUUID;
-import game.DisplayableStats;
+import game.DescriptionDisplayable;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Entity
-public class CardGlobal implements DisplayableStats, DisplayableCard, ComparableCard {
+public class CardGlobal implements DescriptionDisplayable, SearchableCard, ComparableCard {
 
     @Id
     private String id;
@@ -84,25 +84,14 @@ public class CardGlobal implements DisplayableStats, DisplayableCard, Comparable
         this.id = id;
     }
 
-    public String getFullName() {
-        return characterInfo.getFullName();
-    }
-
     @Override
-    public String getNameStats() {
-        return characterInfo.getFullName()
-                + ": "
-                + stats.getStatsForPickDelay(0).getDescription();
-    }
-
-    @Override
-    public String getIdName() {
-        return "`" + getId() + "` - " + getFullName();
+    public String getStatsString() {
+        return stats.getStatsForPickDelay(0).getDescription();
     }
 
     @Override
     public String getIdNameStats() {
-        return getIdName() + "\n" + stats.getStatsForPickDelay(0).getDescription();
+        return getIdName() + "\n" + getStatsString();
     }
 
     @Override

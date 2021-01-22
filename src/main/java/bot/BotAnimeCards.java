@@ -263,7 +263,7 @@ public class BotAnimeCards {
 
         for (CardGlobal card : cards) {
             game.addCard(card);
-            game.pickPersonalCard(tester1, card, 1);
+            game.pickPersonalCard(tester1.getId(), card, 1);
         }
 
         tester1.getMaterials().setAmount(Material.GOLD, 100);

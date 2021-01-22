@@ -1,13 +1,10 @@
 package bot.commands.user;
 
-import bot.BotMessageSenderMock;
 import bot.commands.user.carddrop.CardDropCommand;
 import bot.commands.user.shop.MessageSenderTester;
 import bot.menu.MenuEmoji;
-import game.Player;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,11 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CardDropCommandTest extends MessageSenderTester {
-
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
 
 
     @Test
@@ -87,6 +79,7 @@ class CardDropCommandTest extends MessageSenderTester {
         sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
         tester().getCooldowns().reset();
         sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
+
         tester().getCooldowns().reset();
         sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.TWO);
 
@@ -94,13 +87,17 @@ class CardDropCommandTest extends MessageSenderTester {
 
 
         List<CardPersonal> collection = tester().getCards();
+
+        // must receive first character and second character one copy each
+        assertEquals(2, collection.size() - prevSize);
+
         CardPersonal card1 = collection.get(collection.size() - 1);
-        assertEquals(1, collection.size() - prevSize);
+        CardPersonal card2 = collection.get(collection.size() - 2);
 
-        assertEquals(
-                dropped.get(0).getCharacterInfo(),
-                card1.getCharacterInfo()
-        );
+        assertTrue(dropped.get(0).getCharacterInfo().equals(card1.getCharacterInfo()) ||
+                            dropped.get(1).getCharacterInfo().equals(card1.getCharacterInfo()));
 
+        assertTrue(dropped.get(0).getCharacterInfo().equals(card2.getCharacterInfo()) ||
+                            dropped.get(1).getCharacterInfo().equals(card2.getCharacterInfo()));
     }
 }

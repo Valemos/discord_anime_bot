@@ -19,10 +19,6 @@ public class Cooldown {
     public Cooldown() {
     }
 
-    public Cooldown(String name, int amountSeconds) {
-        set(name, amountSeconds);
-    }
-
     protected void set(String name, int amountSeconds) {
         this.name = name;
         this.amountSeconds = amountSeconds;
@@ -38,28 +34,6 @@ public class Cooldown {
 
     public void setLastUse(Instant lastUse) {
         this.lastUse = lastUse;
-    }
-
-    public String getDescription(Instant time) {
-        return name + ": " + getSecondsLeftString(time);
-    }
-
-    public String getSecondsLeftString(Instant time) {
-        long seconds = getSecondsLeft(time);
-        return seconds > 0 ? String.valueOf(seconds) : "ready";
-    }
-
-    public long getSecondsLeft(Instant time) {
-        if (lastUse == null){
-            return 0;
-        }
-
-        long duration = Duration.between(lastUse, time).toSeconds();
-        if (duration > amountSeconds){
-            return 0;
-        }
-
-        return amountSeconds - duration;
     }
 
     public boolean isAvailable(Instant time) {
@@ -78,7 +52,30 @@ public class Cooldown {
         return false;
     }
 
+
+    public String getDescription(Instant time) {
+        return name + ": " + getSecondsLeftString(time);
+    }
+
     public String getVerboseDescription(Instant time) {
         return "your " + name + " cooldown is " + getSecondsLeftString(time);
+    }
+
+    public String getSecondsLeftString(Instant time) {
+        long seconds = getSecondsLeft(time);
+        return seconds > 0 ? String.valueOf(seconds) : "ready";
+    }
+
+    public long getSecondsLeft(Instant time) {
+        if (lastUse == null){
+            return 0;
+        }
+
+        long duration = Duration.between(lastUse, time).toSeconds();
+        if (duration > amountSeconds){
+            return 0;
+        }
+
+        return amountSeconds - duration;
     }
 }

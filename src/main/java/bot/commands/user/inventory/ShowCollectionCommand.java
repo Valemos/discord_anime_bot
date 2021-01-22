@@ -8,14 +8,11 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CollectionTransformer;
 import game.cards.CardPersonal;
-import game.cards.DisplayableCard;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand.Arguments> {
 

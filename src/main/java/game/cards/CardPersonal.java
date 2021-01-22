@@ -1,14 +1,14 @@
 package game.cards;
 
 import bot.ShortUUID;
-import game.DisplayableStats;
+import game.DescriptionDisplayable;
 import game.Player;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class CardPersonal implements DisplayableStats, DisplayableCard, ComparableCard {
+public class CardPersonal implements DescriptionDisplayable, SearchableCard, ComparableCard {
 
     @Id
     private String id;
@@ -81,11 +81,6 @@ public class CardPersonal implements DisplayableStats, DisplayableCard, Comparab
     }
 
     @Override
-    public String getName() {
-        return characterInfo.getName();
-    }
-
-    @Override
     public String getSeriesName() {
         return characterInfo.getSeriesName();
     }
@@ -96,23 +91,17 @@ public class CardPersonal implements DisplayableStats, DisplayableCard, Comparab
     }
 
     @Override
-    public String getNameStats() {
-        return characterInfo.getFullName() + ": " + stats.getDescription();
+    public String getName() {
+        return characterInfo.getName();
     }
 
     @Override
-    public String getIdName() {
-        return "`" + id + "` - " + characterInfo.getFullName();
+    public String getFullName() {
+        return characterInfo.getFullName();
     }
 
     @Override
-    public String getIdNameStats() {
-        return getIdName() + ": " + stats.getDescription();
+    public String getStatsString() {
+        return stats.getDescription();
     }
-
-    @Override
-    public String getFullDescription() {
-        return getIdNameStats();
-    }
-
 }

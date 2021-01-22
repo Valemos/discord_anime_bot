@@ -13,11 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BotAnimeCardsTest extends MessageSenderTester {
 
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
-
     @Test
     void testSendNotACommand() {
         sender.send("not a command");

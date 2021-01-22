@@ -12,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DeleteCardCommandTest extends MessageSenderTester {
 
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
-
     @Test
     void testCardNotDeletedForIncorrectCommand() {
         List<CardGlobal> cards = new ArrayList<>(sender.getGame().getCardsGlobal().getAllCards());

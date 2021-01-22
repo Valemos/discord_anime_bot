@@ -9,11 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InspectCardCommandTest extends MessageSenderTester {
 
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
-
 
     @Test
     void testInspectNotCorrectCommand() {

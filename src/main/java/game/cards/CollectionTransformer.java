@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CollectionTransformer<T extends DisplayableCard & ComparableCard> {
+public class CollectionTransformer<T extends SearchableCard & ComparableCard> {
 
     private Stream<T> stream;
 
@@ -41,7 +41,7 @@ public class CollectionTransformer<T extends DisplayableCard & ComparableCard> {
         } else if (SortingType.PRINT == sortingType ||
                 SortingType.P == sortingType){
 
-            return Comparator.comparingInt(ComparableCard::getPrint);
+            return ComparableCard::comparatorPrint;
 
         } else if (SortingType.POWER == sortingType ||
                 SortingType.PW == sortingType){
@@ -59,12 +59,12 @@ public class CollectionTransformer<T extends DisplayableCard & ComparableCard> {
     }
 
     public CollectionTransformer<T> filterName(String name) {
-        if(name != null) stream = stream.filter(c -> DisplayableCard.containsName(c, name));
+        if(name != null) stream = stream.filter(c -> SearchableCard.containsName(c, name));
         return this;
     }
 
     public CollectionTransformer<T> filterSeries(String series) {
-        if(series != null) stream = stream.filter(c -> DisplayableCard.containsSeries(c, series));
+        if(series != null) stream = stream.filter(c -> SearchableCard.containsSeries(c, series));
         return this;
     }
 }

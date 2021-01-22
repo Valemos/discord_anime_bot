@@ -12,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShowCollectionCommandTest extends MessageSenderTester {
 
-    @BeforeEach
-    void setUp() {
-        sender.reset();
-    }
-
     @Test
     void testNoCardsFound() {
         List<CardPersonal> result = sender.getGame().getCardsPersonal().getFiltered(

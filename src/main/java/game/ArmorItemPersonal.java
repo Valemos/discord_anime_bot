@@ -6,7 +6,7 @@ import game.shop.items.ArmorItem;
 import javax.persistence.*;
 
 @Entity
-public class ArmorItemPersonal implements DisplayableStats {
+public class ArmorItemPersonal implements DescriptionDisplayable {
 
     @Id
     private String id;
@@ -34,6 +34,11 @@ public class ArmorItemPersonal implements DisplayableStats {
         return id;
     }
 
+    @Override
+    public String getName() {
+        return original.getName();
+    }
+
     public ArmorItem getOriginal() {
         return original;
     }
@@ -43,25 +48,7 @@ public class ArmorItemPersonal implements DisplayableStats {
     }
 
     @Override
-    public String getNameStats() {
-        return original.getName() + " armor:" + original.getArmorValue();
-    }
-
-    @Override
-    public String getIdName() {
-        // TODO: finish
-        return null;
-    }
-
-    @Override
-    public String getIdNameStats() {
-        // TODO: finish
-        return null;
-    }
-
-    @Override
-    public String getFullDescription() {
-        // TODO: finish
-        return null;
+    public String getStatsString() {
+        return original.getStatsString();
     }
 }

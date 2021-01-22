@@ -13,4 +13,8 @@ public interface ComparableCard {
     static int comparatorPower(ComparableCard c1, ComparableCard c2){
         return Float.compare(c1.getStats().getPowerLevel(), c2.getStats().getPowerLevel());
     }
+
+    static int comparatorPrint(ComparableCard c1, ComparableCard c2) {
+        return Integer.compare(c1.getPrint(), c2.getPrint());
+    }
 }

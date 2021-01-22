@@ -5,7 +5,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
 import game.ArmorItemPersonal;
-import game.DisplayableStats;
+import game.DescriptionDisplayable;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
 import game.shop.AbstractShop;
@@ -44,39 +44,39 @@ public class BotMenuCreator {
 
     public static void menuForCardsTop(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards top",
-                DisplayableStats::getIdNameStats, selectedPage
+                DescriptionDisplayable::getIdNameStats, selectedPage
         );
     }
 
     public static void menuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Card ids list",
-                DisplayableStats::getIdName, selectedPage
+                DescriptionDisplayable::getIdName, selectedPage
         );
     }
 
     public static void menuForCardStats(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards list",
-                DisplayableStats::getNameStats, selectedPage
+                DescriptionDisplayable::getNameStats, selectedPage
         );
     }
 
     public static void menuForPersonalCardStats(List<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards collection",
-                DisplayableStats::getIdNameStats, selectedPage
+                DescriptionDisplayable::getIdNameStats, selectedPage
         );
     }
 
     public static void menuForItemStats(List<ArmorItemPersonal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(items, event, game, "Items list",
-                DisplayableStats::getNameStats, selectedPage
+                DescriptionDisplayable::getNameStats, selectedPage
         );
     }
 
-    private static void menuWithMapper(List<? extends DisplayableStats> cards,
+    private static void menuWithMapper(List<? extends DescriptionDisplayable> cards,
                                        CommandEvent event,
                                        AnimeCardsGame game,
                                        String title,
-                                       Function<DisplayableStats, String> mapper,
+                                       Function<DescriptionDisplayable, String> mapper,
                                        int selectedPage){
 
         if (cards.size() > 0){

@@ -1,19 +1,17 @@
 package game.cards;
 
-public interface DisplayableCard {
+public interface SearchableCard {
     CharacterInfo getCharacterInfo();
 
+    String getId();
     String getName();
-
     String getSeriesName();
 
-    String getId();
-
-    static boolean containsName(DisplayableCard c, String filterName){
+    static boolean containsName(SearchableCard c, String filterName){
         return String.valueOf(c.getName()).toLowerCase().contains(filterName.toLowerCase());
     }
 
-    static boolean containsSeries(DisplayableCard c, String filterSeries) {
+    static boolean containsSeries(SearchableCard c, String filterSeries) {
         return String.valueOf(c.getSeriesName()).toLowerCase().contains(filterSeries.toLowerCase());
     }
 }

@@ -6,7 +6,6 @@ import game.Player;
 import game.cooldown.CooldownSet;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import org.hibernate.Session;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -20,7 +19,7 @@ public class CardDropActivity {
     List<CardGlobal> cards;
 
     private Instant timeStarted;
-    private final Map<String, CardPersonal> fightingPlayerCards = new HashMap<>();
+    private final Map<CardGlobal, CardFight> cardFights = new HashMap<>();
 
     public CardDropActivity(List<CardGlobal> cards) {
         this.cards = cards;
@@ -43,28 +42,18 @@ public class CardDropActivity {
         return menu;
     }
 
-    public void finishFight(AnimeCardsGame game) {
-        Session dbSession = game.getDatabaseSession();
+    public void finishFights(AnimeCardsGame game) {
+        for (CardGlobal cardGlobal : cardFights.keySet()){
 
-        for (String playerId : fightingPlayerCards.keySet()){
+            CardFight cardFight = cardFights.get(cardGlobal);
 
-            CardPersonal card = fightingPlayerCards.get(playerId);
-            if(decidePlayerGetsCard(playerId, card)){
+            String winnerId = cardFight.findWinner();
+            CardPersonal cardPicked = cardFight.giveCardToWinner(game);
 
-                dbSession.beginTransaction();
-                Player player = game.getPlayer(playerId);
-                player.addCard(card);
-                dbSession.getTransaction().commit();
-
-                menu.notifyCardReceived(playerId, card);
-            }
+            menu.notifyCardReceived(winnerId, cardPicked);
         }
 
         menu.close();
-    }
-
-    private boolean decidePlayerGetsCard(String playerId, CardPersonal card) {
-        return card != null;
     }
 
     public void selectCard(MessageReactionAddEvent event, AnimeCardsGame game, int cardIndex) {
@@ -74,17 +63,25 @@ public class CardDropActivity {
         CooldownSet cooldowns = player.getCooldowns();
 
         if (cooldowns.getGrab().tryUse(now)){
-            fightForCard(now, game, player, cardIndex);
+            fightForCard(now, player, cardIndex);
         }else{
             event.getChannel().sendMessage(cooldowns.getGrab().getVerboseDescription(now)).queue();
         }
     }
 
-    private void fightForCard(Instant timePicked, AnimeCardsGame game, Player player, int cardIndex) {
+    private void fightForCard(Instant timePicked, Player player, int cardIndex) {
         float cardPickDelay = (float) Duration.between(timeStarted, timePicked).toMillis() / 1000;
 
-        CardPersonal card = game.pickPersonalCard(player, cards.get(cardIndex), cardPickDelay);
-        fightingPlayerCards.put(player.getId(), card);
+        CardGlobal card = cards.get(cardIndex);
+
+        CardFight currentFight = cardFights.getOrDefault(card, null);
+
+        if (currentFight == null) {
+            currentFight = new CardFight(card);
+            cardFights.put(card, currentFight);
+        }
+
+        currentFight.fight(player.getId(), cardPickDelay);
     }
 
     public void createMenu(MessageChannel channel, AnimeCardsGame game) {

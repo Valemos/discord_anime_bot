@@ -19,7 +19,7 @@ public class CardDropTimer extends TimerTask {
     @Override
     public void run() {
         if (cardDropManager.isElementExists(messageId)){
-            cardDropManager.getElement(messageId).finishFight(game);
+            cardDropManager.getElement(messageId).finishFights(game);
             cardDropManager.removeElement(messageId);
             cancel(); // finish timer execution
         }

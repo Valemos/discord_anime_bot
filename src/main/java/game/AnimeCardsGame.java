@@ -11,9 +11,7 @@ import game.contract.SendCardsContract;
 import game.materials.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
-import game.shop.items.AbstractShopItem;
 import game.shop.items.ArmorItem;
-import game.shop.items.ShopPowerUp;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
@@ -82,6 +80,7 @@ public class AnimeCardsGame {
     }
 
     private List<ArmorItem> getArmorItems() {
+        // TODO add loading from json
         return List.of(
                 new ArmorItem("Chainmail", 5, Map.of(Material.GOLD, 100)),
                 new ArmorItem("Armored Glove", 2, Map.of(Material.GOLD, 50)),
@@ -140,11 +139,11 @@ public class AnimeCardsGame {
         cardsGlobalManager.removeCard(card);
     }
 
-    public CardPersonal pickPersonalCard(Player player, CardGlobal cardGlobal, float pickDelay) {
+    public CardPersonal pickPersonalCard(String playerId, CardGlobal cardGlobal, float pickDelay) {
         dbSession.beginTransaction();
 
         cardGlobal = dbSession.load(CardGlobal.class, cardGlobal.getId());
-        player = dbSession.load(Player.class, player.getId());
+        Player player = dbSession.load(Player.class, playerId);
 
         cardGlobal.getStats().incrementCardPrint();
         CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
@@ -201,14 +200,9 @@ public class AnimeCardsGame {
     }
 
     public float exchangeCardForStock(CardPersonal card) {
-        dbSession.beginTransaction();
-
         StockValue cardStockValue = new StockValue(card);
-        dbSession.save(cardStockValue);
-
+        dbSession.persist(cardStockValue);
         cardsPersonalManager.removeCard(card);
-
-        dbSession.getTransaction().commit();
         return cardStockValue.getValue();
     }
 
