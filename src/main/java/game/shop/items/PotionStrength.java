@@ -1,18 +1,13 @@
 package game.shop.items;
 
 import game.materials.Material;
-import game.squadron.Squadron;
+import game.squadron.PowerUpType;
 
 import java.util.Map;
 
-public class PotionStrength extends ItemPowerUp {
-    public PotionStrength(String name, Map<Material, Integer> materials) {
-        super(name, materials);
-    }
+public class PotionStrength extends ShopPowerUp {
 
-    @Override
-    public float getAdditionalPower(Squadron owner) {
-        return 0;
+    public PotionStrength(Map<Material, Integer> materials) {
+        super(PowerUpType.STRENGTH, materials);
     }
-
 }

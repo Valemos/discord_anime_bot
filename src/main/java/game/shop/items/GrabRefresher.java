@@ -5,9 +5,9 @@ import game.materials.Material;
 
 import java.util.Map;
 
-public class GrabRefresher extends AbstractShopItem {
-    public GrabRefresher(String name, Map<Material, Integer> materials) {
-        super(name, materials);
+public class GrabRefresher extends PlayerActionItem {
+    public GrabRefresher(Map<Material, Integer> materials) {
+        super("Extra grab", materials);
     }
 
     @Override

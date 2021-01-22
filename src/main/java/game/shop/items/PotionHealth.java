@@ -2,16 +2,18 @@ package game.shop.items;
 
 import game.Player;
 import game.materials.Material;
+import game.squadron.Squadron;
 
 import java.util.Map;
 
-public class PotionHealth extends AbstractShopItem {
-    public PotionHealth(String name, Map<Material, Integer> materials) {
-        super(name, materials);
+public class PotionHealth extends PlayerActionItem {
+    public PotionHealth(Map<Material, Integer> materials) {
+        super("Health potion", materials);
     }
 
     @Override
     public void useFor(Player player) {
-        player.getSquadron().healMembers();
+        Squadron squadron = player.getSquadron();
+        if (squadron != null) squadron.healMembers();
     }
 }

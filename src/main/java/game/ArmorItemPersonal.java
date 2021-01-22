@@ -7,6 +7,8 @@ import javax.persistence.*;
 
 @Entity
 public class ArmorItemPersonal implements DisplayableStats {
+
+    @Id
     private String id;
 
     @OneToOne
@@ -28,7 +30,6 @@ public class ArmorItemPersonal implements DisplayableStats {
         this.id = id;
     }
 
-    @Id
     public String getId() {
         return id;
     }

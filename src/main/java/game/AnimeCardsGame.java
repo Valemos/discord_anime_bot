@@ -11,7 +11,9 @@ import game.contract.SendCardsContract;
 import game.materials.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
+import game.shop.items.AbstractShopItem;
 import game.shop.items.ArmorItem;
+import game.shop.items.ShopPowerUp;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
@@ -57,15 +59,9 @@ public class AnimeCardsGame {
 
         itemsShop = new ItemsShop();
 
-        List<ArmorItem> armorItems = getArmorItems();
-
-        dbSession.beginTransaction();
-        for(ArmorItem armor : armorItems){
-            dbSession.persist(armor);
-        }
-        dbSession.getTransaction().commit();
-
+        List<ArmorItem> armorItems = saveArmorItems(dbSession);
         armorShop = new ArmorShop(armorItems);
+
 
         contractsManager = new ContractsManager(dbSession, List.of(
                 SendCardsContract.class,
@@ -73,6 +69,16 @@ public class AnimeCardsGame {
                 MultiTradeContract.class
         ));
         cardDropManager = new CardDropManager(this, dbSession);
+    }
+
+    private List<ArmorItem> saveArmorItems(Session dbSession) {
+        List<ArmorItem> armorItems = getArmorItems();
+        dbSession.beginTransaction();
+        for(ArmorItem armor : armorItems){
+            dbSession.persist(armor);
+        }
+        dbSession.getTransaction().commit();
+        return armorItems;
     }
 
     private List<ArmorItem> getArmorItems() {

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public abstract class AbstractShop {
 
     protected final List<? extends AbstractShopItem> items;
-    AbstractShopItem itemBuying;
     private final String messageTitle;
 
     public AbstractShop(String messageTitle, List<? extends AbstractShopItem> items) {
@@ -53,15 +52,20 @@ public abstract class AbstractShop {
                 .findFirst().orElse(null);
     }
 
-    public AbstractShopItem getItemBuying() {
-        return itemBuying;
-    }
-
     public List<? extends AbstractShopItem> getItems() {
         return items;
     }
 
     public String getTitle() {
         return messageTitle;
+    }
+
+    @NotNull
+    public String getMessageCostIsHigh(AbstractShopItem item, Player player) {
+        return "cannot buy " + item.getName()
+                + "\nyou have:\n"
+                + player.getMaterials().getDescriptionMultiline()
+                + "\nItem costs:\n"
+                + item.getItemCost().getDescriptionMultiline();
     }
 }

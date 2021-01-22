@@ -26,11 +26,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.*;
 import game.materials.Material;
-import game.materials.MaterialsSet;
-import game.shop.items.AbstractShopItem;
-import game.shop.items.ItemPowerUp;
-import game.shop.items.ArmorItem;
-import game.squadron.SquadronPowerUp;
+import game.shop.items.*;
 import game.squadron.Squadron;
 import game.squadron.SquadronMember;
 import game.stocks.StockValue;
@@ -218,12 +214,8 @@ public class BotAnimeCards {
                 .addAnnotatedClass(StockValue.class)
                 .addAnnotatedClass(Squadron.class)
                 .addAnnotatedClass(SquadronMember.class)
-                .addAnnotatedClass(AbstractShopItem.class)
                 .addAnnotatedClass(ArmorItem.class)
                 .addAnnotatedClass(ArmorItemPersonal.class)
-                .addAnnotatedClass(ItemPowerUp.class)
-                .addAnnotatedClass(SquadronPowerUp.class)
-                .addAnnotatedClass(MaterialsSet.class)
                 .configure(configPath);
 
         ServiceRegistry reg = new StandardServiceRegistryBuilder()

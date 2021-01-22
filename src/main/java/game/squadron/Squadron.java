@@ -26,8 +26,8 @@ public class Squadron {
     @Embedded
     private PatrolActivity patrol;
 
-    @OneToMany(mappedBy = "owner")
-    private List<SquadronPowerUp> powerUps;
+    @ElementCollection
+    private List<PowerUpType> powerUps;
 
     @Transient
     public static final int sizeMax = 4;
@@ -70,12 +70,12 @@ public class Squadron {
         return squadronMembers;
     }
 
-    public List<SquadronPowerUp> getPowerUps() {
+    public List<PowerUpType> getPowerUps() {
         return powerUps;
     }
 
     public String getPowerUpsDescription(){
-        return powerUps.stream().map(SquadronPowerUp::getName).collect(Collectors.joining("\n"));
+        return powerUps.stream().map(PowerUpType::getName).collect(Collectors.joining("\n"));
     }
 
     public float getPowerLevel() {
@@ -86,11 +86,15 @@ public class Squadron {
             totalPowerLevel += cardHealth == HealthState.INJURED ? cardPowerLevel * 0.2 : cardPowerLevel;
         }
 
-        for (SquadronPowerUp powerUp : powerUps){
-            totalPowerLevel += powerUp.getAdditionalPower();
+        for (PowerUpType powerUp : powerUps){
+            totalPowerLevel += getAdditionalPower(powerUp, this);
         }
 
         return totalPowerLevel;
+    }
+
+    private float getAdditionalPower(PowerUpType powerUp, Squadron squadron) {
+        return 100; // TODO add power up logic
     }
 
     public void startPatrol(PatrolType patrolType, Instant time) {

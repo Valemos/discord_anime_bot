@@ -9,12 +9,12 @@ import java.util.Map;
 public class ItemsShop extends AbstractShop {
     public ItemsShop() {
         super("Power ups shop", List.of(
-                new DropRefresher(  "Extra drop",       Map.of(Material.GOLD,   500)),
-                new GrabRefresher(  "Extra grab",       Map.of(Material.GOLD,   300)),
-                new PotionHealth(   "Health potion",    Map.of(Material.DIAMOND,20)),
-                new PotionStrength( "Strength potion",  Map.of(Material.GOLD,   100)),
-                new PotionDexterity("Dexterity potion", Map.of(Material.GOLD,   100)),
-                new PotionWisdom(   "Wisdom potion",    Map.of(Material.GOLD,   100))
+                new DropRefresher(  Map.of(Material.GOLD,   500)),
+                new GrabRefresher(  Map.of(Material.GOLD,   300)),
+                new PotionHealth(   Map.of(Material.DIAMOND,20)),
+                new PotionStrength( Map.of(Material.GOLD,   100)),
+                new PotionDexterity(Map.of(Material.GOLD,   100)),
+                new PotionWisdom(   Map.of(Material.GOLD,   100))
         ));
 
         assignIndices(items);

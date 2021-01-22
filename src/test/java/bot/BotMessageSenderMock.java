@@ -69,6 +69,7 @@ public class BotMessageSenderMock {
     CommandClientImpl spyCommandClient;
 
     private BotAnimeCards spyBot;
+    private AnimeCardsGame spyGame;
 
     private AbstractCommand<?>[] spyCommands;
 
@@ -78,10 +79,8 @@ public class BotMessageSenderMock {
     public CardGlobal cardGlobal1;
 
 
-
     public BotMessageSenderMock() throws LoginException {
         MockitoAnnotations.initMocks(this);
-
         spyBot = initSpyBot();
         initBotSettings();
     }
@@ -91,6 +90,9 @@ public class BotMessageSenderMock {
 
         spyBot = Mockito.spy(new BotAnimeCards(mEventWaiter));
         spyBot.loadSettings("hibernate_test.cfg.xml");
+        spyGame = spy(spyBot.getGame());
+        spyBot.setGame(spyGame);
+
         spyOnCommands();
         setDropTimerMock();
 
@@ -120,7 +122,7 @@ public class BotMessageSenderMock {
     }
 
     private void initBotSettings() {
-        spyBot.loadTestGameSettings(spyBot.getGame());
+        spyBot.loadTestGameSettings(spyGame);
         tester1 = spyBot.getGame().getPlayer("409754559775375371");
         tester2 = spyBot.getGame().getPlayer("347162620996091904");
 
@@ -237,7 +239,7 @@ public class BotMessageSenderMock {
 
 
     public AnimeCardsGame getGame() {
-        return spyBot.getGame();
+        return spyGame;
     }
 
     public void resetGame() {
