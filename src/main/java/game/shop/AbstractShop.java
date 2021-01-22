@@ -1,5 +1,6 @@
 package game.shop;
 
+import game.AnimeCardsGame;
 import game.shop.items.AbstractShopItem;
 import game.Player;
 import game.materials.MaterialsSet;
@@ -18,14 +19,14 @@ public abstract class AbstractShop {
         this.messageTitle = messageTitle;
     }
 
-    public boolean tryBuyItem(Player player, @NotNull AbstractShopItem item) {
+    public boolean tryBuyItem(AnimeCardsGame game, Player player, @NotNull AbstractShopItem item) {
 
         MaterialsSet playerMaterials = player.getMaterials();
         MaterialsSet itemCost = item.getItemCost();
 
         if (playerMaterials.containsEnough(itemCost)){
             player.getMaterials().subtractMaterials(itemCost);
-            item.useFor(player);
+            item.useFor(game, player);
             return true;
         }
         return false;

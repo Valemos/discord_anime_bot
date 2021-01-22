@@ -27,7 +27,7 @@ public class Squadron {
     private PatrolActivity patrol;
 
     @ElementCollection
-    private List<PowerUpType> powerUps;
+    private List<PowerUpType> powerUps = new ArrayList<>();
 
     @Transient
     public static final int sizeMax = 4;
@@ -72,6 +72,10 @@ public class Squadron {
 
     public List<PowerUpType> getPowerUps() {
         return powerUps;
+    }
+
+    public void addPowerUp(PowerUpType powerUp) {
+        powerUps.add(powerUp);
     }
 
     public String getPowerUpsDescription(){

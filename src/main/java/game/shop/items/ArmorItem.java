@@ -1,10 +1,12 @@
 package game.shop.items;
 
 import bot.ShortUUID;
+import game.AnimeCardsGame;
 import game.ArmorItemPersonal;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
+import org.hibernate.Session;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -36,8 +38,16 @@ public class ArmorItem extends AbstractShopItem {
     }
 
     @Override
-    public void useFor(Player player) {
-        player.getArmorItems().add(new ArmorItemPersonal(this));
+    public void useFor(AnimeCardsGame game, Player player) {
+        Session s = game.getDatabaseSession();
+        s.beginTransaction();
+
+        ArmorItemPersonal itemPersonal = new ArmorItemPersonal(this);
+        s.persist(itemPersonal);
+        player = s.load(Player.class, player.getId());
+        player.getArmorItems().add(itemPersonal);
+
+        s.getTransaction().commit();
     }
 
     @PrePersist

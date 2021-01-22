@@ -2,11 +2,11 @@ package bot.commands.user;
 
 import bot.BotMessageSenderMock;
 import bot.commands.user.carddrop.CardDropCommand;
+import bot.commands.user.shop.MessageSenderTester;
 import bot.menu.MenuEmoji;
 import game.Player;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,23 +14,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CardDropCommandTest {
-
-    static BotMessageSenderMock sender;
-
-    @BeforeAll
-    static void setSender() throws Exception {
-        sender = new BotMessageSenderMock();
-    }
+class CardDropCommandTest extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {
         sender.reset();
     }
 
-    private Player tester(BotMessageSenderMock sender) {
-        return sender.getGame().getPlayer(sender.tester1.getId());
-    }
 
     @Test
     void testDropCommandHandled() {
@@ -50,18 +40,18 @@ class CardDropCommandTest {
 
     @Test
     void testCardGrabbedByPlayer() {
-        List<CardPersonal> prevCollection = List.copyOf(tester(sender).getCards());
+        List<CardPersonal> prevCollection = List.copyOf(tester().getCards());
 
         String messageId = "111";
-        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), messageId);
+        sender.sendAndCaptureMessage("#drop", tester().getId(), messageId);
         sender.assertCommandHandled(CardDropCommand.class);
         List<CardGlobal> dropped = sender.getGame().getDropManager().getCards(messageId);
 
 
-        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
         sender.finishDropTimer();
 
-        List<CardPersonal> newCollection = tester(sender).getCards();
+        List<CardPersonal> newCollection = tester().getCards();
 
         assertNotEquals(newCollection, prevCollection);
 
@@ -74,36 +64,36 @@ class CardDropCommandTest {
     @Test
     void testCooldown() {
 
-        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "11");
+        sender.sendAndCaptureMessage("#drop", tester().getId(), "11");
         assertNotNull(sender.getGame().getDropManager().getCards("11"));
 
-        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "15");
+        sender.sendAndCaptureMessage("#drop", tester().getId(), "15");
         assertNull(sender.getGame().getDropManager().getCards("15"));
 
-        tester(sender).getCooldowns().getDrop().setUsed(null);
+        tester().getCooldowns().getDrop().setUsed(null);
 
-        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), "12");
+        sender.sendAndCaptureMessage("#drop", tester().getId(), "12");
         assertNotNull(sender.getGame().getDropManager().getCards("12"));
     }
 
     @Test
     void tryGrabMultipleCharacters() {
-        int prevSize = tester(sender).getCards().size();
+        int prevSize = tester().getCards().size();
 
         String messageId = "111";
-        sender.sendAndCaptureMessage("#drop", tester(sender).getId(), messageId);
+        sender.sendAndCaptureMessage("#drop", tester().getId(), messageId);
         List<CardGlobal> dropped = sender.getGame().getDropManager().getCards(messageId);
 
-        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
-        tester(sender).getCooldowns().reset();
-        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.ONE);
-        tester(sender).getCooldowns().reset();
-        sender.chooseDropMenuReaction(messageId, tester(sender).getId(), MenuEmoji.TWO);
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
+        tester().getCooldowns().reset();
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
+        tester().getCooldowns().reset();
+        sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.TWO);
 
         sender.finishDropTimer();
 
 
-        List<CardPersonal> collection = tester(sender).getCards();
+        List<CardPersonal> collection = tester().getCards();
         CardPersonal card1 = collection.get(collection.size() - 1);
         assertEquals(1, collection.size() - prevSize);
 

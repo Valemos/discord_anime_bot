@@ -1,10 +1,10 @@
 package game.shop.items;
 
+import game.AnimeCardsGame;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
 import game.squadron.PowerUpType;
-import game.squadron.Squadron;
 
 import java.util.Map;
 
@@ -18,10 +18,13 @@ public abstract class ShopPowerUp extends AbstractShopItem {
     }
 
     @Override
-    public void useFor(Player player) {
+    public void useFor(AnimeCardsGame game, Player player) {
         if (player.getSquadron() != null){
-            player.getSquadron().getPowerUps().add(powerUpType);
+            player.getSquadron().addPowerUp(powerUpType);
         }
     }
 
+    public PowerUpType getType() {
+        return powerUpType;
+    }
 }

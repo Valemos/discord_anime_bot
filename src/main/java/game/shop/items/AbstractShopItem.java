@@ -1,12 +1,20 @@
 package game.shop.items;
 
+import game.AnimeCardsGame;
 import game.Player;
+import game.materials.Material;
 import game.materials.MaterialsSet;
+
+import java.util.Map;
 
 public abstract class AbstractShopItem {
     protected String id;
     protected String name;
     protected MaterialsSet itemCost;
+
+    public AbstractShopItem(String name, Map<Material, Integer> materials) {
+        this(null, name, new MaterialsSet(materials));
+    }
 
     public AbstractShopItem(String id, String name, MaterialsSet itemCost) {
         this.id = id;
@@ -14,7 +22,7 @@ public abstract class AbstractShopItem {
         this.itemCost = itemCost;
     }
 
-    public abstract void useFor(Player player);
+    public abstract void useFor(AnimeCardsGame game, Player player);
 
     public String getId() {
         return id;

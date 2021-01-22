@@ -1,25 +1,16 @@
 package bot.commands.user.inventory;
 
-import bot.BotMessageSenderMock;
 import bot.commands.SortingType;
+import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardPersonal;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ShowCollectionCommandTest {
-
-
-    static BotMessageSenderMock sender;
-
-    @BeforeAll
-    static void setSender() throws Exception {
-        sender = new BotMessageSenderMock();
-    }
+class ShowCollectionCommandTest extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {

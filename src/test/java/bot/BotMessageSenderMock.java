@@ -277,4 +277,8 @@ public class BotMessageSenderMock {
 
         menu.hReactionAddEvent(getReactionEventMock(emoji), getGame());
     }
+
+    public Player tester() {
+        return spyBot.getGame().getPlayer(tester1.getId());
+    }
 }

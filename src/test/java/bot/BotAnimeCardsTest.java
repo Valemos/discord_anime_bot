@@ -1,6 +1,7 @@
 package bot;
 
 import bot.commands.user.DailyCommand;
+import bot.commands.user.shop.MessageSenderTester;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
@@ -10,14 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BotAnimeCardsTest {
-
-    static BotMessageSenderMock sender;
-
-    @BeforeAll
-    static void setSender() throws Exception {
-        sender = new BotMessageSenderMock();
-    }
+class BotAnimeCardsTest extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {

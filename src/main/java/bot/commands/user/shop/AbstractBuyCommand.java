@@ -21,7 +21,7 @@ public abstract class AbstractBuyCommand extends AbstractCommand<BuyItemArgument
             return;
         }
 
-        if (shop.tryBuyItem(player, item)){
+        if (shop.tryBuyItem(game, player, item)){
             sendMessage(event, String.format("you bought \"%s\"", item.getName()));
         }else{
             sendMessage(event, shop.getMessageCostIsHigh(item, player)

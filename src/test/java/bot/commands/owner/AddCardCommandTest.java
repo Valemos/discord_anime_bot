@@ -1,22 +1,13 @@
 package bot.commands.owner;
 
-import bot.BotMessageSenderMock;
+import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardGlobal;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddCardCommandTest {
-
-
-    static BotMessageSenderMock sender;
-
-    @BeforeAll
-    static void setSender() throws Exception {
-        sender = new BotMessageSenderMock();
-    }
+class AddCardCommandTest  extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {
