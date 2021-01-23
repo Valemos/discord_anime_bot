@@ -26,8 +26,8 @@ class BuyArmorCommandTest extends MessageSenderTester {
     @SuppressWarnings("unchecked")
     @BeforeEach
     void setUp() {
-        spyShop = spy(sender.getGame().getArmorShop());
-        doReturn(spyShop).when(sender.getGame()).getArmorShop();
+        spyShop = spy(game().getArmorShop());
+        doReturn(spyShop).when(game()).getArmorShop();
         items = (List<ArmorItem>) spyShop.getItems();
 
         itemCaptor = ArgumentCaptor.forClass(AbstractShopItem.class);

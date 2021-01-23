@@ -30,7 +30,7 @@ public class Squadron {
     public static final int sizeMax = 4;
 
     @OneToMany(mappedBy = "assignedSquadron")
-    List<CardPersonal> squadronMembers = new ArrayList<>();
+    Set<CardPersonal> squadronMembers = new HashSet<>();
 
     public Squadron() {
     }
@@ -78,11 +78,11 @@ public class Squadron {
         return squadronMembers.size() >= sizeMax;
     }
 
-    public List<CardPersonal> getMembers() {
+    public Set<CardPersonal> getMembers() {
         return squadronMembers;
     }
 
-    public void setMembers(List<CardPersonal> squadronMembers) {
+    public void setMembers(Set<CardPersonal> squadronMembers) {
         this.squadronMembers = squadronMembers;
     }
 

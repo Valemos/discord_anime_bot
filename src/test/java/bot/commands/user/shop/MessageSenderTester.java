@@ -1,7 +1,9 @@
 package bot.commands.user.shop;
 
 import bot.BotMessageSenderMock;
+import game.AnimeCardsGame;
 import game.Player;
+import game.cards.CardPersonal;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -24,11 +26,19 @@ public class MessageSenderTester {
         return sender.tester();
     }
 
+    protected AnimeCardsGame game() {
+        return sender.getGame();
+    }
+
     protected void send(String message){
         sender.send(message);
     }
 
     protected void send(String message, String userId, String messageId){
         sender.send(message, userId, messageId);
+    }
+
+    protected CardPersonal getTesterCard(int index) {
+        return tester().getCards().get(index);
     }
 }

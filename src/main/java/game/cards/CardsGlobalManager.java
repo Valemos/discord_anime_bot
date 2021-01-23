@@ -18,7 +18,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
     public void addCard(CardGlobal card) {
         dbSession.beginTransaction();
 
-        CardGlobal cardFound = findEqualCharacterCard(card);
+        CardGlobal cardFound = getByCharacter(card.getCharacterInfo());
         if (cardFound != null){
             card.setCardInfo(cardFound);
             dbSession.getTransaction().commit();
@@ -37,22 +37,27 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         dbSession.getTransaction().commit();
     }
 
-    private CardGlobal findEqualCharacterCard(CardGlobal card) {
+    public CardGlobal getByCharacter(CharacterInfo character) {
         CriteriaBuilder cb = dbSession.getCriteriaBuilder();
         CriteriaQuery<CardGlobal> q = cb.createQuery(CardGlobal.class);
         Root<CardGlobal> root = q.from(CardGlobal.class);
 
+        Predicate characterEquality;
+        if(character.getId() == -1){
+            characterEquality = cb.equal(cb.lower(root.get("characterInfo").get("name")),
+                                         character.getName().toLowerCase());
+        }else{
+            characterEquality = cb.equal(root.get("characterInfo").get("id"), character.getId());
+        }
+        
         try {
-            return dbSession.createQuery(
-                    q.select(root).where(
-                            cb.equal(cb.lower(root.get("characterInfo").get("name")),
-                                    String.valueOf(card.getName()).toLowerCase())
-                    )
-            ).getSingleResult();
+            return dbSession.createQuery(q.select(root).where(characterEquality)).getSingleResult();
         }catch(NoResultException | NonUniqueResultException e){
             return null;
         }
     }
+
+
 
     private SeriesInfo findMatchingSeries(SeriesInfo series) {
         CriteriaBuilder cb = dbSession.getCriteriaBuilder();

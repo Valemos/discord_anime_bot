@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,13 +24,13 @@ class PatrolCommandTest extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {
-        Squadron squadron = sender.getGame().createNewSquadron(tester());
+        Squadron squadron = game().createNewSquadron(tester());
 
         spySquadron = spy(squadron);
         tester().setSquadron(spySquadron);
 
-        spySession = spy(sender.getGame().getDatabaseSession());
-        sender.getGame().setDatabaseSession(spySession);
+        spySession = spy(game().getDatabaseSession());
+        game().setDatabaseSession(spySession);
         doAnswer(invocation -> {
             Squadron tempSquadron = new Squadron();
             tempSquadron.setId(spySquadron.getId());
@@ -54,13 +55,9 @@ class PatrolCommandTest extends MessageSenderTester {
         spySession.getTransaction().commit();
     }
 
-    private CardPersonal getTesterCard(int index) {
-        return tester().getCards().get(index);
-    }
-
     @Test
     void testPatrolNotStartedForEmptySquadron() {
-        spySquadron.setMembers(new ArrayList<>());
+        spySquadron.setMembers(new HashSet<>());
         send("#patrol overworld");
         verify(spySquadron, never()).startPatrol(any(), any());
     }
@@ -99,7 +96,7 @@ class PatrolCommandTest extends MessageSenderTester {
     void testCannotStopPatrol_whenNotActive() {
         assertFalse(tester().getSquadron().getPatrol().isStarted());
         send("#patrolstop");
-        verify(sender.getGame(), never()).finishPatrol(any(), any());
+        verify(game(), never()).finishPatrol(any(), any());
     }
 
     @Test
@@ -109,7 +106,7 @@ class PatrolCommandTest extends MessageSenderTester {
         assertTrue(tester().getSquadron().getPatrol().isStarted());
 
         send("#patrolstop");
-        verify(sender.getGame()).finishPatrol(any(), any());
+        verify(game()).finishPatrol(any(), any());
     }
 
     @Test
@@ -134,7 +131,7 @@ class PatrolCommandTest extends MessageSenderTester {
 
         send("#squadronadd 12345678 " + getTesterCard(0).getId());
 
-        verify(sender.getGame(), never()).addSquadronMember(any(), any());
+        verify(game(), never()).addSquadronMember(any(), any());
     }
 
     @Test
@@ -144,7 +141,7 @@ class PatrolCommandTest extends MessageSenderTester {
 
         send("#squadronremove 12345678 " + getTesterCard(0).getId());
 
-        verify(sender.getGame(), never()).removeSquadronMembers(any(), any());
+        verify(game(), never()).removeSquadronMembers(any(), any());
     }
 
     @Test

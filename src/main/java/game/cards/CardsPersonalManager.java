@@ -15,7 +15,8 @@ public class CardsPersonalManager extends AbstractCardsManager<CardPersonal> {
 
     public void removeCard(CardPersonal card) {
         dbSession.beginTransaction();
-        dbSession.delete(card);
+        card.getOwner().getCards().remove(card);
+        dbSession.remove(card);
         dbSession.getTransaction().commit();
     }
 

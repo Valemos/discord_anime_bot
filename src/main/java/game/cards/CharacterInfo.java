@@ -7,7 +7,7 @@ public class CharacterInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private int id = -1;
     private String name;
     private String imageUrl;
 

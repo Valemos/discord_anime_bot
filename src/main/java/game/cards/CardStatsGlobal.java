@@ -68,6 +68,10 @@ public class CardStatsGlobal implements CardStats {
         cardFightsTotal++;
     }
 
+    public void incrementCardBurned() {
+        amountCardsBurned++;
+    }
+
     public int getAmountCardsPrinted() {
         return amountCardsPrinted;
     }

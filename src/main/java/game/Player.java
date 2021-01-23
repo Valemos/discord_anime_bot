@@ -24,13 +24,13 @@ public class Player {
     private final MaterialsSet materials = new MaterialsSet();
 
     @OneToMany(mappedBy="owner")
-    private List<StockValue> stocks;
+    private List<StockValue> stocks = new ArrayList<>();
 
     @OneToOne
     private Squadron squadron;
 
     @OneToMany
-    private List<ArmorItemPersonal> armorItems = new ArrayList<>();
+    private final List<ArmorItemPersonal> armorItems = new ArrayList<>();
 
     @Embedded
     private CooldownSet cooldowns = new CooldownSet();

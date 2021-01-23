@@ -15,6 +15,7 @@ import game.shop.items.ArmorItem;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
 import game.stocks.StockValue;
+import game.stocks.StockValueId;
 import game.wishlist.WishList;
 import game.wishlist.WishListsManager;
 import net.dv8tion.jda.api.entities.User;
@@ -25,9 +26,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
@@ -214,10 +213,32 @@ public class AnimeCardsGame {
     }
 
     public float exchangeCardForStock(CardPersonal card) {
-        StockValue cardStockValue = new StockValue(card);
-        dbSession.persist(cardStockValue);
+        if (burnCard(card)){
+            dbSession.beginTransaction();
+            StockValue cardStock = dbSession.get(StockValue.class, new StockValueId(
+                                                        card.getOwner().getId(),
+                                                        card.getCharacterInfo().getSeries().getId()));
+            if (cardStock != null){
+                cardStock.addCardValue(card);
+                dbSession.merge(cardStock);
+            }else{
+                cardStock = new StockValue(card);
+                dbSession.save(cardStock);
+            }
+            dbSession.getTransaction().commit();
+
+            return cardStock.getValue();
+        }
+        return 0;
+    }
+
+    private boolean burnCard(CardPersonal card) {
+        CardGlobal cardGlobal = cardsGlobalManager.getByCharacter(card.getCharacterInfo());
+        if (cardGlobal == null) return false;
+
+        cardGlobal.getStats().incrementCardBurned();
         cardsPersonalManager.removeCard(card);
-        return cardStockValue.getValue();
+        return true;
     }
 
     public void addToWishlist(Player player, CardGlobal card) {
@@ -267,17 +288,17 @@ public class AnimeCardsGame {
 
         dbSession.beginTransaction();
 
-        List<CardPersonal> newMembers = new ArrayList<>(squadron.getMembers().size());
+        Set<CardPersonal> newMembers = new HashSet<>(squadron.getMembers().size());
 
         // delete all members with matching id
         // else move them to new members list
         long deletedAmount = squadron.getMembers().stream()
                 .filter(member -> {
                     int memberIdIndex = memberIds.indexOf(member.getId());
-                    if (memberIdIndex != -1) {
+                    if (memberIdIndex != -1) { // member found, delete
                         memberIds.remove(memberIdIndex);
                         return true;
-                    } else {
+                    } else { // member not found, save to new members list
                         newMembers.add(member);
                         return false;
                     }

@@ -7,15 +7,14 @@ import game.cards.SeriesInfo;
 import javax.persistence.*;
 
 @Entity
+@IdClass(StockValueId.class)
 public class StockValue {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-
     @ManyToOne
     private Player owner;
 
+    @Id
     @OneToOne
     private SeriesInfo series;
 
@@ -27,19 +26,16 @@ public class StockValue {
     public StockValue(CardPersonal card) {
         series = card.getCharacterInfo().getSeries();
         owner = card.getOwner();
+        owner.getStocks().add(this);
         value = getCardValue(card);
+    }
+
+    public void addCardValue(CardPersonal card) {
+        value += getCardValue(card);
     }
 
     public float getCardValue(CardPersonal card) {
         return card.getPowerLevel();
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public Player getOwner() {

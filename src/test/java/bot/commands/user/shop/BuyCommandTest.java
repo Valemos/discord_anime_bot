@@ -28,8 +28,8 @@ class BuyCommandTest extends MessageSenderTester{
     @BeforeEach
     void setUp() {
 
-        spyShop = spy(sender.getGame().getItemsShop());
-        doReturn(spyShop).when(sender.getGame()).getItemsShop();
+        spyShop = spy(game().getItemsShop());
+        doReturn(spyShop).when(game()).getItemsShop();
         items = spyShop.getItems();
 
         itemCaptor = ArgumentCaptor.forClass(AbstractShopItem.class);
@@ -76,7 +76,7 @@ class BuyCommandTest extends MessageSenderTester{
 
     @Test
     void testSquadronCreatedEmpty() {
-        Squadron squadron = sender.getGame().getOrCreateSquadron(sender.tester2);
+        Squadron squadron = game().getOrCreateSquadron(sender.tester2);
 
         assertTrue(squadron.getMembers().isEmpty());
         assertTrue(squadron.getPowerUps().isEmpty());
@@ -84,8 +84,8 @@ class BuyCommandTest extends MessageSenderTester{
 
     @Test
     void testSquadronTheSameOnGameQuery() {
-        assertSame(sender.getGame().getOrCreateSquadron(tester()),
-                    sender.getGame().getOrCreateSquadron(tester()));
+        assertSame(game().getOrCreateSquadron(tester()),
+                    game().getOrCreateSquadron(tester()));
     }
 
     @Test
@@ -124,7 +124,7 @@ class BuyCommandTest extends MessageSenderTester{
     }
 
     private Squadron getSquadron() {
-        return sender.getGame().getOrCreateSquadron(tester());
+        return game().getOrCreateSquadron(tester());
     }
 
     private void injureSquadron(Squadron squadron) {

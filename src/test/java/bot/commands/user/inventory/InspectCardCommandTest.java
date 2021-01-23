@@ -48,18 +48,18 @@ class InspectCardCommandTest extends MessageSenderTester {
 
     @Test
     void testFindGlobalCards() {
-        CardGlobal card1 = sender.getGame().getCardGlobalUnique("riko", null);
+        CardGlobal card1 = game().getCardGlobalUnique("riko", null);
         assertNotNull(card1);
 
         assertEquals(sender.cardGlobal1, card1);
 
-        card1 = sender.getGame().getCardGlobalUnique("haruhi suzum", null);
-        CardGlobal card2 = sender.getGame().getCardGlobalUnique("haruhi suzum", "haruhi no");
+        card1 = game().getCardGlobalUnique("haruhi suzum", null);
+        CardGlobal card2 = game().getCardGlobalUnique("haruhi suzum", "haruhi no");
 
         assertEquals(card1, card2);
 
-        assertNull(sender.getGame().getCardGlobalUnique("unknown card", null));
-        assertNull(sender.getGame().getCardGlobalUnique("unknown card", ""));
-        assertNull(sender.getGame().getCardGlobalUnique("", "unknown series"));
+        assertNull(game().getCardGlobalUnique("unknown card", null));
+        assertNull(game().getCardGlobalUnique("unknown card", ""));
+        assertNull(game().getCardGlobalUnique("", "unknown series"));
     }
 }

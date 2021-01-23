@@ -24,6 +24,7 @@ public class ExchangeForStockCommand extends AbstractCommand<MultipleIdentifiers
             if(card != null && card.getOwner().equals(player)){
 
                 float seriesStockValue = game.exchangeCardForStock(card);
+
                 messageBuilder
                         .append(card.getCharacterInfo().getFullName())
                         .append(" exchanged for ")
