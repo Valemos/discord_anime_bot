@@ -168,6 +168,7 @@ public class BotMessageSenderMock {
 
     public void resetMocks() {
         Mockito.reset(spyCommands);
+        Mockito.reset(spyGame, spyBot);
         Mockito.reset(mMessageEvent, mUser, mMessageChannel, mTextChannel, mMessageAction);
         initMessageEventMock();
     }

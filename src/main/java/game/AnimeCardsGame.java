@@ -31,7 +31,7 @@ import java.util.Map;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
-    private final Session dbSession;
+    private Session dbSession;
 
     private ItemsShop itemsShop;
     private ArmorShop armorShop;
@@ -93,6 +93,10 @@ public class AnimeCardsGame {
         return dbSession;
     }
 
+    public void setDatabaseSession(Session dbSession) {
+        this.dbSession = dbSession;
+    }
+
     public EventWaiter getEventWaiter() {
         return eventWaiter;
     }
@@ -141,19 +145,21 @@ public class AnimeCardsGame {
     }
 
     public CardPersonal pickPersonalCard(String playerId, CardGlobal cardGlobal, float pickDelay) {
-        dbSession.beginTransaction();
-
         cardGlobal = dbSession.load(CardGlobal.class, cardGlobal.getId());
         Player player = dbSession.load(Player.class, playerId);
-
         cardGlobal.getStats().incrementCardPrint();
-        CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
-        player.addCard(card);
 
-        dbSession.save(card);
-        dbSession.getTransaction().commit();
+        CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
+        savePersonalCard(player, card);
 
         return card;
+    }
+
+    public void savePersonalCard(Player player, CardPersonal card) {
+        dbSession.beginTransaction();
+        player.addCard(card);
+        dbSession.save(card);
+        dbSession.getTransaction().commit();
     }
 
     private CardPersonal getPersonalCardForDelay(CardGlobal card, float delay) {
@@ -179,28 +185,31 @@ public class AnimeCardsGame {
     @NotNull
     public Squadron getOrCreateSquadron(Player player) {
         Squadron squadron = player.getSquadron();
-        if(squadron == null) squadron = createSquadron(player);
-        return squadron;
+        return squadron != null ? squadron : createNewSquadron(player);
     }
 
     @NotNull
-    private Squadron createSquadron(Player player) {
-        Squadron squadron;
+    public Squadron createNewSquadron(Player player) {
+        Squadron squadron = new Squadron();
         dbSession.beginTransaction();
 
-        squadron = new Squadron();
-        player.setSquadron(squadron);
-
-        dbSession.save(squadron);
-        dbSession.persist(player);
+        if(player.getSquadron() != null){
+            squadron.setId(player.getSquadron().getId());
+            player.setSquadron(squadron);
+            dbSession.merge(squadron);
+        }else{
+            player.setSquadron(squadron);
+            dbSession.save(squadron);
+        }
 
         dbSession.getTransaction().commit();
         return squadron;
     }
 
     public void createNewPatrol(Player player, PatrolType patrolType, Instant time) {
-        if (player.getSquadron() != null && !player.getSquadron().isEmpty()){
+        if (!player.getSquadron().isEmpty()){
             player.getSquadron().startPatrol(patrolType, time);
+            dbSession.merge(player.getSquadron());
         }
     }
 
@@ -239,21 +248,19 @@ public class AnimeCardsGame {
     public MaterialsSet finishPatrol(Squadron squadron, Instant time) {
         dbSession.beginTransaction();
         MaterialsSet materials = squadron.finishPatrol(time);
-
-        dbSession.persist(squadron);
-        dbSession.persist(squadron.getOwner());
-
+        dbSession.merge(squadron);
         dbSession.getTransaction().commit();
         return materials;
     }
 
     public void addSquadronMember(Player player, CardPersonal card) {
+        dbSession.beginTransaction();
         player.getSquadron().addMember(card);
-        dbSession.persist(player.getSquadron());
+        dbSession.merge(card);
+        dbSession.getTransaction().commit();
     }
 
-    public boolean removeSquadronMembers(Player player, List<String> memberIds) {
-        Squadron squadron = getOrCreateSquadron(player);
+    public boolean removeSquadronMembers(Squadron squadron, List<String> memberIds) {
         if(squadron.isEmpty()){
             return false;
         }
@@ -263,22 +270,23 @@ public class AnimeCardsGame {
         List<CardPersonal> newMembers = new ArrayList<>(squadron.getMembers().size());
 
         // delete all members with matching id
-        // else move them to new list
+        // else move them to new members list
         long deletedAmount = squadron.getMembers().stream()
                 .filter(member -> {
                     int memberIdIndex = memberIds.indexOf(member.getId());
                     if (memberIdIndex != -1) {
-                        newMembers.add(member);
                         memberIds.remove(memberIdIndex);
+                        return true;
+                    } else {
+                        newMembers.add(member);
                         return false;
                     }
-                    return true;
                 })
                 .peek(dbSession::delete)
                 .count();
 
         squadron.setMembers(newMembers);
-        dbSession.persist(squadron);
+        dbSession.merge(squadron);
 
         dbSession.getTransaction().commit();
 

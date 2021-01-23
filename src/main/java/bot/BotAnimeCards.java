@@ -259,6 +259,7 @@ public class BotAnimeCards {
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x",
                         new CardStatsGlobal(1000, 80, 1300, Charisma.NEUTRAL)));
 
+        tester1.getCards().clear();
         for (CardGlobal card : cards) {
             game.addCard(card);
             game.pickPersonalCard(tester1.getId(), card, 1);

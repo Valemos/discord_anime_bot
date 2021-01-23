@@ -4,8 +4,6 @@ import game.Player;
 import game.cards.CardPersonal;
 import game.cards.ComparableCard;
 import game.materials.MaterialsSet;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -17,14 +15,13 @@ public class Squadron {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "squadronId")
     private long id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "squadron")
     private Player owner;
 
     @Embedded
-    private PatrolActivity patrol;
+    private Patrol patrol = new Patrol();
 
     @ElementCollection
     private List<PowerUpType> powerUps = new ArrayList<>();
@@ -42,12 +39,24 @@ public class Squadron {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public Player getOwner() {
         return owner;
     }
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public Patrol getPatrol() {
+        return patrol;
+    }
+
+    public void setPatrol(Patrol patrol) {
+        this.patrol = patrol;
     }
 
     public List<CardPersonal> getSortedMembers() {
@@ -81,6 +90,10 @@ public class Squadron {
         return powerUps;
     }
 
+    public void setPowerUps(List<PowerUpType> powerUps) {
+        this.powerUps = powerUps;
+    }
+
     public void addPowerUp(PowerUpType powerUp) {
         powerUps.add(powerUp);
     }
@@ -109,12 +122,13 @@ public class Squadron {
     }
 
     public void startPatrol(PatrolType patrolType, Instant time) {
-        patrol = new PatrolActivity(patrolType, 60 * 60 * 1000);
+        patrol = new Patrol(patrolType, 60 * 60 * 1000);
         patrol.setStarted(time);
     }
 
     public MaterialsSet finishPatrol(Instant time) {
         patrol.setFinished(time);
+
         MaterialsSet materials = patrol.getMaterialsFound(this);
         owner.addMaterials(materials);
 
@@ -125,5 +139,13 @@ public class Squadron {
         for (CardPersonal member : squadronMembers){
             member.setHealthState(HealthState.HEALTHY);
         }
+    }
+
+    public String getDescription() {
+        return getSortedMembers().stream()
+                .map(c -> c.getIdName() + " ("+c.getHealthState().toString()+')')
+                .collect(Collectors.joining("\n"))
+                + "\nPower ups:\n"
+                + getPowerUpsDescription();
     }
 }

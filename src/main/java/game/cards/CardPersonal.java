@@ -28,7 +28,7 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
     private Squadron assignedSquadron;
 
     @Enumerated(EnumType.ORDINAL)
-    private HealthState healthState;
+    private HealthState healthState = HealthState.HEALTHY;
 
 
     public CardPersonal() {

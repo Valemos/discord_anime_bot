@@ -1,5 +1,10 @@
 package game.squadron;
 
 public enum HealthState {
-    HEALTHY, INJURED
+    HEALTHY, INJURED;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

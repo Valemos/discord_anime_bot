@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.squadron.PatrolType;
 import game.squadron.Squadron;
+import org.jetbrains.annotations.NotNull;
 import org.kohsuke.args4j.Argument;
 
 import java.time.Instant;
@@ -40,7 +41,13 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
         if (squadron.isEmpty()){
             sendMessage(event, "your squadron is empty");
 
-        }else {
+        } else if (squadron.getPatrol().isStarted()) {
+            sendMessage(event,
+                    "you have already active patrol in "
+                            + squadron.getPatrol().getPatrolType().getTypeName() + ":\n"
+                            + squadron.getDescription());
+
+        } else {
             game.createNewPatrol(player, commandArgs.patrolType, Instant.now());
 
             sendMessage(event,

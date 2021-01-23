@@ -20,6 +20,11 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
     public void handle(CommandEvent event) {
         Squadron squadron = game.getOrCreateSquadron(player);
 
+        if(squadron.getPatrol().isStarted()){
+            sendMessage(event, "stop patrol to edit squadron");
+            return;
+        }
+
         StringBuilder msgBuilder = new StringBuilder();
         for (String cardId : commandArgs.multipleIds){
             if (squadron.isFull()){

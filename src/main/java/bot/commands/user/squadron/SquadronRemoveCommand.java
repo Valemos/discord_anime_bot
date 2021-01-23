@@ -16,7 +16,15 @@ public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersAr
 
     @Override
     public void handle(CommandEvent event) {
-        if (game.removeSquadronMembers(player, commandArgs.multipleIds)){
+        Squadron squadron = game.getOrCreateSquadron(player);
+
+        if(squadron.getPatrol().isStarted()){
+            sendMessage(event, "stop patrol to edit squadron");
+            return;
+        }
+
+
+        if (game.removeSquadronMembers(squadron, commandArgs.multipleIds)){
             sendMessage(event, "removed members");
         }else{
             sendMessage(event, "cannot remove from squadron");

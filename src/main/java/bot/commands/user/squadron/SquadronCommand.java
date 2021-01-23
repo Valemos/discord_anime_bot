@@ -21,14 +21,7 @@ public class SquadronCommand extends AbstractCommandNoArguments {
     public void handle(CommandEvent event) {
         Squadron squadron = game.getOrCreateSquadron(player);
         if (!squadron.isEmpty()){
-
-            String squadronMessage = squadron.getSortedMembers().stream()
-                    .map(CardPersonal::getDescription)
-                    .collect(Collectors.joining("\n"))
-                    + "\nPower ups:\n"
-                    + squadron.getPowerUpsDescription();
-
-            sendMessage(event, squadronMessage);
+            sendMessage(event, squadron.getDescription());
         }else{
             sendMessage(event, "squadron is empty");
         }

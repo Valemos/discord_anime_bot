@@ -19,7 +19,7 @@ public class PatrolStopCommand extends AbstractCommandNoArguments {
     @Override
     public void handle(CommandEvent event) {
         Squadron squadron = player.getSquadron();
-        if (squadron != null){
+        if (squadron.getPatrol().isStarted()){
             MaterialsSet materialsFound = game.finishPatrol(squadron, Instant.now());
             sendMessage(event,
                     "current patrol has finished, you received\n"

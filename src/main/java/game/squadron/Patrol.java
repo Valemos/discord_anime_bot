@@ -8,21 +8,21 @@ import java.time.Duration;
 import java.time.Instant;
 
 @Embeddable
-public class PatrolActivity {
+public class Patrol {
 
-    @Enumerated(EnumType.STRING)
-    private PatrolType patrolType;
     private Instant started;
     private Instant finished;
 
-    @Transient
+    @Enumerated(EnumType.STRING)
+    private PatrolType patrolType;
+
     private double patrolTime;
 
 
-    public PatrolActivity() {
+    public Patrol() {
     }
 
-    public PatrolActivity(PatrolType patrolType, double patrolTime) {
+    public Patrol(PatrolType patrolType, double patrolTime) {
         this.patrolType = patrolType;
         this.patrolTime = patrolTime;
     }
@@ -35,12 +35,19 @@ public class PatrolActivity {
         this.started = started;
     }
 
+    public void setFinished(Instant time) {
+        finished = time;
+    }
+
     public PatrolType getPatrolType() {
         return patrolType;
     }
 
     public MaterialsSet getMaterialsFound(Squadron squadron) {
-        // TODO add patrolType handling
+        if (!isStarted()){
+            return new MaterialsSet();
+        }
+
         long patrolDuration = Duration.between(started, finished).toMillis();
         double percentage = patrolDuration < patrolTime ? patrolDuration / patrolTime : 1.0;
 
@@ -49,7 +56,7 @@ public class PatrolActivity {
         return materials;
     }
 
-    public void setFinished(Instant time) {
-        finished = time;
+    public boolean isStarted() {
+        return started != null;
     }
 }
