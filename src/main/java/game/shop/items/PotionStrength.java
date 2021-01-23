@@ -1,7 +1,7 @@
 package game.shop.items;
 
 import game.materials.Material;
-import game.squadron.PowerUpType;
+import game.player_objects.squadron.PowerUpType;
 
 import java.util.Map;
 

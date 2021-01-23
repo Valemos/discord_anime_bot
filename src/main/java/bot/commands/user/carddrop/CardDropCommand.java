@@ -5,7 +5,7 @@ import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardDropActivity;
-import game.cooldown.CooldownSet;
+import game.player_objects.CooldownSet;
 import game.cards.CardGlobal;
 import game.cards.CardsGlobalManager;
 

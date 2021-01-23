@@ -3,8 +3,8 @@ package game.cards;
 import bot.ShortUUID;
 import game.DescriptionDisplayable;
 import game.Player;
-import game.squadron.HealthState;
-import game.squadron.Squadron;
+import game.player_objects.squadron.HealthState;
+import game.player_objects.squadron.Squadron;
 
 import javax.persistence.*;
 import java.util.Objects;

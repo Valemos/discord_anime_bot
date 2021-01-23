@@ -4,7 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.commands.arguments.MultipleWordsArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.stocks.StockValue;
+import game.player_objects.StockValue;
 
 public class StockValueCommand extends AbstractCommand<MultipleWordsArguments> {
     public StockValueCommand(AnimeCardsGame game) {

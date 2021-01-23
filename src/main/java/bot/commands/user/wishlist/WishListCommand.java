@@ -4,7 +4,9 @@ import bot.commands.AbstractCommandOptionalPlayer;
 import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.wishlist.WishList;
+import game.cards.CardGlobal;
+
+import java.util.Set;
 
 public class WishListCommand extends AbstractCommandOptionalPlayer {
 
@@ -21,7 +23,7 @@ public class WishListCommand extends AbstractCommandOptionalPlayer {
             return;
         }
 
-        WishList wishList = game.getWishList(requestedPlayer.getId());
-        BotMenuCreator.menuForCardStats(wishList.getCards(), event, game, 1);
+        Set<CardGlobal> wishList = requestedPlayer.getWishList();
+        BotMenuCreator.menuForCardStats(wishList, event, game, 1);
     }
 }

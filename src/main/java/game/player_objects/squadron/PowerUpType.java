@@ -1,4 +1,4 @@
-package game.squadron;
+package game.player_objects.squadron;
 
 public enum PowerUpType {
     STRENGTH("Strength potion"),

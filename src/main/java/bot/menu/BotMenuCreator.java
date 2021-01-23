@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -42,50 +43,50 @@ public class BotMenuCreator {
     }
 
 
-    public static void menuForCardsTop(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForCardsTop(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards top",
                 DescriptionDisplayable::getIdNameStats, selectedPage
         );
     }
 
-    public static void menuForCardIds(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForCardIds(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Card ids list",
                 DescriptionDisplayable::getIdName, selectedPage
         );
     }
 
-    public static void menuForCardStats(List<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForCardStats(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards list",
                 DescriptionDisplayable::getNameStats, selectedPage
         );
     }
 
-    public static void menuForPersonalCardStats(List<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForPersonalCardStats(Collection<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(cards, event, game, "Cards collection",
                 DescriptionDisplayable::getIdNameStats, selectedPage
         );
     }
 
-    public static void menuForItemStats(List<ArmorItemPersonal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
+    public static void menuForItemStats(Collection<ArmorItemPersonal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
         menuWithMapper(items, event, game, "Items list",
                 DescriptionDisplayable::getNameStats, selectedPage
         );
     }
 
-    private static void menuWithMapper(List<? extends DescriptionDisplayable> cards,
+    private static void menuWithMapper(Collection<? extends DescriptionDisplayable> items,
                                        CommandEvent event,
                                        AnimeCardsGame game,
                                        String title,
                                        Function<DescriptionDisplayable, String> mapper,
                                        int selectedPage){
 
-        if (cards.size() > 0){
+        if (items.size() > 0){
             Paginator cardsMenu = new Paginator.Builder()
                     .setEventWaiter(game.getEventWaiter())
                     .setText(title)
                     .setUsers(event.getAuthor())
                     .waitOnSinglePage(true)
-                    .setItems(cards.stream()
+                    .setItems(items.stream()
                             .map(mapper)
                             .toArray(String[]::new))
                     .setItemsPerPage(5)

@@ -27,15 +27,13 @@ class BotAnimeCardsTest extends MessageSenderTester {
 
     @Test
     void testDailyCommandGold() {
-        Player tester = sender.tester1;
-
-        MaterialsSet materials = tester.getMaterials();
+        MaterialsSet materials = tester().getMaterials();
         int startGold = materials.getAmount(Material.GOLD);
 
         send("#daily");
         sender.assertCommandHandled(DailyCommand.class);
 
-        materials = tester.getMaterials();
+        materials = tester().getMaterials();
         int goldDifference = materials.getAmount(Material.GOLD) - startGold;
         assertTrue(goldDifference >= 50 && goldDifference <= 200);
     }

@@ -4,7 +4,7 @@ import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
-import game.stocks.StockValue;
+import game.player_objects.StockValue;
 
 public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
 

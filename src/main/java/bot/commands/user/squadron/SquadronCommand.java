@@ -3,10 +3,7 @@ package bot.commands.user.squadron;
 import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.cards.CardPersonal;
-import game.squadron.Squadron;
-
-import java.util.stream.Collectors;
+import game.player_objects.squadron.Squadron;
 
 public class SquadronCommand extends AbstractCommandNoArguments {
 

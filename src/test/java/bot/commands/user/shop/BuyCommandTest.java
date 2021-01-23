@@ -7,9 +7,8 @@ import game.materials.Material;
 import game.shop.ItemsShop;
 import game.shop.items.AbstractShopItem;
 import game.shop.items.ShopPowerUp;
-import game.squadron.HealthState;
-import game.squadron.Squadron;
-import org.hibernate.Session;
+import game.player_objects.squadron.HealthState;
+import game.player_objects.squadron.Squadron;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -76,7 +75,8 @@ class BuyCommandTest extends MessageSenderTester{
 
     @Test
     void testSquadronCreatedEmpty() {
-        Squadron squadron = game().getOrCreateSquadron(sender.tester2);
+        sender.setTesterDefault(sender.tester2);
+        Squadron squadron = game().getOrCreateSquadron(tester());
 
         assertTrue(squadron.getMembers().isEmpty());
         assertTrue(squadron.getPowerUps().isEmpty());

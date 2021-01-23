@@ -5,7 +5,7 @@ import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardPersonal;
-import game.squadron.Squadron;
+import game.player_objects.squadron.Squadron;
 
 public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArguments> {
 

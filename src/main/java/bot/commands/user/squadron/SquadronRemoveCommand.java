@@ -4,7 +4,7 @@ import bot.commands.AbstractCommand;
 import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.squadron.Squadron;
+import game.player_objects.squadron.Squadron;
 
 public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersArguments> {
     public SquadronRemoveCommand(AnimeCardsGame game) {

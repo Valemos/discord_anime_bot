@@ -1,15 +1,17 @@
 package game;
 
+import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import game.cooldown.CooldownSet;
 import game.materials.MaterialsSet;
-import game.shop.items.ArmorItem;
-import game.squadron.Squadron;
-import game.stocks.StockValue;
+import game.player_objects.CooldownSet;
+import game.player_objects.squadron.Squadron;
+import game.player_objects.StockValue;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Player {
@@ -34,6 +36,9 @@ public class Player {
 
     @Embedded
     private CooldownSet cooldowns = new CooldownSet();
+
+    @ManyToMany
+    private Set<CardGlobal> wishList = new HashSet<>();
 
     public Player() {
     }
@@ -77,6 +82,13 @@ public class Player {
         return cards;
     }
 
+    public Set<CardGlobal> getWishList() {
+        return wishList;
+    }
+
+    public void setWishList(Set<CardGlobal> wishList) {
+        this.wishList = wishList;
+    }
 
     public List<StockValue> getStocks() {
         return stocks;

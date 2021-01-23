@@ -73,6 +73,8 @@ public class BotMessageSenderMock {
 
     private AbstractCommand<?>[] spyCommands;
 
+
+    public Player testerDefault;
     public Player tester1;
     public Player tester2;
     public List<CardGlobal> cardsGlobal;
@@ -103,6 +105,10 @@ public class BotMessageSenderMock {
         return spyBot;
     }
 
+    public void setTesterDefault(Player player){
+        testerDefault = player;
+    }
+
     private void setDropTimerMock() {
         spyBot.getGame().getDropManager().setFightTimer(mDropTimer);
 
@@ -125,6 +131,7 @@ public class BotMessageSenderMock {
         spyBot.loadTestGameSettings(spyGame);
         tester1 = spyBot.getGame().getPlayer("409754559775375371");
         tester2 = spyBot.getGame().getPlayer("347162620996091904");
+        testerDefault = tester1;
 
         cardsGlobal = spyBot.getGame().getCardsGlobal().getAllCards();
         cardGlobal1 = cardsGlobal.get(0);
@@ -174,7 +181,7 @@ public class BotMessageSenderMock {
     }
 
     public void send(String message) {
-        send(message, tester1.getId(), "1");
+        send(message, testerDefault.getId(), "1");
     }
 
     public void send(String message, String userId, String messageId) {
@@ -207,7 +214,7 @@ public class BotMessageSenderMock {
     }
 
     public void sendAndCaptureMessage(String message) {
-        sendAndCaptureMessage(message, tester1.getId(), "default");
+        sendAndCaptureMessage(message, testerDefault.getId(), "default");
     }
 
     public void sendAndCaptureMessage(String message, String userId, String messageId){
@@ -245,7 +252,7 @@ public class BotMessageSenderMock {
 
     public void resetGame() {
         initBotSettings();
-        getGame().getPlayer(tester1.getId()).getCooldowns().reset();
+        getGame().getPlayer(testerDefault.getId()).getCooldowns().reset();
     }
 
     public BotAnimeCards getBot() {
@@ -253,6 +260,7 @@ public class BotMessageSenderMock {
     }
 
     public void reset() {
+        testerDefault = tester1;
         resetMocks();
         resetGame();
     }
@@ -266,7 +274,7 @@ public class BotMessageSenderMock {
     }
 
     public void chooseDropMenuReaction(String messageId, String playerId, MenuEmoji emoji) {
-        chooseMenuReaction(getGame().getDropManager().getElement(messageId).getMenu(), messageId, playerId, emoji);
+        chooseMenuReaction(getGame().getDropManager().getActivity(messageId).getMenu(), messageId, playerId, emoji);
     }
 
     public void chooseMenuReaction(EmojiMenuHandler menu, String messageId, String playerId, MenuEmoji emoji) {
@@ -280,6 +288,6 @@ public class BotMessageSenderMock {
     }
 
     public Player tester() {
-        return spyBot.getGame().getPlayer(tester1.getId());
+        return spyBot.getGame().getPlayer(testerDefault.getId());
     }
 }

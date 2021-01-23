@@ -76,7 +76,7 @@ public class CardDropMenu implements EmojiMenuHandler {
                     menuMessage = msg;
                     menu.display(msg);
                     cardDrop.setTimeStarted(Instant.now());
-                    game.getDropManager().add(msg.getId(), cardDrop);
+                    game.getDropManager().startActivity(msg.getId(), cardDrop);
                 }
         );
     }

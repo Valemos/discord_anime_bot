@@ -5,7 +5,6 @@ import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
-import game.wishlist.WishList;
 
 public class WishCardByIdCommand extends AbstractCommand<MultipleIdentifiersArguments> {
 
@@ -20,11 +19,10 @@ public class WishCardByIdCommand extends AbstractCommand<MultipleIdentifiersArgu
     public void handle(CommandEvent event) {
         boolean anyCardAdded = false;
 
-        WishList wishList = game.getWishList(player.getId());
         for (String cardId : commandArgs.multipleIds){
             CardGlobal card = game.getCardsGlobal().getById(cardId);
             if (card != null){
-                wishList.add(card);
+                game.addToWishlist(player, card);
                 anyCardAdded = true;
             }
         }

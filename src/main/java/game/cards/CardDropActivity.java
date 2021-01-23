@@ -3,7 +3,7 @@ package game.cards;
 import bot.commands.user.carddrop.CardDropMenu;
 import game.AnimeCardsGame;
 import game.Player;
-import game.cooldown.CooldownSet;
+import game.player_objects.CooldownSet;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 

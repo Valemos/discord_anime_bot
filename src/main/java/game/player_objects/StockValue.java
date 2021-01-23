@@ -1,4 +1,4 @@
-package game.stocks;
+package game.player_objects;
 
 import game.Player;
 import game.cards.CardPersonal;

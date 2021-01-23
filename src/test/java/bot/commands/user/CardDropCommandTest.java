@@ -24,7 +24,7 @@ class CardDropCommandTest extends MessageSenderTester {
     void testCardsDropped() {
         assertNull(game().getDropManager().getCards("1000"));
 
-        sender.sendAndCaptureMessage("#drop", sender.tester1.getId(), "1000");
+        sender.sendAndCaptureMessage("#drop", tester().getId(), "1000");
         sender.assertCommandHandled(CardDropCommand.class);
 
         assertNotNull(game().getDropManager().getCards("1000"));
@@ -110,7 +110,7 @@ class CardDropCommandTest extends MessageSenderTester {
 
         CardGlobal card = sender.cardGlobal1;
 
-        game().getDropManager().getElement(messageId).setCards(List.of(card, card, card));
+        game().getDropManager().getActivity(messageId).setCards(List.of(card, card, card));
 
         sender.chooseDropMenuReaction(messageId, tester().getId(), MenuEmoji.ONE);
         tester().getCooldowns().reset();

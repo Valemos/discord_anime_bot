@@ -2,13 +2,12 @@ package bot.commands.user.squadron;
 
 import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardPersonal;
-import game.squadron.PatrolType;
-import game.squadron.Squadron;
+import game.player_objects.squadron.PatrolType;
+import game.player_objects.squadron.Squadron;
 import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;

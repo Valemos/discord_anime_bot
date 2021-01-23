@@ -4,7 +4,7 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
-import game.squadron.PowerUpType;
+import game.player_objects.squadron.PowerUpType;
 
 import java.util.Map;
 

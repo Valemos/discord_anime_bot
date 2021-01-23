@@ -12,12 +12,10 @@ import game.materials.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.items.ArmorItem;
-import game.squadron.PatrolType;
-import game.squadron.Squadron;
-import game.stocks.StockValue;
-import game.stocks.StockValueId;
-import game.wishlist.WishList;
-import game.wishlist.WishListsManager;
+import game.player_objects.squadron.PatrolType;
+import game.player_objects.squadron.Squadron;
+import game.player_objects.StockValue;
+import game.player_objects.StockValueId;
 import net.dv8tion.jda.api.entities.User;
 import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +35,6 @@ public class AnimeCardsGame {
 
     private CardsGlobalManager cardsGlobalManager;
     private CardsPersonalManager cardsPersonalManager;
-    private WishListsManager wishListsManager;
 
     private ContractsManager contractsManager;
     private CardDropManager cardDropManager;
@@ -53,7 +50,6 @@ public class AnimeCardsGame {
         cardsGlobalManager = new CardsGlobalManager(dbSession);
 
         cardsPersonalManager = new CardsPersonalManager(dbSession);
-        wishListsManager = new WishListsManager(dbSession);
 
         itemsShop = new ItemsShop();
 
@@ -242,17 +238,31 @@ public class AnimeCardsGame {
     }
 
     public void addToWishlist(Player player, CardGlobal card) {
-        wishListsManager.addCard(player.getId(), card);
+        dbSession.beginTransaction();
+        dbSession.persist(player);
+        player.getWishList().add(card);
+        dbSession.getTransaction().commit();
+    }
+
+    public boolean removeFromWishlist(Player player, String cardId) {
+        dbSession.beginTransaction();
+
+        dbSession.persist(player);
+        boolean isElementRemoved = player.getWishList().removeIf(card -> card.getId().equals(cardId));
+
+        dbSession.getTransaction().commit();
+        return isElementRemoved;
     }
 
     public boolean removeFromWishlist(Player player, CardGlobal card) {
-        return wishListsManager.removeCard(player.getId(), card);
-    }
+        dbSession.beginTransaction();
 
-    public @NotNull WishList getWishList(String playerId) {
-        return wishListsManager.getElementOrCreate(playerId);
-    }
+        dbSession.persist(player);
+        boolean isElementRemoved = player.getWishList().remove(card);
 
+        dbSession.getTransaction().commit();
+        return isElementRemoved;
+    }
 
     public ContractsManager getContractsManager() {
         return contractsManager;

@@ -1,4 +1,4 @@
-package game.cooldown;
+package game.player_objects;
 
 import javax.persistence.*;
 import java.time.Instant;

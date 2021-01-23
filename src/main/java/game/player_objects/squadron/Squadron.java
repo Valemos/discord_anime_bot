@@ -1,4 +1,4 @@
-package game.squadron;
+package game.player_objects.squadron;
 
 import game.Player;
 import game.cards.CardPersonal;

@@ -4,7 +4,7 @@ import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.materials.MaterialsSet;
-import game.squadron.Squadron;
+import game.player_objects.squadron.Squadron;
 
 import java.time.Instant;
 

@@ -3,7 +3,7 @@ package bot.commands.user.stocks;
 import bot.commands.AbstractCommandOptionalPlayer;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.stocks.StockValue;
+import game.player_objects.StockValue;
 
 public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
 

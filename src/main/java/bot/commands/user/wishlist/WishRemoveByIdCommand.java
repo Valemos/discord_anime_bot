@@ -4,7 +4,6 @@ import bot.commands.AbstractCommand;
 import bot.commands.arguments.MultipleIdentifiersArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.wishlist.WishList;
 
 public class WishRemoveByIdCommand extends AbstractCommand<MultipleIdentifiersArguments> {
 
@@ -19,9 +18,8 @@ public class WishRemoveByIdCommand extends AbstractCommand<MultipleIdentifiersAr
     public void handle(CommandEvent event) {
         boolean anyCardRemoved = false;
 
-        WishList wishList = game.getWishList(player.getId());
         for (String cardId : commandArgs.multipleIds){
-            if (wishList.removeById(cardId)){
+            if (game.removeFromWishlist(player, cardId)){
                 anyCardRemoved = true;
             }
         }

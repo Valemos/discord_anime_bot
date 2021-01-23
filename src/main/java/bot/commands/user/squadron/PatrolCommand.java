@@ -3,9 +3,8 @@ package bot.commands.user.squadron;
 import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.squadron.PatrolType;
-import game.squadron.Squadron;
-import org.jetbrains.annotations.NotNull;
+import game.player_objects.squadron.PatrolType;
+import game.player_objects.squadron.Squadron;
 import org.kohsuke.args4j.Argument;
 
 import java.time.Instant;

@@ -3,7 +3,7 @@ package game.shop.items;
 import game.AnimeCardsGame;
 import game.Player;
 import game.materials.Material;
-import game.squadron.Squadron;
+import game.player_objects.squadron.Squadron;
 
 import java.util.Map;
 

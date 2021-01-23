@@ -1,4 +1,4 @@
-package game.stocks;
+package game.player_objects;
 
 import java.io.Serializable;
 

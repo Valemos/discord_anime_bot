@@ -20,6 +20,7 @@ public class GrabTimeCommand extends AbstractCommand<GrabTimeCommand.Arguments> 
 
     @Override
     public void handle(CommandEvent event) {
-
+        game.getDropManager().setFightSeconds(commandArgs.seconds);
+        sendMessage(event, "from now all card fights will have timeout of **" + commandArgs.seconds + "** seconds");
     }
 }
