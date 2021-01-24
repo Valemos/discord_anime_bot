@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.trading;
 
 import bot.commands.AbstractCommand;
 import bot.menu.CardForCardContractMenu;
@@ -9,7 +9,7 @@ import game.cards.CardPersonal;
 import game.contract.CardForCardContract;
 import org.kohsuke.args4j.Argument;
 
-public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
+public class TradeCardForCardCommand extends AbstractCommand<TradeCardForCardCommand.Arguments> {
 
     public static class Arguments{
         @Argument(metaVar = "send card id", required = true)
@@ -19,7 +19,7 @@ public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
         String receiveCardId;
     }
 
-    public TradeCommand(AnimeCardsGame game) {
+    public TradeCardForCardCommand(AnimeCardsGame game) {
         super(game, Arguments.class);
         name = "trade";
     }
@@ -35,10 +35,10 @@ public class TradeCommand extends AbstractCommand<TradeCommand.Arguments> {
         CardPersonal sendCard = game.getCardsPersonal().getById(commandArgs.sendCardId);
         CardPersonal receiveCard = game.getCardsPersonal().getById(commandArgs.receiveCardId);
 
-        if (sendCard == null){
+        if (sendCard == null || !sendCard.getOwner().equals(player)){
             sendMessage(event, "your card id is incorrect");
             return;
-        }else if (receiveCard == null){
+        }else if (receiveCard == null || !receiveCard.getOwner().equals(targetPlayer)){
             sendMessage(event, "other card id is incorrect");
             return;
         }

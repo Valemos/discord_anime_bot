@@ -6,5 +6,4 @@ public class RequiredPlayerArguments {
     @Argument(required = true, metaVar = "other player id", usage = "id to use for command")
     public String id;
 
-
 }

@@ -13,6 +13,10 @@ import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.inventory.ShowCollectionCommand;
 import bot.commands.user.shop.BuyArmorCommand;
 import bot.commands.user.squadron.*;
+import bot.commands.user.trading.AddToMultiTradeCommand;
+import bot.commands.user.trading.MultiTradeCommand;
+import bot.commands.user.trading.SendCardsCommand;
+import bot.commands.user.trading.TradeCardForCardCommand;
 import bot.commands.user.wishlist.*;
 import bot.commands.user.*;
 import bot.commands.user.shop.ArmorShopCommand;
@@ -177,8 +181,9 @@ public class BotAnimeCards {
                 new MaterialsCommand(game),
 
                 new SendCardsCommand(game),
-                new TradeCommand(game),
-                new MultiTradeCommand(game)
+                new TradeCardForCardCommand(game),
+                new MultiTradeCommand(game),
+                new AddToMultiTradeCommand(game)
         };
     }
 

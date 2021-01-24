@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.trading;
 
 import bot.commands.AbstractCommand;
 import bot.menu.SendCardsContractMenu;
@@ -26,7 +26,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
 
     public SendCardsCommand(AnimeCardsGame game) {
         super(game, Arguments.class);
-        name = "sendcard";
+        name = "sendcards";
         aliases = new String[]{"sc"};
     }
 

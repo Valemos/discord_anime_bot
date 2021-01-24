@@ -34,6 +34,14 @@ public class MessageSenderTester {
         sender.send(message);
     }
 
+    protected void sendAndCapture(String message){
+        sender.sendAndCaptureMessage(message);
+    }
+
+    protected void sendAndCapture(String message, String userId, String messageId){
+        sender.sendAndCaptureMessage(message, userId, messageId);
+    }
+
     protected void send(String message, String userId, String messageId){
         sender.send(message, userId, messageId);
     }

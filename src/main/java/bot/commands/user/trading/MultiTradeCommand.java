@@ -1,4 +1,4 @@
-package bot.commands.user;
+package bot.commands.user.trading;
 
 import bot.commands.AbstractCommand;
 import bot.commands.arguments.RequiredPlayerArguments;
@@ -12,7 +12,7 @@ public class MultiTradeCommand extends AbstractCommand<RequiredPlayerArguments> 
 
     public MultiTradeCommand(AnimeCardsGame game) {
         super(game, RequiredPlayerArguments.class);
-        name = "multiTrade";
+        name = "multitrade";
         aliases = new String[]{"mt"};
         guildOnly = true;
     }
