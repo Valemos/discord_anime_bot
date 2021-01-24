@@ -1,6 +1,5 @@
 package game.shop.items;
 
-import bot.ShortUUID;
 import game.AnimeCardsGame;
 import game.ArmorItemPersonal;
 import game.DescriptionDisplayable;
@@ -16,7 +15,8 @@ import java.util.Map;
 public class ArmorItem extends AbstractShopItem implements DescriptionDisplayable {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
     private float armorValue = 0;
 
@@ -51,19 +51,14 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
         s.getTransaction().commit();
     }
 
-    @PrePersist
-    void prePersist() {
-        id = ShortUUID.generate();
-    }
-
     @Override
     public String getId() {
-        return id;
+        return String.valueOf(id);
     }
 
     @Override
     public void setId(String id) {
-        this.id = id;
+        this.id = Long.parseLong(id);
     }
 
     @Override

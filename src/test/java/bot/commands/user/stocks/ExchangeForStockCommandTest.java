@@ -1,7 +1,6 @@
 package bot.commands.user.stocks;
 
 import bot.commands.user.shop.MessageSenderTester;
-import game.AnimeCardsGame;
 import game.cards.CardPersonal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

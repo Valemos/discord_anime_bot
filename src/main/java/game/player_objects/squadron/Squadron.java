@@ -4,6 +4,7 @@ import game.Player;
 import game.cards.CardPersonal;
 import game.cards.ComparableCard;
 import game.materials.MaterialsSet;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -142,10 +143,17 @@ public class Squadron {
     }
 
     public String getDescription() {
-        return getSortedMembers().stream()
-                .map(c -> c.getIdName() + " ("+c.getHealthState().toString()+')')
-                .collect(Collectors.joining("\n"))
+        return powerUps.isEmpty() ?
+                getMembersDescription() :
+                getMembersDescription()
                 + "\nPower ups:\n"
                 + getPowerUpsDescription();
+    }
+
+    @NotNull
+    private String getMembersDescription() {
+        return getSortedMembers().stream()
+                .map(c -> c.getIdName() + " (" + c.getHealthState().toString() + ')')
+                .collect(Collectors.joining("\n"));
     }
 }

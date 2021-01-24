@@ -92,7 +92,7 @@ class WishListCommandTest extends MessageSenderTester {
 
     @Test
     void testCannotRemoveOtherPlayerWish() {
-        sender.setTesterDefault(sender.tester2);
+        sender.setTesterDefault(tester2());
         assertFalse(tester().getWishList().contains(sender.cardGlobal1));
         send("#wish " + sender.cardGlobal1.getName());
         assertTrue(tester().getWishList().contains(sender.cardGlobal1));
@@ -100,7 +100,7 @@ class WishListCommandTest extends MessageSenderTester {
         sender.setTesterDefault(sender.tester1);
         send("#wishremoveid " + sender.cardGlobal1.getId());
 
-        sender.setTesterDefault(sender.tester2);
+        sender.setTesterDefault(tester2());
         assertTrue(tester().getWishList().contains(sender.cardGlobal1));
     }
 }

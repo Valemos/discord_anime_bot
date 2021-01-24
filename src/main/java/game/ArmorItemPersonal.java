@@ -1,7 +1,8 @@
 package game;
 
-import bot.ShortUUID;
+import bot.Base36SequenceGenerator;
 import game.shop.items.ArmorItem;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -9,6 +10,8 @@ import javax.persistence.*;
 public class ArmorItemPersonal implements DescriptionDisplayable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base36_armor_personal")
+    @GenericGenerator(name = "base36_armor_personal", strategy = "bot.Base36SequenceGenerator")
     private String id;
 
     @OneToOne
@@ -21,17 +24,13 @@ public class ArmorItemPersonal implements DescriptionDisplayable {
         this.original = original;
     }
 
-    @PrePersist
-    void prePersist() {
-        id = ShortUUID.generate();
+    @Override
+    public String getId() {
+        return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getId() {
-        return id;
     }
 
     @Override

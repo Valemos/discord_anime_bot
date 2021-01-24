@@ -2,7 +2,6 @@ package bot.commands.owner;
 
 import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardGlobal;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

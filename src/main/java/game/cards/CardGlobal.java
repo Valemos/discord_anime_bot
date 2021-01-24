@@ -1,7 +1,8 @@
 package game.cards;
 
-import bot.ShortUUID;
+import bot.Base36SequenceGenerator;
 import game.DescriptionDisplayable;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,12 +14,13 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
     @Id
     private String id;
 
-    @Embedded
-    CardStatsGlobal stats;
-
+    @MapsId
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     CharacterInfo characterInfo;
+
+    @Embedded
+    CardStatsGlobal stats;
 
     public CardGlobal() {
     }
@@ -30,11 +32,6 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
     public CardGlobal(String characterName, String seriesName, String imageUrl, CardStatsGlobal stats) {
         characterInfo = new CharacterInfo(characterName, seriesName, imageUrl);
         this.stats = stats;
-    }
-
-    @PrePersist
-    public void generateId() {
-        id = ShortUUID.generate();
     }
 
     public CardStatsGlobal getStats() {
@@ -51,7 +48,6 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
         return stats.amountCardsPrinted;
     }
 
-    @Override
     public CharacterInfo getCharacterInfo() {
         return characterInfo;
     }
@@ -102,7 +98,7 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CardGlobal){
-            return id.equals(((CardGlobal) obj).getId());
+            return id.equals(((CardGlobal) obj).id);
         }
         return false;
     }

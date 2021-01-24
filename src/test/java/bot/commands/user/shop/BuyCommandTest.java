@@ -75,7 +75,7 @@ class BuyCommandTest extends MessageSenderTester{
 
     @Test
     void testSquadronCreatedEmpty() {
-        sender.setTesterDefault(sender.tester2);
+        sender.setTesterDefault(tester2());
         Squadron squadron = game().getOrCreateSquadron(tester());
 
         assertTrue(squadron.getMembers().isEmpty());

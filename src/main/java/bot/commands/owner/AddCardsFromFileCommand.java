@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
 
+    // TODO test this class for correct file loading
     public AddCardsFromFileCommand(AnimeCardsGame game) {
         super(game);
     }

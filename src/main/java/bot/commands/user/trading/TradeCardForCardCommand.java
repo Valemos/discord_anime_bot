@@ -21,7 +21,8 @@ public class TradeCardForCardCommand extends AbstractCommand<TradeCardForCardCom
 
     public TradeCardForCardCommand(AnimeCardsGame game) {
         super(game, Arguments.class);
-        name = "trade";
+        name = "tradecards";
+        guildOnly = true;
     }
 
     @Override

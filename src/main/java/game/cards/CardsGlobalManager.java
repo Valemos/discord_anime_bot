@@ -43,7 +43,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         Root<CardGlobal> root = q.from(CardGlobal.class);
 
         Predicate characterEquality;
-        if(character.getId() == -1){
+        if(character.getId() == null){
             characterEquality = cb.equal(cb.lower(root.get("characterInfo").get("name")),
                                          character.getName().toLowerCase());
         }else{

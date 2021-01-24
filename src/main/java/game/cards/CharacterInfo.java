@@ -1,13 +1,16 @@
 package game.cards;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
 public class CharacterInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id = -1;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base36_card_global")
+    @GenericGenerator(name = "base36_card_global", strategy = "bot.Base36SequenceGenerator")
+    private String id;
     private String name;
     private String imageUrl;
 
@@ -23,11 +26,11 @@ public class CharacterInfo {
         this.imageUrl = imageUrl;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -62,7 +65,7 @@ public class CharacterInfo {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof CharacterInfo){
-            return getId() == (((CharacterInfo) obj).getId());
+            return getId().equals(((CharacterInfo) obj).getId());
         }
         return false;
     }

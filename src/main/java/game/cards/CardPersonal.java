@@ -1,10 +1,11 @@
 package game.cards;
 
-import bot.ShortUUID;
+import bot.Base36SequenceGenerator;
 import game.DescriptionDisplayable;
 import game.Player;
 import game.player_objects.squadron.HealthState;
 import game.player_objects.squadron.Squadron;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,6 +14,8 @@ import java.util.Objects;
 public class CardPersonal implements DescriptionDisplayable, SearchableCard, ComparableCard {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base36_card_personal")
+    @GenericGenerator(name = "base36_card_personal", strategy = "bot.Base36SequenceGenerator")
     private String id;
 
     @ManyToOne
@@ -39,11 +42,6 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
         this.stats = stats;
     }
 
-    @PrePersist
-    public void generateId() {
-        id = ShortUUID.generate();
-    }
-
     public Player getOwner() {
         return owner;
     }
@@ -52,7 +50,6 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
         this.owner = owner;
     }
 
-    @Override
     public CharacterInfo getCharacterInfo() {
         return characterInfo;
     }
@@ -66,13 +63,19 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
         return stats;
     }
 
+    @Override
+    public int getPrint() {
+        return stats.cardPrint;
+    }
+
+    @Override
     public float getApprovalRating(){
         return stats.approvalRating;
     }
 
     @Override
-    public int getPrint() {
-        return stats.cardPrint;
+    public String getId() {
+        return id;
     }
 
     public void setId(String id) {
@@ -116,11 +119,6 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
     @Override
     public String getSeriesName() {
         return characterInfo.getSeriesName();
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     @Override

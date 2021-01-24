@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class BotMenuCreator {
@@ -90,6 +91,7 @@ public class BotMenuCreator {
                             .map(mapper)
                             .toArray(String[]::new))
                     .setItemsPerPage(5)
+                    .setTimeout(10, TimeUnit.MINUTES)
                     .build();
 
             cardsMenu.paginate(event.getChannel(), selectedPage);

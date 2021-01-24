@@ -17,8 +17,8 @@ dependencies {
     testCompile "org.mockito:mockito-core:2.22.0"
 
     implementation 'org.apache.ant:ant:1.8.2'
-    implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'args4j:args4j:2.33'
+    implementation 'org.apache.commons:commons-lang3:3.11'
 
     implementation 'net.dv8tion:JDA:4.2.0_168'
     implementation 'com.jagrosh:jda-utilities-command:3.0.5'

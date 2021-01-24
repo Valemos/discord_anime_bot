@@ -288,6 +288,10 @@ public class BotMessageSenderMock {
     }
 
     public Player tester() {
-        return spyBot.getGame().getPlayer(testerDefault.getId());
+        return loadTester(testerDefault);
+    }
+
+    public Player loadTester(Player tester) {
+        return spyBot.getGame().getPlayer(tester.getId());
     }
 }

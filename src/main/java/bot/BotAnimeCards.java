@@ -280,9 +280,7 @@ public class BotAnimeCards {
         return Files.readString(filePath);
     }
 
-
     public static void main(String[] args) throws IOException {
-
         String bot_token = loadBotTokenFile();
         BotAnimeCards bot = new BotAnimeCards();
 
@@ -291,24 +289,5 @@ public class BotAnimeCards {
         }
 
         bot.loadTestGameSettings();
-
-//        testBot(bot);
-    }
-
-    @SuppressWarnings("ALL")
-    private static void testBot(BotAnimeCards bot) {
-        SessionFactory sf = bot.getDatabaseSessionFactory("hibernate.cfg.xml");
-        Session s = sf.openSession();
-
-        s.beginTransaction();
-        AnimeCardsGame game = new AnimeCardsGame(bot.eventWaiter, s);
-
-        List<CardGlobal> cc = game.getCardsGlobal().getAllCards();
-        List<CardGlobal> c = game.getCardsGlobal().getFiltered("riko", null);
-
-        c = game.getCardsGlobal().getCardsSorted(List.of(SortingType.FAVOR, SortingType.PRINT));//"r", "m");
-
-        s.getTransaction().commit();
-        s.close();
     }
 }

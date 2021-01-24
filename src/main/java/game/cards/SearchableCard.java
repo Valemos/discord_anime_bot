@@ -1,9 +1,6 @@
 package game.cards;
 
 public interface SearchableCard {
-    CharacterInfo getCharacterInfo();
-
-    String getId();
     String getName();
     String getSeriesName();
 

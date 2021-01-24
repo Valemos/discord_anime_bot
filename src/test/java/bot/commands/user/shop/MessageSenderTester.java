@@ -26,6 +26,10 @@ public class MessageSenderTester {
         return sender.tester();
     }
 
+    protected Player tester2(){
+        return sender.loadTester(sender.tester2);
+    }
+
     protected AnimeCardsGame game() {
         return sender.getGame();
     }
