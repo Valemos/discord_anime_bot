@@ -35,8 +35,16 @@ public class CharacterInfo {
         return name;
     }
 
-    public String getSeriesName() {
-        return series.getName();
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public SeriesInfo getSeries() {
@@ -47,8 +55,8 @@ public class CharacterInfo {
         this.series = series;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getSeriesName() {
+        return series.getName();
     }
 
     @Override

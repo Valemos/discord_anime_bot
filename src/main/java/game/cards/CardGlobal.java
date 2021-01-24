@@ -13,12 +13,12 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
     @Id
     private String id;
 
+    @Embedded
+    CardStatsGlobal stats;
+
     @OneToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     CharacterInfo characterInfo;
-
-    @Embedded
-    CardStatsGlobal stats;
 
     public CardGlobal() {
     }

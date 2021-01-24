@@ -2,9 +2,9 @@ package game.player_objects.squadron;
 
 public enum PatrolType {
     OVERWORLD("Overworld"),
-    O(""),
+    O(""), // alias to overworld
     UNDERWORLD("Underworld"),
-    U("");
+    U(""); // alias to underworld
 
     private final String typeName;
 
@@ -14,5 +14,17 @@ public enum PatrolType {
 
     public String getTypeName() {
         return typeName;
+    }
+
+    public static PatrolType getTypeNameFromAlias(PatrolType patrolType){
+        if (PatrolType.O == patrolType){
+            return  PatrolType.OVERWORLD;
+
+        }else if (PatrolType.U == patrolType){
+            return  PatrolType.UNDERWORLD;
+
+        }else{
+            return  patrolType;
+        }
     }
 }

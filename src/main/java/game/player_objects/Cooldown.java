@@ -58,7 +58,7 @@ public class Cooldown {
     }
 
     public String getVerboseDescription(Instant time) {
-        return "your " + name + " cooldown is " + getSecondsLeftString(time);
+        return name + " cooldown is " + getSecondsLeftString(time);
     }
 
     public String getSecondsLeftString(Instant time) {

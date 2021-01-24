@@ -144,7 +144,9 @@ public class BotAnimeCards {
                 new CooldownCommand(game),
 
                 new AddCardCommand(game),
+                new AddCardsFromFileCommand(game),
                 new DeleteCardCommand(game),
+                new ModifyCharacterCommand(game),
 
                 new ShowCollectionCommand(game),
                 new InspectCardCommand(game),

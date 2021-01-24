@@ -46,9 +46,11 @@ public class CardDropMenu implements EmojiMenuHandler {
     public void notifyCardReceived(String playerId, CardPersonal card) {
         MessageChannel channel = menuMessage.getChannel();
         channel.getJDA().retrieveUserById(playerId).queue(
-                user -> {
-                    channel.sendMessage(user.getName() + " received card " + card.getIdName()).queue();
-                }
+                user -> channel.sendMessage(
+                        user.getName() +
+                            " received card " +
+                            card.getIdName()
+                ).queue()
         );
     }
 

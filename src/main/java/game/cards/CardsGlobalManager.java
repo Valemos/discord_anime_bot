@@ -57,9 +57,31 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         }
     }
 
+    public void updateCharacterInfo(CharacterInfo info, String newName, String newSeries, String newImageUrl) {
+        dbSession.beginTransaction();
 
+        if (newName != null) info.setName(newName);
+
+        if (newImageUrl != null) info.setImageUrl(newImageUrl);
+
+        if (newSeries != null){
+            SeriesInfo series = findMatchingSeries(newSeries);
+            if (series == null) {
+                series = new SeriesInfo(newSeries);
+                dbSession.save(series);
+            }
+            info.setSeries(series);
+        }
+
+        dbSession.persist(info);
+        dbSession.getTransaction().commit();
+    }
 
     private SeriesInfo findMatchingSeries(SeriesInfo series) {
+        return findMatchingSeries(series.getName());
+    }
+
+    private SeriesInfo findMatchingSeries(String seriesName) {
         CriteriaBuilder cb = dbSession.getCriteriaBuilder();
         CriteriaQuery<SeriesInfo> q = cb.createQuery(SeriesInfo.class);
         Root<SeriesInfo> root = q.from(SeriesInfo.class);
@@ -68,7 +90,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
             return dbSession.createQuery(
                     q.select(root).where(
                             cb.equal(cb.lower(root.get("name")),
-                                    String.valueOf(series.getName()).toLowerCase())
+                                    String.valueOf(seriesName).toLowerCase())
                     )
             ).getSingleResult();
         }catch(NoResultException | NonUniqueResultException e){

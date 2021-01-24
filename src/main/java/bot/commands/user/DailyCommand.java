@@ -8,13 +8,20 @@ import game.materials.Material;
 import java.util.Random;
 
 public class DailyCommand extends AbstractCommandNoArguments {
-    private final int inverseProbability;
+    public final int rareProbability;
+    public final int rareReward;
+    public final int baseReward;
+    public final int rewardRandomIncrement;
 
     public DailyCommand(AnimeCardsGame game) {
         super(game);
         name = "daily";
         guildOnly = false;
-        inverseProbability = 1000;
+
+        baseReward = 50;
+        rewardRandomIncrement = 50;
+        rareReward = 200;
+        rareProbability = 1000;
     }
 
     @Override
@@ -24,15 +31,20 @@ public class DailyCommand extends AbstractCommandNoArguments {
         sendMessage(event, "you received " + goldReceived + " gold!");
     }
 
-    private int getRandomGold() {
-        if (getRandomInt(inverseProbability) == 0){
-            return 200;
-        }
-
-        return 50 + getRandomInt(50);
+    public int getRareProbability() {
+        return rareProbability;
     }
 
-    private int getRandomInt(int max) {
-        return new Random().nextInt(max);
+    public int getRandomGold() {
+        Random random = new Random();
+        if (getRandomInt(rareProbability, random) == 0){
+            return rareReward;
+        }
+
+        return baseReward + getRandomInt(rewardRandomIncrement, random);
+    }
+
+    private int getRandomInt(int max, Random random) {
+        return random.nextInt(max);
     }
 }

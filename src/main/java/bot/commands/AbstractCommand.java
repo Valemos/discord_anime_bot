@@ -4,7 +4,6 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
@@ -28,12 +27,6 @@ public abstract class AbstractCommand<T> extends Command {
         this.argumentsClass = argumentsClass;
     }
 
-    @NotNull
-    private CmdLineParser getNewArgumentsParser(Class<T> argumentsConfig) {
-        commandArgs = createArgumentsInstance(argumentsConfig);
-        return new CmdLineParser(commandArgs);
-    }
-
     private T createArgumentsInstance(Class<T> config) {
         try {
             return config.getConstructor().newInstance();
@@ -48,21 +41,20 @@ public abstract class AbstractCommand<T> extends Command {
         String userId = event.getAuthor().getId();
         player = game.getPlayer(userId);
 
-        if(tryParseArguments(event.getArgs(), event.getChannel())){
+        commandArgs = createArgumentsInstance(argumentsClass);
+
+        try {
+            tryParseArguments(commandArgs, event.getArgs());
             handle(event);
+
+        } catch (CmdLineException e) {
+            event.getChannel().sendMessage(e.getMessage()).queue();
         }
     }
 
-    public boolean tryParseArguments(String argsString, MessageChannel channel) {
+    public static <T> void tryParseArguments(T argumentsObject, String argsString) throws CmdLineException {
         String[] args = Commandline.translateCommandline(argsString);
-
-        try{
-            getNewArgumentsParser(argumentsClass).parseArgument(args);
-            return true;
-        }catch(CmdLineException e){
-            channel.sendMessage(e.getMessage()).queue();
-        }
-        return false;
+        new CmdLineParser(argumentsObject).parseArgument(args);
     }
 
     public abstract void handle(CommandEvent event);

@@ -6,21 +6,21 @@ import game.AnimeCardsGame;
 import game.cards.CardGlobal;
 import org.kohsuke.args4j.Argument;
 
-public class AddCardCommand extends AbstractCommand<AddCardCommand.Args> {
+public class AddCardCommand extends AbstractCommand<AddCardCommand.Arguments> {
 
-    public static class Args{
+    public static class Arguments {
         @Argument(metaVar = "name", usage = "name of character", required = true)
-        String name;
+        public String name;
 
         @Argument(metaVar = "series", index = 1, usage = "series where the character from", required = true)
-        String series;
+        public String series;
 
         @Argument(metaVar = "image url", index = 2, usage = "image url to use for card", required = true)
-        String imageUrl;
+        public String imageUrl;
     }
 
     public AddCardCommand(AnimeCardsGame game) {
-        super(game, Args.class);
+        super(game, Arguments.class);
         name = "addcard";
         aliases = new String[]{"cr"};
         guildOnly = false;

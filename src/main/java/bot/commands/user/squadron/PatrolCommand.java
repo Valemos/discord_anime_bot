@@ -17,14 +17,7 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
                 usage = "type of world to send current squadron to",
                 required = true)
         public void setPatrolWorld(PatrolType patrolType) {
-            // replace aliases for full names
-            if (PatrolType.O == patrolType){
-                this.patrolType = PatrolType.OVERWORLD;
-            }else if (PatrolType.U == patrolType){
-                this.patrolType = PatrolType.UNDERWORLD;
-            }else{
-                this.patrolType = patrolType;
-            }
+            this.patrolType = PatrolType.getTypeNameFromAlias(patrolType);
         }
     }
 
