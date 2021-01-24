@@ -6,11 +6,12 @@ import game.AnimeCardsGame;
 import game.Player;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import org.apache.tools.ant.types.Commandline;
-import org.jetbrains.annotations.NotNull;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +26,17 @@ public abstract class AbstractCommand<T> extends Command {
     public AbstractCommand(AnimeCardsGame game, Class<T> argumentsClass) {
         this.game = game;
         this.argumentsClass = argumentsClass;
+
+        help = getHelpMessage(argumentsClass);
+    }
+
+    private String getHelpMessage(Class<T> argumentsClass) {
+        CmdLineParser parser = new CmdLineParser(createArgumentsInstance(argumentsClass));
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        parser.printUsage(stream);
+
+        return stream.toString(StandardCharsets.UTF_8);
     }
 
     private T createArgumentsInstance(Class<T> config) {

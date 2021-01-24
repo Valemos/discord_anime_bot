@@ -14,6 +14,7 @@ public class PatrolStopCommand extends AbstractCommandNoArguments {
         name = "patrolstop";
         aliases = new String[]{"ps"};
         guildOnly = true;
+        help = "stops current active squadron. You receive items they found during patrol by this time";
     }
 
     @Override

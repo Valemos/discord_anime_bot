@@ -13,11 +13,11 @@ import java.util.List;
 public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Arguments> {
 
     public static class Arguments {
-        @Argument(required = true, metaVar = "card name", usage = "name of card character")
+        @Argument(required = true, metaVar = "card name", usage = "character name. can be multiple words without quotes")
         private List<String> cardName;
 
-        @Option(name = "-s", metaVar = "series name", usage = "series to search for")
-        private List<String> seriesName;
+        @Option(name = "-s", metaVar = "series name", usage = "search for series. Must be in quotes if it has multiple words (\" \")")
+        private String seriesName;
 
         public String getCardName() {
             if (cardName == null){
@@ -27,13 +27,6 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
             return String.join(" ", cardName);
         }
 
-        public String getSeriesName() {
-            if (seriesName == null){
-                return null;
-            }
-
-            return String.join(" ", seriesName);
-        }
     }
 
     public InspectCardCommand(AnimeCardsGame game) {
@@ -45,7 +38,7 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
 
     @Override
     public void handle(CommandEvent event) {
-        CardGlobal card = game.getCardGlobalUnique(commandArgs.getCardName(), commandArgs.getSeriesName());
+        CardGlobal card = game.getCardGlobalUnique(commandArgs.getCardName(), commandArgs.seriesName);
         if (card != null){
             EmbedBuilder b = new EmbedBuilder();
             b.addField("Card info", card.getNameStats(), true);

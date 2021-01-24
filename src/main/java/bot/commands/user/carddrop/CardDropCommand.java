@@ -17,6 +17,10 @@ public class CardDropCommand extends AbstractCommandNoArguments {
     public CardDropCommand(AnimeCardsGame game) {
         super(game);
         name = "drop";
+        help = """
+                drops 3 cards for players to fight for. 
+                You have limited time to grab a card.
+                All cards will be given to players after fight is finished""";
     }
 
     @Override

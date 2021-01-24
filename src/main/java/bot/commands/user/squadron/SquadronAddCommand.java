@@ -14,6 +14,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
         name = "squadronadd";
         aliases = new String[]{"sqa"};
         guildOnly = false;
+        help = "adds your personal cards to squadron. must be provided with list of ids";
     }
 
     @Override

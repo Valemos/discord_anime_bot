@@ -20,7 +20,7 @@ dependencies {
     implementation 'args4j:args4j:2.33'
     implementation 'org.apache.commons:commons-lang3:3.11'
 
-    implementation 'net.dv8tion:JDA:4.2.0_168'
+    implementation 'net.dv8tion:JDA:4.2.0_224'
     implementation 'com.jagrosh:jda-utilities-command:3.0.5'
     implementation 'com.jagrosh:jda-utilities-menu:3.0.5'
 

@@ -16,6 +16,7 @@ public class GrabTimeCommand extends AbstractCommand<GrabTimeCommand.Arguments> 
         super(game, Arguments.class);
         name = "grabtime";
         requiredRole = "admin";
+        help = "used to set #drop timeout";
     }
 
     @Override

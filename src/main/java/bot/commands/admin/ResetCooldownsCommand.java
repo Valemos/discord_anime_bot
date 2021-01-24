@@ -10,6 +10,7 @@ public class ResetCooldownsCommand extends AbstractCommandOptionalPlayer {
         super(game);
         name = "resetcd";
         requiredRole = "admin";
+        help = "resets all cooldowns for player with provided id";
     }
 
     @Override

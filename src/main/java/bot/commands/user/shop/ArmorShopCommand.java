@@ -13,6 +13,7 @@ public class ArmorShopCommand extends AbstractCommand<MenuPageArguments> {
         name = "armorshop";
         aliases = new String[]{"as"};
         guildOnly = false;
+        help = "shows armor shop list. can be provided with page id for quick navigation";
     }
 
     @Override

@@ -13,6 +13,7 @@ public class ExchangeForStockCommand extends AbstractCommand<MultipleIdentifiers
         name = "exchange";
         aliases = new String[]{"e"};
         guildOnly = false;
+        help = "exchanges multiple cards at once for stocks in specific series";
     }
 
     @Override

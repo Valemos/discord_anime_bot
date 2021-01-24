@@ -15,9 +15,16 @@ import java.util.logging.Logger;
 
 public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
 
-    // TODO test this class for correct file loading
     public AddCardsFromFileCommand(AnimeCardsGame game) {
         super(game);
+        name = "cardsfile";
+        ownerCommand = true;
+        guildOnly = false;
+        help = """
+                load .txt file as attachment to command message.
+                it must contain lines in format of `addcard` command
+                <name> <series> <url>
+                any repeated cards by character name and series name will be skipped""";
     }
 
     @Override

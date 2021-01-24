@@ -84,22 +84,22 @@ public class BotMenuCreator {
         if (items.size() > 0){
             Paginator cardsMenu = new Paginator.Builder()
                     .setEventWaiter(game.getEventWaiter())
-                    .setText(title)
+                    .setText('`' + title + '`')
                     .setUsers(event.getAuthor())
                     .waitOnSinglePage(true)
                     .setItems(items.stream()
                             .map(mapper)
                             .toArray(String[]::new))
                     .setItemsPerPage(5)
-                    .setTimeout(10, TimeUnit.MINUTES)
+                    .setTimeout(5, TimeUnit.MINUTES)
+                    .setFinalAction(Message::clearReactions)
                     .build();
 
             cardsMenu.paginate(event.getChannel(), selectedPage);
         }else{
             Message message = new MessageBuilder()
-                    .append(title)
-                    .setEmbed(
-                            new EmbedBuilder()
+                    .setEmbed(new EmbedBuilder()
+                                    .setTitle(title)
                                     .setDescription("Empty")
                                     .build()
                     ).build();

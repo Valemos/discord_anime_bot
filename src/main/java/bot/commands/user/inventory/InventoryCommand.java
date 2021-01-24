@@ -12,6 +12,7 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
         name = "inventory";
         aliases = new String[]{"inv"};
         guildOnly = false;
+        help = "shows all armor items for player with provided id";
     }
 
     @Override

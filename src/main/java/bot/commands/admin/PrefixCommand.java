@@ -9,15 +9,13 @@ public class PrefixCommand extends AbstractCommand<PrefixCommand.Arguments> {
     private final BotAnimeCards bot;
 
     public static class Arguments{
-        @Argument(metaVar = "new prefix", required=true)
+        @Argument(metaVar = "new prefix", required=true, usage = "will be set to this bot as alternative to default prefix")
         String prefix;
     }
 
     public PrefixCommand(BotAnimeCards bot) {
         super(bot.getGame(), Arguments.class);
-
         this.bot = bot;
-
         name = "prefix";
         requiredRole = "admin";
     }

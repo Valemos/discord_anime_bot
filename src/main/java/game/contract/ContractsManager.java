@@ -1,7 +1,6 @@
 package game.contract;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,5 +49,10 @@ public class ContractsManager {
 
     private ContractsContainer getContainer(Class<? extends ContractInterface> contractClass) {
         return containersMap.getOrDefault(contractClass, null);
+    }
+
+    public <T extends ContractInterface> T getForUser(Class<T> contractClass, String userId) {
+        // TODO find contract in container for specific user
+        return null;
     }
 }

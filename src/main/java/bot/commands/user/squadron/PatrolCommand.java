@@ -13,9 +13,7 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
     public static class Arguments{
         PatrolType patrolType;
 
-        @Argument(metaVar = "exploration world \"overworld\" (\"o\") or \"underworld\" (\"u\")",
-                usage = "type of world to send current squadron to",
-                required = true)
+        @Argument(usage = "type of world to send current squadron to", required = true)
         public void setPatrolWorld(PatrolType patrolType) {
             this.patrolType = PatrolType.getTypeNameFromAlias(patrolType);
         }

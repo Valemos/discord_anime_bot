@@ -5,6 +5,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
 import org.kohsuke.args4j.Argument;
+import org.kohsuke.args4j.Option;
 
 public class ModifyCharacterCommand extends AbstractCommand<ModifyCharacterCommand.Arguments> {
 
@@ -12,13 +13,13 @@ public class ModifyCharacterCommand extends AbstractCommand<ModifyCharacterComma
         @Argument(metaVar = "card id", usage = "id of card to modify", required = true)
         String cardId;
 
-        @Argument(index = 1, metaVar = "new character name", required = true)
+        @Option(name = "-name", aliases = {"-n"}, metaVar = "name", usage = "new character")
         String newName;
 
-        @Argument(index = 2, metaVar = "new series name", required = true)
+        @Option(name = "-series", aliases = {"-s"}, metaVar = "series name", usage = "new or existing series")
         String newSeries;
 
-        @Argument(index = 3, metaVar = "new image url", required = true)
+        @Option(name = "-url", aliases = {"-u"}, metaVar = "image url", usage = "set image url")
         String newImageUrl;
     }
 

@@ -1,5 +1,7 @@
 package game.materials;
 
+import javax.annotation.Nullable;
+
 public enum Material {
     GOLD("Gold"),
 
@@ -17,6 +19,15 @@ public enum Material {
 
     Material(String name) {
         this.name = name;
+    }
+
+    @Nullable
+    public static Material fromString(String stringToFind) {
+        try{
+            return Material.valueOf(stringToFind.toUpperCase());
+        }catch(IllegalArgumentException e){
+            return null;
+        }
     }
 
     public String getName() {

@@ -11,6 +11,7 @@ public class BuyArmorCommand extends AbstractBuyCommand {
         name = "buyarmor";
         aliases = new String[]{"buya"};
         guildOnly = false;
+        help = "buys a specific item from armor shop";
     }
 
     @Override

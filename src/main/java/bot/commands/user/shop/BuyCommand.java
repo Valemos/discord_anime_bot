@@ -10,6 +10,7 @@ public class BuyCommand extends AbstractBuyCommand {
         super(game);
         name = "buy";
         guildOnly = false;
+        help = "buys a specific item from power ups shop";
     }
 
     @Override

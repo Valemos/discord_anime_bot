@@ -11,6 +11,7 @@ public class StockCollectionValueCommand extends AbstractCommandOptionalPlayer {
         super(game);
         name = "collectionvalue";
         guildOnly = false;
+        help = "shows total sum of stock values of player with provided id";
     }
 
     @Override

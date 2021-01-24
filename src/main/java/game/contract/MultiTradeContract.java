@@ -1,9 +1,11 @@
 package game.contract;
 
 import game.AnimeCardsGame;
+import game.ArmorItemPersonal;
 import game.Player;
 import game.cards.CardPersonal;
 import game.materials.MaterialsSet;
+import game.player_objects.StockValue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,5 +47,17 @@ public class MultiTradeContract extends AbstractContract {
     @Override
     public String getMoreInfo() {
         return null;
+    }
+
+    public void addCards(List<CardPersonal> cards) {
+
+    }
+
+    public void addArmor(List<ArmorItemPersonal> armorItems) {
+
+    }
+
+    public void addStocks(List<StockValue> stockValues) {
+
     }
 }

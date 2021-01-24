@@ -21,13 +21,13 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
         @Argument(metaVar = "user id", usage = "user id to show collection for")
         String userId;
 
-        @Option(metaVar = "filter name", name = "-name", aliases = {"-n"})
+        @Option(metaVar = "name", name = "-name", aliases = {"-n"}, usage = "name to filter collection")
         String filterName;
 
-        @Option(metaVar = "filter series", name = "-series", aliases = {"-s"})
+        @Option(metaVar = "series", name = "-series", aliases = {"-s"}, usage = "series name to filter collection")
         String filterSeries;
 
-        @Option(metaVar = "sorting type", name = "-o")
+        @Option(metaVar = "sorting type", name = "-o", usage = "ordering options")
         List<SortingType> sortingTypes = new ArrayList<>();
     }
 
@@ -35,6 +35,7 @@ public class ShowCollectionCommand extends AbstractCommand<ShowCollectionCommand
         super(game, Arguments.class);
         name = "collection";
         aliases = new String[]{"c"};
+        help = "all multi word arguments must be in quotes (\" \")\n" + help;
     }
 
     @Override

@@ -12,6 +12,7 @@ public class MaterialsCommand extends AbstractCommandOptionalPlayer {
         name = "materials";
         aliases = new String[]{"mats"};
         guildOnly = false;
+        help = "shows all materials for player with provided id";
     }
 
     @Override

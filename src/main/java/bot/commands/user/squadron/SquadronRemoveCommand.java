@@ -12,6 +12,7 @@ public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersAr
         name = "squadronremove";
         aliases = new String[]{"sqr"};
         guildOnly = false;
+        help = "removes your personal cards to squadron. must be provided with list of ids";
     }
 
     @Override

@@ -12,6 +12,7 @@ public class SquadronCommand extends AbstractCommandNoArguments {
         name = "squadron";
         aliases = new String[]{"sq"};
         guildOnly = false;
+        help = "shows status of your current squadron";
     }
 
     @Override

@@ -12,6 +12,7 @@ public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
         super(game);
         name = "stocks";
         guildOnly = false;
+        help = "shows all stock values of player with provided id";
     }
 
     @Override

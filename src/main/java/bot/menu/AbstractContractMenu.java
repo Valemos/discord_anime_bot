@@ -36,7 +36,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
     }
 
     protected void displayMenu(MessageChannel channel, EventHandlerButtonMenu menu) {
-        Message message = new MessageBuilder().append("d").build();
+        Message message = new MessageBuilder().append("...").build();
         channel.sendMessage(message).queue(
                 resultMessage -> {
                     menu.display(resultMessage);

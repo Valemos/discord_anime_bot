@@ -13,6 +13,7 @@ public class ShopCommand extends AbstractCommand<MenuPageArguments> {
         name = "shop";
         aliases = new String[]{"s"};
         guildOnly = false;
+        help = "shows power up items shop. can be provided with page id for quick navigation (for multiple pages)";
     }
 
     @Override

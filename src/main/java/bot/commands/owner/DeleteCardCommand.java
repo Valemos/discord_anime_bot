@@ -10,13 +10,13 @@ import org.kohsuke.args4j.Option;
 public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Arguments> {
 
     public static class Arguments{
-        @Argument(metaVar = "card name", usage = "specify name or parts of name of character card")
+        @Argument(metaVar = "card name", usage = "specify name or parts of name in quotes\nif it has multiple words (\" \")")
         String name;
 
-        @Argument(metaVar = "card series", index = 1, usage = "specify series name for card")
+        @Argument(metaVar = "card series", index = 1, usage = "also must be specified in quotes\nif it has multiple words (\" \")")
         String series;
 
-        @Option(metaVar = "card identifier", name = "-id", usage = "card Id to delete")
+        @Option(metaVar = "card id", name = "-id", usage = "optional card id to delete (overrides name and series)")
         String cardId;
     }
 

@@ -11,6 +11,7 @@ public class StockValueCommand extends AbstractCommand<MultipleWordsArguments> {
         super(game, MultipleWordsArguments.class);
         name = "seriesvalue";
         guildOnly = false;
+        help = "shows stock value for specific series of player with provided id";
     }
 
     @Override
