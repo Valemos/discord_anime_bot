@@ -4,6 +4,7 @@ import bot.commands.SortingType;
 import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
     }
 
     public void update(T element) {
-        dbSession.persist(element);
+        dbSession.merge(element);
     }
 
     public T getById(String id) {
@@ -51,7 +52,7 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
         return filterQuery.from(cardClass);
     }
 
-    @NotNull
+    @Nonnull
     protected List<Predicate> getNameSeriesPredicates(CriteriaBuilder cb, Root<T> root, String name, String series) {
         List<Predicate> predicates = new ArrayList<>(2);
 

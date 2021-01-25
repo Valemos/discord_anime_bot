@@ -14,15 +14,19 @@ import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
 import game.player_objects.StockValueId;
 import net.dv8tion.jda.api.entities.User;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
@@ -46,26 +50,47 @@ public class AnimeCardsGame {
 
     public void setSession(Session dbSession){
         cardsGlobalManager = new CardsGlobalManager(dbSession);
-
         cardsPersonalManager = new CardsPersonalManager(dbSession);
-
         itemsShop = new ItemsShop();
-
-        List<ArmorItem> armorItems = saveArmorItems(dbSession);
+        List<ArmorItem> armorItems = updateArmorItems(dbSession);
         armorShop = new ArmorShop(armorItems);
-
         cardDropManager = new CardDropManager(this, dbSession);
         contractsManager = new ContractsManager();
     }
 
-    private List<ArmorItem> saveArmorItems(Session dbSession) {
+    private List<ArmorItem> updateArmorItems(Session dbSession) {
         List<ArmorItem> armorItems = getArmorItems();
-        dbSession.beginTransaction();
+
         for(ArmorItem armor : armorItems){
-            dbSession.persist(armor);
+            if (armor.getId() == null){
+                try{
+                    dbSession.beginTransaction();
+                    dbSession.save(armor);
+                    dbSession.getTransaction().commit();
+
+                    // catch unique name violation
+                }catch(PersistenceException e){
+                    ArmorItem existing = findArmorByName(dbSession, armor.getName());
+                    armor.setId(existing.getId());
+                    dbSession.merge(armor);
+                }
+            }else{
+                dbSession.merge(armor);
+            }
         }
-        dbSession.getTransaction().commit();
+
+        // TODO write armor ids to json file to update them in future bot instantiation
         return armorItems;
+    }
+
+    private ArmorItem findArmorByName(Session dbSession, String name) {
+        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
+        CriteriaQuery<ArmorItem> q = cb.createQuery(ArmorItem.class);
+        Root<ArmorItem> from = q.from(ArmorItem.class);
+
+        return dbSession.createQuery(
+                q.select(from).where(cb.equal(cb.lower(from.get("name")), name.toLowerCase()))
+        ).uniqueResult();
     }
 
     private List<ArmorItem> getArmorItems() {
@@ -89,7 +114,7 @@ public class AnimeCardsGame {
         return eventWaiter;
     }
 
-    @NotNull
+    @Nonnull
     public Player getOrCreatePlayer(String playerId) {
         Player player = getPlayer(playerId);
         return player != null ? player : createNewPlayer(playerId);
@@ -176,13 +201,13 @@ public class AnimeCardsGame {
         return armorShop;
     }
 
-    @NotNull
+    @Nonnull
     public Squadron getOrCreateSquadron(Player player) {
         Squadron squadron = player.getSquadron();
         return squadron != null ? squadron : createNewSquadron(player);
     }
 
-    @NotNull
+    @Nonnull
     public Squadron createNewSquadron(Player player) {
         Squadron squadron = new Squadron();
         dbSession.beginTransaction();
@@ -210,15 +235,19 @@ public class AnimeCardsGame {
     public float exchangeCardForStock(CardPersonal card) {
         if (burnCard(card)){
             dbSession.beginTransaction();
-            StockValue cardStock = dbSession.get(StockValue.class, new StockValueId(
-                                                        card.getOwner().getId(),
-                                                        card.getCharacterInfo().getSeries().getId()));
+            StockValue cardStock = dbSession.find(
+                    StockValue.class,
+                    new StockValueId(card.getOwner().getId(), card.getCharacterInfo().getSeries().getId())
+            );
+
             if (cardStock != null){
                 cardStock.addCardValue(card);
                 dbSession.merge(cardStock);
             }else{
                 cardStock = new StockValue(card);
-                dbSession.save(cardStock);
+                dbSession.persist(cardStock);
+                cardStock.getOwner().getStocks().add(cardStock);
+                dbSession.merge(cardStock.getOwner());
             }
             dbSession.getTransaction().commit();
 

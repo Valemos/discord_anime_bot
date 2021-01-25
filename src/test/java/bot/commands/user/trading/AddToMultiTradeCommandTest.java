@@ -80,6 +80,7 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
         CardPersonal card1 = getTesterCard(0);
         game().exchangeCardForStock(card1);
+        game().exchangeCardForStock(getTesterCard(1));
 
         CardPersonal card2 = tester2().getCards().get(0);
         game().exchangeCardForStock(card2);
@@ -103,6 +104,18 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
     @Test
     void testAddedMaximumStockValue_ifPlayerHasLessThanSpecified() {
+        CardPersonal card1 = getTesterCard(0);
+        float maxValue = game().exchangeCardForStock(card1);
+
+        send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue + 100));
+
+        assertEquals(1, getMultiTrade().getSenderStocks().size());
+        assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
+        assertEquals(maxValue, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
+    }
+
+    @Test
+    void testAddStockValueWithMinus() {
         CardPersonal card1 = getTesterCard(0);
         float maxValue = game().exchangeCardForStock(card1);
 

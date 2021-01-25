@@ -106,7 +106,7 @@ class CardDropCommandTest extends MessageSenderTester {
         int prevSize = tester().getCards().size();
 
         String messageId = "111";
-        sender.sendAndCaptureMessage("#drop", tester().getId(), messageId);
+        sendAndCapture("#drop", tester().getId(), messageId);
 
         CardGlobal card = sender.cardGlobal1;
 

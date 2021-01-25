@@ -42,6 +42,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,7 +100,7 @@ public class BotAnimeCards {
         return builder.build();
     }
 
-    @NotNull
+    @Nonnull
     private CommandClientBuilder getCommandClientBuilder(String altPrefix) {
         CommandClientBuilder builder = new CommandClientBuilder()
                 .setOwnerId("797845777618698240")
@@ -186,7 +187,7 @@ public class BotAnimeCards {
         };
     }
 
-    @NotNull
+    @Nonnull
     JDA buildJDA(String token) throws LoginException {
         return JDABuilder.createDefault(token).addEventListeners(commandListener, eventWaiter).build();
     }

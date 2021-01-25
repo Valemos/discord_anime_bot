@@ -1,7 +1,5 @@
 package game.cards;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -69,8 +67,4 @@ public class CardStatsConstant implements CardStats{
         return "charisma:" + charisma.getName() + " rating: " + approvalRating + " dex: " + dexterity + " str: " + strength + " wis: " + wisdom;
     }
 
-    @Override
-    public int compareTo(@NotNull CardStats o) {
-        return 0;
-    }
 }

@@ -8,7 +8,10 @@ import game.player_objects.ArmorItemPersonal;
 import game.player_objects.CooldownSet;
 import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.*;
 
@@ -114,7 +117,7 @@ public class Player {
         this.squadron = squadron;
     }
 
-
+    @Nonnull
     public CooldownSet getCooldowns() {
         return cooldowns;
     }
@@ -148,4 +151,5 @@ public class Player {
                         .ifPresent(playerStock -> playerStock.incrementValue(sign * stocks.get(seriesInfo)))
                 ).close();
     }
+
 }

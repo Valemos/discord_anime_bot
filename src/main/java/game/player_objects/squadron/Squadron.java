@@ -6,6 +6,7 @@ import game.cards.ComparableCard;
 import game.materials.MaterialsSet;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.*;
@@ -150,7 +151,7 @@ public class Squadron {
                 + getPowerUpsDescription();
     }
 
-    @NotNull
+    @Nonnull
     private String getMembersDescription() {
         return getSortedMembers().stream()
                 .map(c -> c.getIdName() + " (" + c.getHealthState().toString() + ')')

@@ -16,7 +16,8 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long id = -1;
+    @Column(unique = true)
     private String name;
     private float armorValue = 0;
 
@@ -44,7 +45,7 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
         s.beginTransaction();
 
         ArmorItemPersonal itemPersonal = new ArmorItemPersonal(this);
-        s.persist(itemPersonal);
+        s.save(itemPersonal);
         player = s.load(Player.class, player.getId());
         player.getArmorItems().add(itemPersonal);
 
@@ -53,7 +54,7 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
 
     @Override
     public String getId() {
-        return String.valueOf(id);
+        return id == -1 ? null : String.valueOf(id);
     }
 
     @Override

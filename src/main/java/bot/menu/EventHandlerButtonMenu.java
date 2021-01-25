@@ -22,6 +22,8 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.internal.utils.Checks;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+
 public class EventHandlerButtonMenu extends Menu
 {
     private final Color color;
@@ -100,7 +102,7 @@ public class EventHandlerButtonMenu extends Menu
                 event -> handleAcceptReaction(event, message));
     }
 
-    @NotNull
+    @Nonnull
     private String getReaction(MessageReactionAddEvent event) {
         return event.getReaction().getReactionEmote().isEmote()
                 ? event.getReaction().getReactionEmote().getId()

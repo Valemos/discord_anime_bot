@@ -16,9 +16,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import org.jetbrains.annotations.NotNull;
+import org.hibernate.Session;
 import org.mockito.*;
 
+import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
 import java.util.Arrays;
 import java.util.List;
@@ -70,6 +71,7 @@ public class BotMessageSenderMock {
 
     private BotAnimeCards spyBot;
     private AnimeCardsGame spyGame;
+    private Session databaseSession;
 
     private AbstractCommand<?>[] spyCommands;
 
@@ -87,13 +89,16 @@ public class BotMessageSenderMock {
         initBotSettings();
     }
 
-    @NotNull
+    @Nonnull
     private BotAnimeCards initSpyBot() throws LoginException {
 
         spyBot = Mockito.spy(new BotAnimeCards(mEventWaiter));
         spyBot.loadSettings("hibernate_test.cfg.xml");
         spyGame = spy(spyBot.getGame());
         spyBot.setGame(spyGame);
+
+        databaseSession = spyGame.getDatabaseSession();
+
 
         spyOnCommands();
         setDropTimerMock();
@@ -128,7 +133,8 @@ public class BotMessageSenderMock {
     }
 
     private void initBotSettings() {
-        spyBot.getGame().setSession(spyGame.getDatabaseSession());
+        clearArmorItemsDatabase();
+        spyBot.getGame().setSession(databaseSession);
         spyBot.loadTestGameSettings(spyGame);
         tester1 = spyBot.getGame().getOrCreatePlayer("409754559775375371");
         tester2 = spyBot.getGame().getOrCreatePlayer("347162620996091904");
@@ -138,6 +144,12 @@ public class BotMessageSenderMock {
         cardGlobal1 = cardsGlobal.get(0);
 
         initMessageEventMock();
+    }
+
+    private void clearArmorItemsDatabase() {
+        databaseSession.beginTransaction();
+        databaseSession.createQuery("delete from ArmorItem");
+        databaseSession.getTransaction().commit();
     }
 
     private void initMessageEventMock() {
@@ -253,6 +265,7 @@ public class BotMessageSenderMock {
 
     public void resetGame() {
         initBotSettings();
+        setDropTimerMock();
         getGame().getOrCreatePlayer(tester1.getId()).getCooldowns().reset();
         getGame().getOrCreatePlayer(tester2.getId()).getCooldowns().reset();
     }

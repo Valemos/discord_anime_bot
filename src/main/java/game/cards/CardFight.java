@@ -23,8 +23,13 @@ public class CardFight {
     }
 
     public String findWinner() {
-        int randomIndex = new Random().nextInt(playerPickDelay.size());
-        winnerId = new ArrayList<>(playerPickDelay.keySet()).get(randomIndex);
+        if (playerPickDelay.size() <= 1){
+            winnerId = playerPickDelay.keySet().stream().findFirst().orElse(null);
+        }else{
+            // TODO maybe change how winner should be found
+            int randomIndex = new Random().nextInt(playerPickDelay.size());
+            winnerId = new ArrayList<>(playerPickDelay.keySet()).get(randomIndex);
+        }
 
         return winnerId;
     }

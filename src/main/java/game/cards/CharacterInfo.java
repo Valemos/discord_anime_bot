@@ -11,7 +11,10 @@ public class CharacterInfo {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "base36_card_global")
     @GenericGenerator(name = "base36_card_global", strategy = "bot.Base36SequenceGenerator")
     private String id;
+
+    @Column(unique = true)
     private String name;
+
     private String imageUrl;
 
     @OneToOne

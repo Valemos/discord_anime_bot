@@ -7,15 +7,17 @@ import game.cards.SeriesInfo;
 import javax.persistence.*;
 
 @Entity
-@IdClass(StockValueId.class)
 public class StockValue {
 
-    @Id
-    @ManyToOne
+    @EmbeddedId
+    private StockValueId compositeId;
+
+    @MapsId(value = "ownerId")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Player owner;
 
-    @Id
-    @OneToOne
+    @MapsId(value = "seriesId")
+    @ManyToOne
     private SeriesInfo series;
 
     private float value;
@@ -30,9 +32,18 @@ public class StockValue {
 
     public StockValue(CardPersonal card) {
         series = card.getCharacterInfo().getSeries();
+        value = getCardValue(card);
         owner = card.getOwner();
         owner.getStocks().add(this);
-        value = getCardValue(card);
+        compositeId = new StockValueId(owner.getId(), series.getId());
+    }
+
+    public StockValueId getId() {
+        return compositeId;
+    }
+
+    public void setId(StockValueId id) {
+        this.compositeId = id;
     }
 
     public void addCardValue(CardPersonal card) {

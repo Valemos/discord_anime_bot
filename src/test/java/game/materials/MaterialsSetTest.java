@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MaterialsSetTest {
@@ -15,12 +17,12 @@ class MaterialsSetTest {
         emptySet = new MaterialsSet();
     }
 
-    @NotNull
+    @Nonnull
     private MaterialsSet getMaterialsSet(int gold) {
         return getMaterialsSet(gold, 0);
     }
 
-    @NotNull
+    @Nonnull
     private MaterialsSet getMaterialsSet(int gold, int diamond) {
         MaterialsSet newSet = new MaterialsSet();
         newSet.setAmount(Material.GOLD, gold);

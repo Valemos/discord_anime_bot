@@ -1,7 +1,5 @@
 package game.cards;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
@@ -98,11 +96,6 @@ public class CardStatsGlobal implements CardStats {
 
     public void setCharisma(Charisma charisma) {
         this.charisma = charisma;
-    }
-
-    @Override
-    public int compareTo(@NotNull CardStats o) {
-        return 0;
     }
 
     @Transient

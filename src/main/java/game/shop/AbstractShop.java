@@ -6,6 +6,7 @@ import game.Player;
 import game.materials.MaterialsSet;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public abstract class AbstractShop {
         this.messageTitle = messageTitle;
     }
 
-    public boolean tryBuyItem(AnimeCardsGame game, Player player, @NotNull AbstractShopItem item) {
+    public boolean tryBuyItem(AnimeCardsGame game, Player player, @Nonnull AbstractShopItem item) {
 
         MaterialsSet playerMaterials = player.getMaterials();
         MaterialsSet itemCost = item.getItemCost();
@@ -61,7 +62,7 @@ public abstract class AbstractShop {
         return messageTitle;
     }
 
-    @NotNull
+    @Nonnull
     public String getMessageCostIsHigh(AbstractShopItem item, Player player) {
         return "cannot buy " + item.getName()
                 + "\nyou have:\n"
