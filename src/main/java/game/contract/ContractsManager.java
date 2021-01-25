@@ -33,9 +33,12 @@ public class ContractsManager {
     public <T extends AbstractContract> T getForUser(Class<T> contractClass, String userId) {
         AbstractContract abstractContract = contractsMap.values().stream()
                 .filter(contract -> contract.isOwner(userId))
-                .filter(contract -> contract.getClass().getDeclaringClass().equals(contractClass))
+                .filter(contract -> contract.getClass().isAssignableFrom(contractClass))
                 .findFirst().orElse(null);
-
-        return contractClass.cast(abstractContract);
+        if (abstractContract != null){
+            return contractClass.cast(abstractContract);
+        }else{
+            return null;
+        }
     }
 }

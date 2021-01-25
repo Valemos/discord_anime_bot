@@ -22,15 +22,15 @@ public class MessageSenderTester {
         sender.reset();
     }
 
-    protected Player tester() {
+    public Player tester() {
         return sender.tester();
     }
 
-    protected Player tester2(){
+    public Player tester2(){
         return sender.loadTester(sender.tester2);
     }
 
-    protected AnimeCardsGame game() {
+    public AnimeCardsGame game() {
         return sender.getGame();
     }
 

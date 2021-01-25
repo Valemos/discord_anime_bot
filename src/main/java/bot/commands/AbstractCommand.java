@@ -51,7 +51,7 @@ public abstract class AbstractCommand<T> extends Command {
     @Override
     public void execute(CommandEvent event) {
         String userId = event.getAuthor().getId();
-        player = game.getPlayer(userId);
+        player = game.getOrCreatePlayer(userId);
 
         commandArgs = createArgumentsInstance(argumentsClass);
 

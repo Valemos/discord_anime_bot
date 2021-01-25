@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.hibernate.Session;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -53,7 +54,6 @@ public class AnimeCardsGame {
         List<ArmorItem> armorItems = saveArmorItems(dbSession);
         armorShop = new ArmorShop(armorItems);
 
-
         cardDropManager = new CardDropManager(this, dbSession);
         contractsManager = new ContractsManager();
     }
@@ -89,9 +89,15 @@ public class AnimeCardsGame {
         return eventWaiter;
     }
 
-    public Player getPlayer(String playerId) {
-        Player player = dbSession.get(Player.class, playerId);
+    @NotNull
+    public Player getOrCreatePlayer(String playerId) {
+        Player player = getPlayer(playerId);
         return player != null ? player : createNewPlayer(playerId);
+    }
+
+    @Nullable
+    public Player getPlayer(String playerId) {
+        return dbSession.get(Player.class, playerId);
     }
 
     public Player createNewPlayer(String playerId) {

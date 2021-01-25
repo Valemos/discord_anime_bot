@@ -55,7 +55,7 @@ public class BotMessageSenderMock {
     @Mock
     private MessageChannel mMessageChannel;
     @Mock
-    private MessageAction mMessageAction;
+    public MessageAction mMessageAction;
     @Mock
     private JDA mJDA;
     @Captor
@@ -128,9 +128,10 @@ public class BotMessageSenderMock {
     }
 
     private void initBotSettings() {
+        spyBot.getGame().setSession(spyGame.getDatabaseSession());
         spyBot.loadTestGameSettings(spyGame);
-        tester1 = spyBot.getGame().getPlayer("409754559775375371");
-        tester2 = spyBot.getGame().getPlayer("347162620996091904");
+        tester1 = spyBot.getGame().getOrCreatePlayer("409754559775375371");
+        tester2 = spyBot.getGame().getOrCreatePlayer("347162620996091904");
         testerDefault = tester1;
 
         cardsGlobal = spyBot.getGame().getCardsGlobal().getAllCards();
@@ -252,7 +253,8 @@ public class BotMessageSenderMock {
 
     public void resetGame() {
         initBotSettings();
-        getGame().getPlayer(testerDefault.getId()).getCooldowns().reset();
+        getGame().getOrCreatePlayer(tester1.getId()).getCooldowns().reset();
+        getGame().getOrCreatePlayer(tester2.getId()).getCooldowns().reset();
     }
 
     public BotAnimeCards getBot() {
@@ -292,6 +294,11 @@ public class BotMessageSenderMock {
     }
 
     public Player loadTester(Player tester) {
-        return spyBot.getGame().getPlayer(tester.getId());
+        return spyBot.getGame().getOrCreatePlayer(tester.getId());
+    }
+
+    public void assertMessageQueueWithoutConsumer() {
+        verify(mMessageAction, atLeastOnce()).queue();
+        verify(mMessageAction, never()).queue(any());
     }
 }

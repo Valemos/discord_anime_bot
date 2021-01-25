@@ -19,8 +19,8 @@ public class MultiTradeCommand extends AbstractCommand<RequiredPlayerArguments> 
     @Override
     public void handle(CommandEvent event) {
         Player targetPlayer = game.getPlayer(commandArgs.id);
-        if (targetPlayer == null){
-            sendMessage(event, "cannot find player with id " + commandArgs.id);
+        if (targetPlayer == null || targetPlayer.equals(player)){
+            sendMessage(event, "cannot trade with player " + commandArgs.id);
             return;
         }
 

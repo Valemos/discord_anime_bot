@@ -59,7 +59,7 @@ public class CardDropActivity {
     public void selectCard(MessageReactionAddEvent event, AnimeCardsGame game, int cardIndex) {
         Instant now = Instant.now();
 
-        Player player = game.getPlayer(event.getUserId());
+        Player player = game.getOrCreatePlayer(event.getUserId());
         CooldownSet cooldowns = player.getCooldowns();
 
         if (cooldowns.getGrab().tryUse(now)){

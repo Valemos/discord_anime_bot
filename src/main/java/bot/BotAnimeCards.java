@@ -235,8 +235,8 @@ public class BotAnimeCards {
     }
 
     public void loadTestGameSettings(AnimeCardsGame game) {
-        Player tester1 = game.getPlayer("409754559775375371");
-        Player tester2 = game.getPlayer("347162620996091904");
+        Player tester1 = game.getOrCreatePlayer("409754559775375371");
+        Player tester2 = game.getOrCreatePlayer("347162620996091904");
 
         List<CardGlobal> cards = List.of(
                 new CardGlobal(

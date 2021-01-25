@@ -3,16 +3,14 @@ package bot.commands.user.trading;
 import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import game.contract.CardForCardContract;
-import game.contract.ContractsManager;
-import game.contract.SendCardsContract;
+import game.contract.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class MultiTradeCommandTest extends MessageSenderTester {
+class MultiTradeCommandTest extends MessageSenderTester implements InterfaceMultiTradeTest {
 
     private ContractsManager spyContracts;
 
@@ -29,38 +27,51 @@ class MultiTradeCommandTest extends MessageSenderTester {
     @Test
     void testCannotTradeWithNotExistingPlayer() {
         send("#multitrade unknownId");
-        verify(spyContracts, never()).add(any(), any());
+        sender.assertMessageQueueWithoutConsumer();
     }
 
     @Test
     void cannotSendCardsToNotExistingPlayer() {
         send("#sendcards unknownId " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
-        verify(spyContracts, never()).add(any(), any());
+        sender.assertMessageQueueWithoutConsumer();
     }
 
     @Test
     void testCannotExchangeCardsWithUnknownPlayer() {
         send("#tradecards unknownId " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
-        verify(spyContracts, never()).add(any(), any());
+        sender.assertMessageQueueWithoutConsumer();
     }
 
     @Test
-    void testCannotTradeWithYourself() {
+    void testCannotTradeCardsWithYourself() {
         send("#tradecards " + tester().getId());
-        send("#sendcards " + tester().getId());
-        send("#multitrade " + tester().getId());
+        sender.assertMessageQueueWithoutConsumer();
+    }
 
-        verify(spyContracts, never()).add(any(), any());
+    @Test
+    void cannotSendCardsToYourself() {
+        send("#sendcards " + tester().getId());
+        sender.assertMessageQueueWithoutConsumer();
+    }
+
+    @Test
+    void cannotMultiTradeWithYourself() {
+        send("#multitrade " + tester().getId());
+        sender.assertMessageQueueWithoutConsumer();
     }
 
     @Test
     void testCannotSendUnknownCards() {
         CardPersonal card1 = getTesterCard(0);
 
-        send("#sendcards " + tester2().getId() + " unknownCardId " + card1.getId() + " cardId",
+        sendAndCapture("#sendcards " + tester2().getId() + " unknownCardId " + card1.getId() + " cardId",
                 sender.tester1.getId(),
                 "111");
-        verify(spyContracts, never()).add(any(), any());
+
+        SendCardsContract contract = getContract(tester(), SendCardsContract.class);
+
+        assertEquals(1, contract.getCards().size());
+        assertEquals(card1.getId(), contract.getCards().get(0).getId());
 
         assertTrue(tester().getCards().contains(card1));
         assertFalse(tester2().getCards().contains(card1));
@@ -93,7 +104,7 @@ class MultiTradeCommandTest extends MessageSenderTester {
         int collectionSize = tester2().getCards().size();
 
         send("#sendcards " + tester2().getId() + " " + card.getId(), sender.tester1.getId(), "111");
-        verify(spyContracts, never()).add(any(), any());
+        sender.assertMessageQueueWithoutConsumer();
 
         int newSize = tester2().getCards().size();
         assertEquals(collectionSize, newSize);
@@ -124,24 +135,25 @@ class MultiTradeCommandTest extends MessageSenderTester {
     void testExchangeAnyCardUnknown() {
         CardPersonal card1 = getTesterCard(0);
 
-        send("#tradecards " + tester2().getId() + " " + card1.getId() + " unknownId",
+        send("#tradecards " + card1.getId() + " unknownId",
                 sender.tester1.getId(),
                 "111");
+
+        send("#tradecards " + " unknownId" + card1.getId(),
+                sender.tester1.getId(),
+                "111");
+
         verify(spyContracts, never()).add(any(), any());
     }
 
     @Test
-    void testMultiTradeUnknownMaterial() {
-        send("#multitrade -m unknown=100");
-    }
+    void testMultiTradeContractFound() {
+        sendAndCapture("#multitrade " + tester2().getId());
 
-    @Test
-    void testMultiTradeMaterialAmountNotInteger() {
-        send("#multitrade -m unknown=hello");
-        send("#multitrade -m unknown=\"multi words\"");
-        send("#multitrade -m unknown=100.568");
-        send("#multitrade -m unknown=100,568");
-        send("#multitrade -m unknown= -m hello= 20");
+        MultiTradeContract contract = getMultiTrade();
+        assertNotNull(contract);
 
+        contract = getContract(tester2(), MultiTradeContract.class);
+        assertNotNull(contract);
     }
 }

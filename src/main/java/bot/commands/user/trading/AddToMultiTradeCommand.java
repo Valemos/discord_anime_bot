@@ -12,8 +12,7 @@ import game.materials.MaterialsSet;
 import game.player_objects.StockValue;
 import org.kohsuke.args4j.Option;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeCommand.Arguments> {
@@ -21,16 +20,16 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
     public static class Arguments {
 
         @Option(name = "-card", aliases = {"-c"}, usage = "personal card id")
-        List<String> cardIds;
+        List<String> cardIds = new ArrayList<>();
 
         @Option(name = "-armor", aliases = {"-a"}, usage = "armor item id")
-        List<String> armorIds;
+        List<String> armorIds = new ArrayList<>();
 
         @Option(name = "-material", aliases = {"-m"}, usage = "specify material amounts in format -m <material_name>=<amount>")
-        Map<String, Integer> materialsMap;
+        Map<String, String> materialsMap = new HashMap<>();
 
         @Option(name = "-stock", aliases = {"-s"}, usage = "series name with stock value you want to give in format <name>=<float amount>")
-        Map<String, Float> stockValuesMap;
+        Map<String, String> stockValuesMap = new HashMap<>();
     }
 
     public AddToMultiTradeCommand(AnimeCardsGame game) {
@@ -55,23 +54,39 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
         Map<SeriesInfo, Float> stockValues = getStocks(commandArgs.stockValuesMap);
         MaterialsSet materialsSet = getMaterialsSet(commandArgs.materialsMap);
 
-        contract.addCards(playerId, cards);
-        contract.addArmor(playerId, armorItems);
-        contract.addStocks(playerId, stockValues);
-        contract.addMaterials(playerId, materialsSet);
+        if (!cards.isEmpty())           contract.addCards(playerId, cards);
+        if (!armorItems.isEmpty())      contract.addArmor(playerId, armorItems);
+        if (!stockValues.isEmpty())     contract.addStocks(playerId, stockValues);
+        if (!materialsSet.isEmpty())    contract.addMaterials(playerId, materialsSet);
 
         contract.buildMenu(game).sendMenu(event);
     }
 
-    private MaterialsSet getMaterialsSet(Map<String, Integer> materialsMap) {
+    private MaterialsSet getMaterialsSet(Map<String, String> materialsMap) {
         MaterialsSet materialsSet = new MaterialsSet();
         for(String key : materialsMap.keySet()){
             Material material = Material.fromString(key);
             if (material != null) {
-                materialsSet.addAmount(material, materialsMap.get(key));
+                Integer amount = tryParseInteger(materialsMap.get(key));
+                if (amount != null) materialsSet.addAmount(material, amount);
             }
         }
         return materialsSet;
+    }
+
+    private Map<SeriesInfo, Float> getStocks(Map<String, String> stockValues) {
+        return player.getStocks().stream()
+                .filter(stock -> stockValues.containsKey(stock.getSeries().getName()))
+                .map(stock -> {
+                    Float stockIncrement = tryParseFloat(stockValues.get(stock.getSeries().getName()));
+                    if (stockIncrement != null){
+                        return new StockValue(stock.getSeries(),stock.getValue() - stockIncrement);
+                    }else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(StockValue::getSeries, StockValue::getValue));
     }
 
     private List<ArmorItemPersonal> getArmorItems(List<String> armorIds) {
@@ -80,14 +95,21 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
                 .collect(Collectors.toList());
     }
 
-    private Map<SeriesInfo, Float> getStocks(Map<String, Float> stockValues) {
-        return player.getStocks().stream()
-                .filter(stock -> stockValues.containsKey(stock.getSeries().getName()))
-                .map(stock -> new StockValue(
-                        stock.getSeries(),
-                        stock.getValue() - stockValues.get(stock.getSeries().getName())
-                ))
-                .collect(Collectors.toMap(StockValue::getSeries, StockValue::getValue));
+
+    private Integer tryParseInteger(String string) {
+        try{
+            return Integer.parseInt(string);
+        }catch (NumberFormatException e){
+            return null;
+        }
+    }
+
+    private Float tryParseFloat(String string) {
+        try{
+            return Float.parseFloat(string);
+        }catch (NumberFormatException e){
+            return null;
+        }
     }
 
     private List<CardPersonal> getCards(List<String> cardIds) {

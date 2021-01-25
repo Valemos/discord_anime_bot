@@ -33,6 +33,10 @@ public class MaterialsSet {
         return materials;
     }
 
+    public boolean isEmpty() {
+        return materials.isEmpty();
+    }
+
     public void setAmount(Material material, int newAmount){
         materials.put(material, newAmount);
     }
@@ -83,5 +87,4 @@ public class MaterialsSet {
         }
         return null;
     }
-
 }

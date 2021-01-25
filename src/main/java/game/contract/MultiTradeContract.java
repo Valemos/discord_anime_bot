@@ -109,4 +109,36 @@ public class MultiTradeContract extends AbstractContract {
     private void incrementValue(Map<SeriesInfo, Float> map, SeriesInfo key, Float increment) {
         map.put(key, increment + map.get(key));
     }
+
+    public Set<CardPersonal> getSenderCards() {
+        return senderCards;
+    }
+
+    public Set<CardPersonal> getReceiverCards() {
+        return receiverCards;
+    }
+
+    public Set<ArmorItemPersonal> getSenderArmor() {
+        return senderArmor;
+    }
+
+    public Set<ArmorItemPersonal> getReceiverArmor() {
+        return receiverArmor;
+    }
+
+    public Map<SeriesInfo, Float> getSenderStocks() {
+        return senderStocks;
+    }
+
+    public Map<SeriesInfo, Float> getReceiverStocks() {
+        return receiverStocks;
+    }
+
+    public MaterialsSet getSenderMaterials() {
+        return senderMaterials;
+    }
+
+    public MaterialsSet getReceiverMaterials() {
+        return receiverMaterials;
+    }
 }

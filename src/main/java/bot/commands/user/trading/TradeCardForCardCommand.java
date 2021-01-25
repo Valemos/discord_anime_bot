@@ -28,8 +28,8 @@ public class TradeCardForCardCommand extends AbstractCommand<TradeCardForCardCom
     @Override
     public void handle(CommandEvent event) {
         Player targetPlayer = game.getCardPersonalOwner(commandArgs.receiveCardId);
-        if (targetPlayer == null){
-            sendMessage(event, "cannot find card owner for " + commandArgs.receiveCardId);
+        if (targetPlayer == null || targetPlayer.equals(player)){
+            sendMessage(event, "cannot trade with player " + commandArgs.receiveCardId);
             return;
         }
 
