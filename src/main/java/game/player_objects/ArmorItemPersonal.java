@@ -1,6 +1,7 @@
-package game;
+package game.player_objects;
 
 import bot.Base36SequenceGenerator;
+import game.DescriptionDisplayable;
 import game.shop.items.ArmorItem;
 import org.hibernate.annotations.GenericGenerator;
 

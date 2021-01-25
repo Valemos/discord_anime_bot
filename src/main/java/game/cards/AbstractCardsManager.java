@@ -35,13 +35,8 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
     }
 
     public T getById(String id) {
-        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
-        Root<T> root = getQueryRoot(cb);
-
         try{
-            return dbSession.createQuery(
-                    filterQuery.select(root).where(cb.equal(root.get("id"), id))
-            ).getSingleResult();
+            return dbSession.get(cardClass, id);
         }catch(NoResultException e){
             return null;
         }

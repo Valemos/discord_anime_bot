@@ -15,6 +15,6 @@ public interface ComparableCard {
     }
 
     static int comparatorPrint(ComparableCard c1, ComparableCard c2) {
-        return Integer.compare(c2.getPrint(), c1.getPrint());
+        return Integer.compare(c1.getPrint(), c2.getPrint());
     }
 }

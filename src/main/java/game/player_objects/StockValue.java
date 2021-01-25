@@ -23,6 +23,11 @@ public class StockValue {
     public StockValue() {
     }
 
+    public StockValue(SeriesInfo series, float value) {
+        this.series = series;
+        this.value = value;
+    }
+
     public StockValue(CardPersonal card) {
         series = card.getCharacterInfo().getSeries();
         owner = card.getOwner();
@@ -62,7 +67,16 @@ public class StockValue {
         this.value = value;
     }
 
+    public void incrementValue(Float increment) {
+        value += increment;
+    }
+
     public String getNameValue() {
         return series.getName() + " - " + value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StockValue && (series.getId() == (((StockValue) obj).getSeries().getId()));
     }
 }

@@ -1,7 +1,7 @@
 package game.shop.items;
 
 import game.AnimeCardsGame;
-import game.ArmorItemPersonal;
+import game.player_objects.ArmorItemPersonal;
 import game.DescriptionDisplayable;
 import game.Player;
 import game.materials.Material;

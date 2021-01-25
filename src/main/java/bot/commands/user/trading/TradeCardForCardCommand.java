@@ -12,10 +12,10 @@ import org.kohsuke.args4j.Argument;
 public class TradeCardForCardCommand extends AbstractCommand<TradeCardForCardCommand.Arguments> {
 
     public static class Arguments{
-        @Argument(metaVar = "send card id", required = true)
+        @Argument(metaVar = "card id", usage = "from your collection", required = true)
         String sendCardId;
 
-        @Argument(index = 1, metaVar = "receive card id", required = true)
+        @Argument(index = 1, metaVar = "receive card id", usage = "card owner will be notified about this contract", required = true)
         String receiveCardId;
     }
 
@@ -56,7 +56,6 @@ public class TradeCardForCardCommand extends AbstractCommand<TradeCardForCardCom
                 receiveCard
         );
 
-        CardForCardContractMenu menu = new CardForCardContractMenu(game, contract);
-        menu.sendMenu(event);
+        contract.buildMenu(game).sendMenu(event);
     }
 }

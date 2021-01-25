@@ -49,9 +49,8 @@ public class DeleteCardCommand extends AbstractCommand<DeleteCardCommand.Argumen
         }
 
         if (card != null){
-            String cardName = card.getCharacterInfo().getFullName();
             game.removeCard(card);
-            sendMessage(event, String.format("card \"%s\" was deleted", cardName));
+            sendMessage(event, String.format("card \"%s\" was deleted", card.getCharacterInfo().getFullName()));
         }else{
             sendMessage(event, String.format("card with id: %s was not found", commandArgs.cardId));
         }

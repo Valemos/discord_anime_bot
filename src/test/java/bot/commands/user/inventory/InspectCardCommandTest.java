@@ -23,7 +23,7 @@ class InspectCardCommandTest extends MessageSenderTester {
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);
         assertEquals("riko", cmd.getArgumentsObject().getCardName());
-        assertNull(cmd.getArgumentsObject().getSeriesName());
+        assertNull(cmd.getArgumentsObject().seriesName);
     }
 
     @Test
@@ -33,7 +33,7 @@ class InspectCardCommandTest extends MessageSenderTester {
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);
         assertEquals("haruhi suzum", cmd.getArgumentsObject().getCardName());
-        assertNull(cmd.getArgumentsObject().getSeriesName());
+        assertNull(cmd.getArgumentsObject().seriesName);
     }
 
     @Test
@@ -43,7 +43,7 @@ class InspectCardCommandTest extends MessageSenderTester {
 
         InspectCardCommand cmd = (InspectCardCommand) sender.findSpyCommand(InspectCardCommand.class);
         assertEquals("haruhi suzum", cmd.getArgumentsObject().getCardName());
-        assertEquals("haruhi no", cmd.getArgumentsObject().getSeriesName());
+        assertEquals("haruhi no", cmd.getArgumentsObject().seriesName);
     }
 
     @Test

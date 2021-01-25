@@ -1,7 +1,11 @@
 package game.contract;
 
+import bot.menu.AbstractContractMenu;
 import game.AnimeCardsGame;
 import game.Player;
+import org.hibernate.Session;
+
+import java.lang.reflect.InvocationTargetException;
 
 public abstract class AbstractContract implements ContractInterface {
 
@@ -9,20 +13,50 @@ public abstract class AbstractContract implements ContractInterface {
 
     protected String senderId;
     protected boolean senderConfirmed = false;
-    protected String recipientId;
+    protected String receiverId;
     protected boolean recipientConfirmed = false;
 
-    public AbstractContract(String senderId, String recipientId) {
+    private final Class<? extends AbstractContractMenu<? extends AbstractContract>> menuClass;
+    protected AbstractContractMenu<? extends AbstractContract> menu;
+
+    public AbstractContract(String senderId,
+                            String receiverId,
+                            Class<? extends AbstractContractMenu<? extends AbstractContract>> menuClass) {
         this.senderId = senderId;
-        this.recipientId = recipientId;
+        this.receiverId = receiverId;
+        this.menuClass = menuClass;
+    }
+
+    public AbstractContractMenu<? extends AbstractContract> buildMenu(AnimeCardsGame game){
+        try {
+            menu = menuClass.getConstructor(AnimeCardsGame.class, getClass()).newInstance(game, this);
+            return menu;
+
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getSenderId() {
         return senderId;
     }
 
-    public String getRecipientId() {
-        return recipientId;
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    protected Player getReceiver(AnimeCardsGame game) {
+        return game.getPlayer(receiverId);
+    }
+
+    protected Player getSender(AnimeCardsGame game) {
+        return game.getPlayer(senderId);
+    }
+
+    @Override
+    public boolean isOwner(String userId) {
+        return senderId.equals(userId) ||
+                receiverId.equals(userId);
     }
 
     @Override
@@ -36,16 +70,27 @@ public abstract class AbstractContract implements ContractInterface {
     }
 
     @Override
-    public void confirm(AnimeCardsGame game, String playerId) {
-        setPlayerConfirmed(playerId);
+    public void confirm(AnimeCardsGame game, String userId) {
+        setPlayerConfirmed(userId);
         if (!isFinished() && isConfirmed()){
-            finished = finish(game);
+            Session session = game.getDatabaseSession();
+            session.beginTransaction();
+
+            Player sender = getSender(game);
+            Player receiver = getReceiver(game);
+
+            finished = finish(session, sender, receiver);
+
+            session.merge(sender);
+            session.merge(receiver);
+
+            session.getTransaction().commit();
         }
     }
 
     private void setPlayerConfirmed(String playerId) {
         if      (senderId.equals(playerId))     senderConfirmed = true;
-        else if (recipientId.equals(playerId))  recipientConfirmed = true;
+        else if (receiverId.equals(playerId))  recipientConfirmed = true;
     }
 
     @Override
@@ -53,11 +98,12 @@ public abstract class AbstractContract implements ContractInterface {
         finished = true;
     }
 
-    protected Player getRecipient(AnimeCardsGame game) {
-        return game.getPlayer(recipientId);
+    @Override
+    public String getMenuDescription(){
+        return getMoreInfo();
     }
 
-    protected Player getSender(AnimeCardsGame game) {
-        return game.getPlayer(senderId);
+    protected void updateMenu() {
+
     }
 }

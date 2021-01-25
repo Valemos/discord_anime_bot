@@ -4,10 +4,7 @@ import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.*;
-import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
-import game.contract.MultiTradeContract;
-import game.contract.SendCardsContract;
 import game.materials.*;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
@@ -57,12 +54,8 @@ public class AnimeCardsGame {
         armorShop = new ArmorShop(armorItems);
 
 
-        contractsManager = new ContractsManager(dbSession, List.of(
-                SendCardsContract.class,
-                CardForCardContract.class,
-                MultiTradeContract.class
-        ));
         cardDropManager = new CardDropManager(this, dbSession);
+        contractsManager = new ContractsManager();
     }
 
     private List<ArmorItem> saveArmorItems(Session dbSession) {
@@ -269,7 +262,8 @@ public class AnimeCardsGame {
     }
 
     public Player getCardPersonalOwner(String cardId) {
-        return dbSession.get(CardPersonal.class, cardId).getOwner();
+        CardPersonal card = cardsPersonalManager.getById(cardId);
+        return card != null ? card.getOwner() : null;
     }
 
     public CardDropManager getDropManager() {

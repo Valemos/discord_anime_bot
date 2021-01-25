@@ -35,7 +35,7 @@ class ModifyCharacterCommandTest extends MessageSenderTester {
         String name = "name";
         String series = "series";
         String url = "url";
-        send("#modifycard " + cardGlobal.getId() + " " + name + " " + series + " " + url);
+        send("#modifycard " + cardGlobal.getId() + " -n " + name + " -s " + series + " -u " + url);
 
         CardPersonal newCard = getTesterCard(0);
 

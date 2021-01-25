@@ -2,16 +2,15 @@ package game;
 
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
+import game.cards.SeriesInfo;
 import game.materials.MaterialsSet;
+import game.player_objects.ArmorItemPersonal;
 import game.player_objects.CooldownSet;
 import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Player {
@@ -131,5 +130,22 @@ public class Player {
 
     public List<ArmorItemPersonal> getArmorItems() {
         return armorItems;
+    }
+
+    public void addStocks(Map<SeriesInfo, Float> stocks) {
+        incrementStocks(stocks, 1);
+    }
+
+    public void removeStocks(Map<SeriesInfo, Float> stocks) {
+        incrementStocks(stocks, -1);
+    }
+
+    private void incrementStocks(Map<SeriesInfo, Float> stocks, int sign) {
+        stocks.keySet().stream()
+                .peek(seriesInfo -> getStocks().stream()
+                        .filter(stock -> stock.getSeries().equals(seriesInfo))
+                        .findFirst()
+                        .ifPresent(playerStock -> playerStock.incrementValue(sign * stocks.get(seriesInfo)))
+                ).close();
     }
 }

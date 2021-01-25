@@ -1,8 +1,9 @@
 package game.contract;
 
-import game.AnimeCardsGame;
+import bot.menu.SendCardsContractMenu;
 import game.Player;
 import game.cards.CardPersonal;
+import org.hibernate.Session;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,9 +12,9 @@ public class SendCardsContract extends AbstractContract implements ContractInter
 
     private final List<CardPersonal> cards;
 
-    public SendCardsContract(String senderId, String recipientId, List<CardPersonal> objSent) {
-        super(senderId, recipientId);
-        this.cards = objSent;
+    public SendCardsContract(String senderId, String recipientId, List<CardPersonal> cards) {
+        super(senderId, recipientId, SendCardsContractMenu.class);
+        this.cards = cards;
     }
 
     @Override
@@ -22,13 +23,11 @@ public class SendCardsContract extends AbstractContract implements ContractInter
     }
 
     @Override
-    public boolean finish(AnimeCardsGame game) {
-        Player recipient = getRecipient(game);
-
+    public boolean finish(Session session, Player sender, Player receiver) {
         for (CardPersonal card : cards) {
-            recipient.addCard(card);
+            sender.getCards().remove(card);
+            receiver.addCard(card);
         }
-
         return true;
     }
 
@@ -37,6 +36,34 @@ public class SendCardsContract extends AbstractContract implements ContractInter
         return cards.stream()
                 .map(CardPersonal::getFullDescription)
                 .collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public String getMenuDescription(){
+        return getLimitedDescription(cards);
+    }
+
+    private String getLimitedDescription(List<CardPersonal> cards) {
+        final int maxCardLines = 10;
+        int currentLine = 0;
+        boolean hasMoreCards = false;
+
+        StringBuilder builder = new StringBuilder();
+        for (CardPersonal card : cards) {
+            if (currentLine == maxCardLines){
+                hasMoreCards = true;
+                break;
+            }
+
+            builder.append(card.getIdName());
+
+            ++currentLine;
+        }
+
+        if (hasMoreCards){
+            builder.append("and ").append(cards.size() - 10).append(" more");
+        }
+        return builder.toString();
     }
 
     public List<CardPersonal> getCards() {

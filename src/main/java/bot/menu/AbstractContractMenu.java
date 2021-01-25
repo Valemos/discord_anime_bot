@@ -10,18 +10,22 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public abstract class AbstractContractMenu<T extends AbstractContract> implements EmojiMenuHandler {
+    private final Class<? extends AbstractContract> contractClass;
     protected final T contract;
-    private final Class<T> contractClass;
     AnimeCardsGame game;
+    private final String menuTitle;
 
-    public AbstractContractMenu(AnimeCardsGame game, Class<T> contractClass, T contract) {
+    public AbstractContractMenu(AnimeCardsGame game, T contract, String menuTitle) {
         this.game = game;
+        this.contractClass = contract.getClass();
         this.contract = contract;
-        this.contractClass = contractClass;
+        this.menuTitle = menuTitle;
     }
 
-    public abstract void sendMenu(CommandEvent event);
-
+    public void sendMenu(CommandEvent event) {
+        EventHandlerButtonMenu menu = buildMenu(event, menuTitle, contract.getMenuDescription());
+        displayMenu(event.getChannel(), menu);
+    }
 
     protected EventHandlerButtonMenu buildMenu(CommandEvent event, String title, String description) {
         return new EventHandlerButtonMenu.Builder()
@@ -40,7 +44,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
         channel.sendMessage(message).queue(
                 resultMessage -> {
                     menu.display(resultMessage);
-                    game.getContractsManager().add(resultMessage.getId(), contractClass, contract);
+                    game.getContractsManager().add(resultMessage.getId(), contract);
                 }
         );
     }
@@ -48,7 +52,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
     @Override
     public void hEmojiConfirm(MessageReactionAddEvent event, AnimeCardsGame game) {
 
-        ContractInterface contract = game.getContractsManager().get(contractClass, event.getMessageId());
+        ContractInterface contract = game.getContractsManager().getForMessage(contractClass, event.getMessageId());
         if (contract == null) {
             event.getChannel().sendMessage("contract invalid").queue();
             return;
@@ -63,14 +67,14 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
 
     @Override
     public void hEmojiDiscard(AnimeCardsGame game, MessageChannel channel, String messageId) {
-        ContractInterface contract = game.getContractsManager().get(contractClass, messageId);
+        ContractInterface contract = game.getContractsManager().getForMessage(contractClass, messageId);
         contract.discard();
-        game.getContractsManager().removeContract(contractClass, messageId);
+        game.getContractsManager().removeContract(messageId);
     }
 
     @Override
     public void hEmojiShowMore(MessageReactionAddEvent event, AnimeCardsGame game) {
-        ContractInterface contract = game.getContractsManager().get(contractClass, event.getMessageId());
+        ContractInterface contract = game.getContractsManager().getForMessage(contractClass, event.getMessageId());
         if (contract != null){
             event.getChannel().sendMessage(contract.getMoreInfo()).queue();
         }

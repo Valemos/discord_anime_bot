@@ -17,7 +17,7 @@ public class InspectCardCommand extends AbstractCommand<InspectCardCommand.Argum
         private List<String> cardName;
 
         @Option(name = "-s", metaVar = "series name", usage = "search for series. Must be in quotes if it has multiple words (\" \")")
-        private String seriesName;
+        public String seriesName;
 
         public String getCardName() {
             if (cardName == null){

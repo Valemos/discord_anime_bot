@@ -1,7 +1,6 @@
 package bot;
 
 import bot.commands.AbstractCommand;
-import bot.commands.SortingType;
 import bot.commands.admin.GrabTimeCommand;
 import bot.commands.admin.PrefixCommand;
 import bot.commands.admin.ResetCooldownsCommand;
@@ -30,13 +29,13 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.*;
 import game.cards.*;
 import game.materials.Material;
+import game.player_objects.ArmorItemPersonal;
 import game.shop.items.*;
 import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.StatusChangeEvent;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;

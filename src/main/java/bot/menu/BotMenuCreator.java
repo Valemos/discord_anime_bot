@@ -4,7 +4,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.AnimeCardsGame;
-import game.ArmorItemPersonal;
+import game.player_objects.ArmorItemPersonal;
 import game.DescriptionDisplayable;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;

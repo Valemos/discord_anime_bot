@@ -73,7 +73,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
             info.setSeries(series);
         }
 
-        dbSession.persist(info);
+        dbSession.merge(info);
         dbSession.getTransaction().commit();
     }
 
@@ -100,7 +100,6 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
     public void removeCard(CardGlobal card) {
         dbSession.beginTransaction();
-        dbSession.delete(card.getCharacterInfo());
         dbSession.delete(card);
         dbSession.getTransaction().commit();
     }

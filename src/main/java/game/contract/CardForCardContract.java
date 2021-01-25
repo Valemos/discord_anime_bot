@@ -1,8 +1,9 @@
 package game.contract;
 
-import game.AnimeCardsGame;
+import bot.menu.CardForCardContractMenu;
 import game.Player;
 import game.cards.CardPersonal;
+import org.hibernate.Session;
 
 public class CardForCardContract extends AbstractContract {
 
@@ -10,19 +11,18 @@ public class CardForCardContract extends AbstractContract {
     private final CardPersonal cardReceiving;
 
     public CardForCardContract(String senderId, String recipientId, CardPersonal sending, CardPersonal receiving) {
-        super(senderId, recipientId);
+        super(senderId, recipientId, CardForCardContractMenu.class);
         cardSending = sending;
         cardReceiving = receiving;
     }
 
     @Override
-    public boolean finish(AnimeCardsGame game) {
-        Player sender = getSender(game);
-        Player recipient = getRecipient(game);
-
+    public boolean finish(Session session, Player sender, Player receiver) {
         sender.addCard(cardReceiving);
-        recipient.addCard(cardSending);
+        receiver.getCards().remove(cardReceiving);
 
+        receiver.addCard(cardSending);
+        sender.getCards().remove(cardSending);
         return true;
     }
 
@@ -30,7 +30,7 @@ public class CardForCardContract extends AbstractContract {
     public String getMoreInfo() {
         return "Card of player " + senderId + '\n' +
                 cardSending.getIdNameStats() + '\n' +
-                "Card of player " + recipientId + '\n' +
+                "Card of player " + receiverId + '\n' +
                 cardReceiving.getIdNameStats();
     }
 }

@@ -1,10 +1,9 @@
 package bot.commands.user.trading;
 
 import bot.commands.user.shop.MessageSenderTester;
-import game.Player;
 import game.cards.CardGlobal;
 import game.cards.CardPersonal;
-import game.contract.ContractInterface;
+import game.contract.CardForCardContract;
 import game.contract.ContractsManager;
 import game.contract.SendCardsContract;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,19 +29,19 @@ class MultiTradeCommandTest extends MessageSenderTester {
     @Test
     void testCannotTradeWithNotExistingPlayer() {
         send("#multitrade unknownId");
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
     }
 
     @Test
     void cannotSendCardsToNotExistingPlayer() {
         send("#sendcards unknownId " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
     }
 
     @Test
     void testCannotExchangeCardsWithUnknownPlayer() {
         send("#tradecards unknownId " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
     }
 
     @Test
@@ -51,7 +50,7 @@ class MultiTradeCommandTest extends MessageSenderTester {
         send("#sendcards " + tester().getId());
         send("#multitrade " + tester().getId());
 
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
     }
 
     @Test
@@ -61,10 +60,10 @@ class MultiTradeCommandTest extends MessageSenderTester {
         send("#sendcards " + tester2().getId() + " unknownCardId " + card1.getId() + " cardId",
                 sender.tester1.getId(),
                 "111");
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
 
-        assertFalse(tester().getCards().contains(card1));
-        assertTrue(tester2().getCards().contains(card1));
+        assertTrue(tester().getCards().contains(card1));
+        assertFalse(tester2().getCards().contains(card1));
     }
 
     @Test
@@ -76,9 +75,9 @@ class MultiTradeCommandTest extends MessageSenderTester {
                                 sender.tester1.getId(),
                                 "111");
 
-        ContractInterface contract = spyContracts.get(SendCardsContract.class, "111");
+        SendCardsContract contract = spyContracts.getForMessage(SendCardsContract.class, "111");
         assertNotNull(contract);
-        contract.finish(game());
+        contract.confirm(game(), sender.tester1.getId());
 
         assertFalse(tester().getCards().contains(card1));
         assertFalse(tester().getCards().contains(card2));
@@ -94,7 +93,7 @@ class MultiTradeCommandTest extends MessageSenderTester {
         int collectionSize = tester2().getCards().size();
 
         send("#sendcards " + tester2().getId() + " " + card.getId(), sender.tester1.getId(), "111");
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
 
         int newSize = tester2().getCards().size();
         assertEquals(collectionSize, newSize);
@@ -108,13 +107,14 @@ class MultiTradeCommandTest extends MessageSenderTester {
         assertFalse(tester().getCards().contains(card2));
         assertFalse(tester2().getCards().contains(card1));
 
-        sendAndCapture("#tradecards " + tester2().getId() + " " + card1.getId() + " " +card2.getId(),
+        sendAndCapture("#tradecards " + " " + card1.getId() + " " +card2.getId(),
                 sender.tester1.getId(),
                 "111");
 
-        ContractInterface contract = spyContracts.get(SendCardsContract.class, "111");
+        CardForCardContract contract = spyContracts.getForMessage(CardForCardContract.class, "111");
         assertNotNull(contract);
-        contract.finish(game());
+        contract.confirm(game(), tester().getId());
+        contract.confirm(game(), tester2().getId());
 
         assertTrue(tester().getCards().contains(card2));
         assertTrue(tester2().getCards().contains(card1));
@@ -124,9 +124,24 @@ class MultiTradeCommandTest extends MessageSenderTester {
     void testExchangeAnyCardUnknown() {
         CardPersonal card1 = getTesterCard(0);
 
-        sendAndCapture("#tradecards " + tester2().getId() + " " + card1.getId() + " unknownId",
+        send("#tradecards " + tester2().getId() + " " + card1.getId() + " unknownId",
                 sender.tester1.getId(),
                 "111");
-        verify(spyContracts, never()).add(any(), any(), any());
+        verify(spyContracts, never()).add(any(), any());
+    }
+
+    @Test
+    void testMultiTradeUnknownMaterial() {
+        send("#multitrade -m unknown=100");
+    }
+
+    @Test
+    void testMultiTradeMaterialAmountNotInteger() {
+        send("#multitrade -m unknown=hello");
+        send("#multitrade -m unknown=\"multi words\"");
+        send("#multitrade -m unknown=100.568");
+        send("#multitrade -m unknown=100,568");
+        send("#multitrade -m unknown= -m hello= 20");
+
     }
 }

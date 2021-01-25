@@ -54,7 +54,6 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
                 cardsSending
         );
 
-        SendCardsContractMenu menu = new SendCardsContractMenu(game, contract);
-        menu.sendMenu(event);
+        contract.buildMenu(game).sendMenu(event);
     }
 }
