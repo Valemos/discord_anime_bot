@@ -1,7 +1,7 @@
 package game.player_objects;
 
-import bot.Base36SequenceGenerator;
 import game.DescriptionDisplayable;
+import game.Player;
 import game.shop.items.ArmorItem;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,13 +15,17 @@ public class ArmorItemPersonal implements DescriptionDisplayable {
     @GenericGenerator(name = "base36_armor_personal", strategy = "bot.Base36SequenceGenerator")
     private String id;
 
+    @ManyToOne
+    private Player owner;
+
     @OneToOne
     private ArmorItem original;
 
     public ArmorItemPersonal() {
     }
 
-    public ArmorItemPersonal(ArmorItem original) {
+    public ArmorItemPersonal(Player owner, ArmorItem original) {
+        this.owner = owner;
         this.original = original;
     }
 
@@ -32,6 +36,14 @@ public class ArmorItemPersonal implements DescriptionDisplayable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     @Override

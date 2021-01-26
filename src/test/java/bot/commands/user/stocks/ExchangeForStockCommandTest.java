@@ -2,6 +2,7 @@ package bot.commands.user.stocks;
 
 import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardPersonal;
+import game.player_objects.StockValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,9 @@ class ExchangeForStockCommandTest extends MessageSenderTester {
 
     @BeforeEach
     void setUp() {
-
+        sender.clearTable(StockValue.class);
+        tester().getStocks().clear();
+        game().getDatabaseSession().merge(tester());
     }
 
     @Test

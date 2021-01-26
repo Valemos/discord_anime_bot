@@ -33,7 +33,7 @@ public class Player {
     @OneToOne
     private Squadron squadron;
 
-    @OneToMany
+    @OneToMany(mappedBy="owner")
     private final List<ArmorItemPersonal> armorItems = new ArrayList<>();
 
     @Embedded

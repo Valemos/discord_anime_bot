@@ -6,6 +6,7 @@ import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.*;
 import game.contract.ContractsManager;
 import game.materials.*;
+import game.player_objects.ArmorItemPersonal;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.items.ArmorItem;
@@ -30,7 +31,7 @@ import java.util.logging.Logger;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
-    private Session dbSession;
+    private final Session dbSession;
 
     private ItemsShop itemsShop;
     private ArmorShop armorShop;
@@ -104,10 +105,6 @@ public class AnimeCardsGame {
 
     public Session getDatabaseSession() {
         return dbSession;
-    }
-
-    public void setDatabaseSession(Session dbSession) {
-        this.dbSession = dbSession;
     }
 
     public EventWaiter getEventWaiter() {
@@ -361,6 +358,14 @@ public class AnimeCardsGame {
         squadron.clearMembers();
         dbSession.merge(squadron);
 
+        dbSession.getTransaction().commit();
+    }
+
+    public void removeArmorItemsPersonal(ArmorItem item) {
+        dbSession.beginTransaction();
+        dbSession.createQuery("delete from ArmorItemPersonal as a where a.original.id = :paramId")
+                .setParameter("paramId", item.getId())
+                .executeUpdate();
         dbSession.getTransaction().commit();
     }
 }

@@ -9,6 +9,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardGlobal;
+import game.player_objects.ArmorItemPersonal;
 import game.player_objects.squadron.Squadron;
 import game.shop.items.ArmorItem;
 import net.dv8tion.jda.api.JDA;
@@ -151,6 +152,7 @@ public class BotMessageSenderMock {
     }
 
     private void clearArmorItemsDatabase() {
+        clearTable(ArmorItemPersonal.class);
         clearTable(ArmorItem.class);
     }
 
@@ -167,7 +169,7 @@ public class BotMessageSenderMock {
         }
     }
 
-    private <T> void clearTable(Class<T> entityClass) {
+    public <T> void clearTable(Class<T> entityClass) {
         databaseSession.beginTransaction();
 
         List<T> objects = getAllObjects(entityClass);

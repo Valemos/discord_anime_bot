@@ -46,10 +46,10 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
     public void useFor(AnimeCardsGame game, Player player) {
         Session s = game.getDatabaseSession();
         s.beginTransaction();
-
-        ArmorItemPersonal itemPersonal = new ArmorItemPersonal(this);
-        s.save(itemPersonal);
         player = s.load(Player.class, player.getId());
+
+        ArmorItemPersonal itemPersonal = new ArmorItemPersonal(player, this);
+        s.save(itemPersonal);
         player.getArmorItems().add(itemPersonal);
 
         s.getTransaction().commit();
