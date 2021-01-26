@@ -101,6 +101,7 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
     public void removeCard(CardGlobal card) {
         dbSession.beginTransaction();
         dbSession.delete(card);
+        dbSession.delete(card.getCharacterInfo());
         dbSession.getTransaction().commit();
     }
 

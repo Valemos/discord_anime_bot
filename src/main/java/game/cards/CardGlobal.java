@@ -16,7 +16,6 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
 
     @MapsId
     @OneToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
     CharacterInfo characterInfo;
 
     @Embedded

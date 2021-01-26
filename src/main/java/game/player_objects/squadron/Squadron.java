@@ -4,6 +4,8 @@ import game.Player;
 import game.cards.CardPersonal;
 import game.cards.ComparableCard;
 import game.materials.MaterialsSet;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -102,6 +104,10 @@ public class Squadron {
 
     public String getPowerUpsDescription(){
         return powerUps.stream().map(PowerUpType::getName).collect(Collectors.joining("\n"));
+    }
+
+    public void clearMembers() {
+        squadronMembers.clear();
     }
 
     public float getPowerLevel() {

@@ -128,7 +128,9 @@ public class AnimeCardsGame {
     public Player createNewPlayer(String playerId) {
         Player player = new Player();
         player.setId(playerId);
+        dbSession.beginTransaction();
         dbSession.save(player);
+        dbSession.getTransaction().commit();
         return player;
     }
 
@@ -211,16 +213,8 @@ public class AnimeCardsGame {
     public Squadron createNewSquadron(Player player) {
         Squadron squadron = new Squadron();
         dbSession.beginTransaction();
-
-        if(player.getSquadron() != null){
-            squadron.setId(player.getSquadron().getId());
-            player.setSquadron(squadron);
-            dbSession.merge(squadron);
-        }else{
-            player.setSquadron(squadron);
-            dbSession.save(squadron);
-        }
-
+        player.setSquadron(squadron);
+        dbSession.save(squadron);
         dbSession.getTransaction().commit();
         return squadron;
     }
@@ -314,8 +308,11 @@ public class AnimeCardsGame {
     }
 
     public void addSquadronMember(Player player, CardPersonal card) {
+        Squadron squadron = getOrCreateSquadron(player);
+
         dbSession.beginTransaction();
-        player.getSquadron().addMember(card);
+        squadron.addMember(card);
+        dbSession.merge(squadron);
         dbSession.merge(card);
         dbSession.getTransaction().commit();
     }
@@ -342,7 +339,7 @@ public class AnimeCardsGame {
                         return false;
                     }
                 })
-                .peek(dbSession::delete)
+                .peek(member -> member.setAssignedSquadron(null))
                 .count();
 
         squadron.setMembers(newMembers);
@@ -351,6 +348,20 @@ public class AnimeCardsGame {
         dbSession.getTransaction().commit();
 
         return deletedAmount > 0;
+    }
+
+    public void clearSquadron(Squadron squadron) {
+        dbSession.beginTransaction();
+
+        for(CardPersonal member : squadron.getMembers()){
+            member.setAssignedSquadron(null);
+            dbSession.merge(member);
+        }
+
+        squadron.clearMembers();
+        dbSession.merge(squadron);
+
+        dbSession.getTransaction().commit();
     }
 }
 

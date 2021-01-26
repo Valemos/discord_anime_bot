@@ -7,6 +7,8 @@ import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
 import org.hibernate.Session;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
     private float armorValue = 0;
 
     @Embedded
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private MaterialsSet itemCost = new MaterialsSet();
 
     public ArmorItem() {

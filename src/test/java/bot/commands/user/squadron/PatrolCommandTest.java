@@ -5,6 +5,8 @@ import game.cards.CardPersonal;
 import game.player_objects.squadron.PatrolType;
 import game.player_objects.squadron.Squadron;
 import org.hibernate.Session;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,47 +20,22 @@ import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 class PatrolCommandTest extends MessageSenderTester {
 
-    private Squadron spySquadron;
-    private Session spySession;
-
     @BeforeEach
     void setUp() {
-        Squadron squadron = game().createNewSquadron(tester());
-
-        spySquadron = spy(squadron);
-        tester().setSquadron(spySquadron);
-
-        spySession = spy(game().getDatabaseSession());
-        game().setDatabaseSession(spySession);
-        doAnswer(invocation -> {
-            Squadron tempSquadron = new Squadron();
-            tempSquadron.setId(spySquadron.getId());
-            tempSquadron.setOwner(spySquadron.getOwner());
-            tempSquadron.setPatrol(spySquadron.getPatrol());
-            tempSquadron.setMembers(spySquadron.getMembers());
-            tempSquadron.setPowerUps(spySquadron.getPowerUps());
-            return spySession.merge(tempSquadron);
-        }).when(spySession).merge(eq(spySquadron));
-
-        doAnswer(inv -> {
-            spySession.delete(spySession.merge(spySquadron));
-            return null;
-        }).when(spySession).delete(eq(spySquadron));
+        sender.clearSquadronsTable();
     }
 
     private void addSquadronMember(int index) {
-        spySession.beginTransaction();
         CardPersonal card = getTesterCard(index);
-        tester().getSquadron().addMember(card);
-        spySession.merge(card);
-        spySession.getTransaction().commit();
+        game().addSquadronMember(tester(), card);
+        reset(game());
     }
 
     @Test
     void testPatrolNotStartedForEmptySquadron() {
-        spySquadron.setMembers(new HashSet<>());
+        getTesterSquadron().setMembers(new HashSet<>());
         send("#patrol overworld");
-        verify(spySquadron, never()).startPatrol(any(), any());
+        verify(game(), never()).createNewPatrol(any(), any(), any());
     }
 
     @Test
@@ -67,7 +44,7 @@ class PatrolCommandTest extends MessageSenderTester {
         send("#patrol overworld");
 
         sender.assertCommandHandled(PatrolCommand.class);
-        verify(spySquadron, times(1)).startPatrol(eq(PatrolType.OVERWORLD), any());
+        verify(game(), times(1)).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
     }
 
     @Test
@@ -76,7 +53,7 @@ class PatrolCommandTest extends MessageSenderTester {
         send("#patrol o");
 
         sender.assertCommandHandled(PatrolCommand.class);
-        verify(spySquadron, atLeastOnce()).startPatrol(eq(PatrolType.OVERWORLD), any());
+        verify(game(), atLeastOnce()).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
     }
 
     @Test
@@ -84,16 +61,16 @@ class PatrolCommandTest extends MessageSenderTester {
         addSquadronMember(0);
 
         send("#patrol o");
-        verify(spySquadron, times(1)).startPatrol(any(), any());
+        verify(game(), times(1)).createNewPatrol(any(), any(), any());
 
         assertTrue(tester().getSquadron().getPatrol().isStarted());
         send("#patrol o");
-        verify(spySquadron, times(1)).startPatrol(any(), any());
+        verify(game(), times(1)).createNewPatrol(any(), any(), any());
     }
 
     @Test
     void testCannotStopPatrol_whenNotActive() {
-        assertFalse(tester().getSquadron().getPatrol().isStarted());
+        assertFalse(getTesterSquadron().getPatrol().isStarted());
         send("#patrolstop");
         verify(game(), never()).finishPatrol(any(), any());
     }
@@ -110,9 +87,9 @@ class PatrolCommandTest extends MessageSenderTester {
 
     @Test
     void testAddNotExistingMembersToSquadron() {
-        assertTrue(tester().getSquadron().isEmpty());
+        assertTrue(getTesterSquadron().isEmpty());
         send("#squadronadd 12345678 asdfghjkl");
-        assertTrue(tester().getSquadron().isEmpty());
+        assertTrue(getTesterSquadron().isEmpty());
     }
 
     @Test
@@ -145,13 +122,18 @@ class PatrolCommandTest extends MessageSenderTester {
 
     @Test
     void testAddMembersToSquadron() {
-        assertFalse(tester().getSquadron().getMembers().contains(getTesterCard(0)));
-        assertFalse(tester().getSquadron().getMembers().contains(getTesterCard(1)));
+        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(0)));
+        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(1)));
 
         send("#squadronadd " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
 
-        assertTrue(tester().getSquadron().getMembers().contains(getTesterCard(0)));
-        assertTrue(tester().getSquadron().getMembers().contains(getTesterCard(1)));
+        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(0)));
+        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(1)));
+    }
+
+    @NotNull
+    private Squadron getTesterSquadron() {
+        return game().getOrCreateSquadron(tester());
     }
 
     @Test
@@ -160,12 +142,12 @@ class PatrolCommandTest extends MessageSenderTester {
         addSquadronMember(1);
         addSquadronMember(3);
 
-        assertTrue(tester().getSquadron().getMembers().contains(getTesterCard(0)));
-        assertTrue(tester().getSquadron().getMembers().contains(getTesterCard(1)));
+        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(0)));
+        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(1)));
 
         send("#squadronremove " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
 
-        assertFalse(tester().getSquadron().getMembers().contains(getTesterCard(0)));
-        assertFalse(tester().getSquadron().getMembers().contains(getTesterCard(1)));
+        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(0)));
+        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(1)));
     }
 }

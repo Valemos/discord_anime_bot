@@ -9,6 +9,8 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardGlobal;
+import game.player_objects.squadron.Squadron;
+import game.shop.items.ArmorItem;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
@@ -20,6 +22,8 @@ import org.hibernate.Session;
 import org.mockito.*;
 
 import javax.annotation.Nonnull;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.security.auth.login.LoginException;
 import java.util.Arrays;
 import java.util.List;
@@ -147,10 +151,39 @@ public class BotMessageSenderMock {
     }
 
     private void clearArmorItemsDatabase() {
+        clearTable(ArmorItem.class);
+    }
+
+    public void clearSquadronsTable() {
+        List<Squadron> squadrons = getAllObjects(Squadron.class);
+        for (Squadron sq : squadrons){
+            getGame().clearSquadron(sq);
+
+            databaseSession.beginTransaction();
+            sq.getOwner().setSquadron(null);
+            databaseSession.merge(sq.getOwner());
+            databaseSession.delete(sq);
+            databaseSession.getTransaction().commit();
+        }
+    }
+
+    private <T> void clearTable(Class<T> entityClass) {
         databaseSession.beginTransaction();
-        databaseSession.createQuery("delete from ArmorItem");
+
+        List<T> objects = getAllObjects(entityClass);
+        for (T obj : objects){
+            databaseSession.delete(obj);
+        }
+
         databaseSession.getTransaction().commit();
     }
+
+    private <T> List<T> getAllObjects(Class<T> entityClass) {
+        CriteriaBuilder cb = databaseSession.getCriteriaBuilder();
+        CriteriaQuery<T> q = cb.createQuery(entityClass);
+        return databaseSession.createQuery(q.select(q.from(entityClass))).list();
+    }
+
 
     private void initMessageEventMock() {
         when(mMessageEvent.getMessage()).thenReturn(mMessage);
@@ -314,4 +347,5 @@ public class BotMessageSenderMock {
         verify(mMessageAction, atLeastOnce()).queue();
         verify(mMessageAction, never()).queue(any());
     }
+
 }

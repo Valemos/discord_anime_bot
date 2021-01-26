@@ -1,5 +1,7 @@
 package game.player_objects;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
 import java.time.Instant;
 
@@ -9,20 +11,29 @@ public class CooldownSet {
 
     @Embedded
     @AttributeOverride(name = "lastUse", column = @Column(name = "drop_lastuse"))
-    private Cooldown drop = new Cooldown();
+    private Cooldown drop = createNewDrop();
 
     @Embedded
     @AttributeOverride(name = "lastUse", column = @Column(name = "grab_lastuse"))
-    private Cooldown grab = new Cooldown();
+    private Cooldown grab = createNewGrab();
 
     public CooldownSet() {
-        setCooldownValues();
     }
 
     @PostLoad
-    void setCooldownValues() {
-        drop.set("Drop", 120);
-        grab.set("Grab", 60);
+    void postLoad() {
+        if (drop == null) drop = createNewDrop();
+        if (grab == null) grab = createNewGrab();
+    }
+
+    @NotNull
+    private Cooldown createNewDrop() {
+        return new Cooldown("Drop", 120);
+    }
+
+    @NotNull
+    private Cooldown createNewGrab() {
+        return new Cooldown("Grab", 60);
     }
 
     public Cooldown getDrop() {

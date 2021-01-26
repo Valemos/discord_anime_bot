@@ -62,7 +62,7 @@ class CardDropCommandTest extends MessageSenderTester {
         sender.sendAndCaptureMessage("#drop", tester().getId(), "15");
         assertNull(game().getDropManager().getCards("15"));
 
-        tester().getCooldowns().getDrop().setUsed(null);
+        tester().getCooldowns().getDrop().reset();
 
         sender.sendAndCaptureMessage("#drop", tester().getId(), "12");
         assertNotNull(game().getDropManager().getCards("12"));

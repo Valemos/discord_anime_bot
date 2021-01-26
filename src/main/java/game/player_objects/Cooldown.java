@@ -13,13 +13,17 @@ public class Cooldown {
     private String name;
     @Transient
     int amountSeconds;
-
     Instant lastUse = null;
 
     public Cooldown() {
     }
 
     protected void set(String name, int amountSeconds) {
+        this.name = name;
+        this.amountSeconds = amountSeconds;
+    }
+
+    public Cooldown(String name, int amountSeconds) {
         this.name = name;
         this.amountSeconds = amountSeconds;
     }

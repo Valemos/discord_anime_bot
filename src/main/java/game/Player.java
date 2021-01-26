@@ -113,12 +113,13 @@ public class Player {
     }
 
     public void setSquadron(Squadron squadron) {
-        squadron.setOwner(this);
+        if (squadron != null) squadron.setOwner(this);
         this.squadron = squadron;
     }
 
     @Nonnull
     public CooldownSet getCooldowns() {
+        if (cooldowns == null) cooldowns = new CooldownSet();
         return cooldowns;
     }
 
