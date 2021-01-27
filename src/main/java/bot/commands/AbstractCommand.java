@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 
 public abstract class AbstractCommand<T> extends Command {
-    private final Class<T> argumentsClass;
+    protected final Class<T> argumentsClass;
     protected T commandArgs;
 
     protected AnimeCardsGame game;
@@ -39,7 +39,7 @@ public abstract class AbstractCommand<T> extends Command {
         return stream.toString(StandardCharsets.UTF_8);
     }
 
-    private T createArgumentsInstance(Class<T> config) {
+    protected T createArgumentsInstance(Class<T> config) {
         try {
             return config.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {

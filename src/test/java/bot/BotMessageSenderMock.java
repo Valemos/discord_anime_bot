@@ -38,32 +38,18 @@ import static org.mockito.Mockito.*;
 
 public class BotMessageSenderMock {
 
-    @Mock
-    private MessageReceivedEvent mMessageEvent;
+    private MessageEventMock messageEventMock;
+
     @Mock
     private MessageReactionAddEvent mReactionAddEvent;
     @Mock
     private MessageReaction.ReactionEmote mReactionEmote;
-    @Mock
-    private Message mMessage;
-    @Mock
-    private RestAction<Void> mVoidRestAction;
-    @Mock
-    private User mUser;
     @Mock
     private RestAction<User> mRestActionUser;
     @Captor
     private ArgumentCaptor<Consumer<? super User>> userActionCaptor;
     @Mock
     private EventWaiter mEventWaiter;
-    @Mock
-    private TextChannel mTextChannel;
-    @Mock
-    private MessageChannel mMessageChannel;
-    @Mock
-    public MessageAction mMessageAction;
-    @Mock
-    private JDA mJDA;
     @Captor
     private ArgumentCaptor<Consumer<? super Message>> messageActionCaptor;
     @Mock
@@ -108,7 +94,7 @@ public class BotMessageSenderMock {
         spyOnCommands();
         setDropTimerMock();
 
-        doReturn(mJDA).when(spyBot).buildJDA(any());
+        doReturn(messageEventMock.getJDA()).when(spyBot).buildJDA(any());
 
 
         spyBot.authenticate("");
@@ -131,10 +117,10 @@ public class BotMessageSenderMock {
     }
 
     private void captureNotifyPlayers(CardDropTimer dropTimer) {
-        when(mJDA.retrieveUserById(anyString())).thenReturn(mRestActionUser);
+        when(messageEventMock.getJDA().retrieveUserById(anyString())).thenReturn(mRestActionUser);
         dropTimer.run();
         verify(mRestActionUser, atLeastOnce()).queue(userActionCaptor.capture());
-        userActionCaptor.getValue().accept(mUser);
+        userActionCaptor.getValue().accept(messageEventMock.getUser());
     }
 
     private void initBotSettings() {
@@ -148,7 +134,7 @@ public class BotMessageSenderMock {
         cardsGlobal = spyBot.getGame().getCardsGlobal().getAllCards();
         cardGlobal1 = cardsGlobal.get(0);
 
-        initMessageEventMock();
+        messageEventMock = new MessageEventMock();
     }
 
     private void clearArmorItemsDatabase() {
@@ -186,29 +172,6 @@ public class BotMessageSenderMock {
         return databaseSession.createQuery(q.select(q.from(entityClass))).list();
     }
 
-
-    private void initMessageEventMock() {
-        when(mMessageEvent.getMessage()).thenReturn(mMessage);
-        when(mMessageEvent.getAuthor()).thenReturn(mUser);
-        setEventChannel(mMessageEvent, ChannelType.TEXT);
-        setMessageChannelMock();
-    }
-
-    private void setMessageChannelMock() {
-        when(mMessageChannel.getJDA()).thenReturn(mJDA);
-        when(mMessageChannel.sendMessage(anyString())).thenReturn(mMessageAction);
-        when(mMessageChannel.sendMessage(any(MessageEmbed.class))).thenReturn(mMessageAction);
-        when(mMessageChannel.sendMessage(any(Message.class))).thenReturn(mMessageAction);
-    }
-
-    private void setEventChannel(GenericMessageEvent event, ChannelType channelType) {
-        when(event.getJDA()).thenReturn(mJDA);
-        when(event.getChannel()).thenReturn(mMessageChannel);
-        when(event.getChannelType()).thenReturn(channelType);
-        when(event.getTextChannel()).thenReturn(mTextChannel);
-        when(mTextChannel.canTalk()).thenReturn(true);
-    }
-
     private void spyOnCommands() {
         AbstractCommand<?>[] commands = spyBot.getCommands(spyBot.getGame());
 
@@ -224,8 +187,8 @@ public class BotMessageSenderMock {
     public void resetMocks() {
         Mockito.reset(spyCommands);
         Mockito.reset(spyGame, spyBot);
-        Mockito.reset(mMessageEvent, mUser, mMessageChannel, mTextChannel, mMessageAction);
-        initMessageEventMock();
+        Mockito.reset(messageEventMock.getMock());
+        messageEventMock.initMessageEventMock();
     }
 
     public void send(String message) {
@@ -233,32 +196,10 @@ public class BotMessageSenderMock {
     }
 
     public void send(String message, String userId, String messageId) {
-        setMessageMock(messageId, message);
-        setUserMock(userId);
+        messageEventMock.setMessage(messageId, message);
+        messageEventMock.setUser(userId);
 
-        spyCommandClient.onEvent(mMessageEvent);
-    }
-
-    private void setUserMock(String userId) {
-        when(mUser.getId()).thenReturn(userId);
-        when(mUser.isBot()).thenReturn(false);
-    }
-
-    private void setMessageMock(String messageId) {
-        setMessageMock(messageId, "");
-    }
-
-    private void setMessageMock(String messageId, String message) {
-        if (messageId != null) when(mMessage.getId()).thenReturn(messageId);
-        when(mMessage.getContentRaw()).thenReturn(message);
-        when(mMessage.editMessage(any(Message.class))).thenReturn(mMessageAction);
-        when(mMessage.addReaction(anyString())).thenReturn(mVoidRestAction);
-        when(mMessage.getChannel()).thenReturn(mMessageChannel);
-    }
-
-    private void setEventMessage(MessageReactionAddEvent event, String messageId, String playerId) {
-        when(event.getMessageId()).thenReturn(messageId);
-        when(event.getUserId()).thenReturn(playerId);
+        spyCommandClient.onEvent(messageEventMock.getMock());
     }
 
     public void sendAndCaptureMessage(String message) {
@@ -268,8 +209,8 @@ public class BotMessageSenderMock {
     public void sendAndCaptureMessage(String message, String userId, String messageId){
         send(message, userId, messageId);
 
-        verify(mMessageAction, atLeast(1)).queue(messageActionCaptor.capture());
-        messageActionCaptor.getValue().accept(mMessage);
+        verify(messageEventMock.getAction(), atLeast(1)).queue(messageActionCaptor.capture());
+        messageActionCaptor.getValue().accept(messageEventMock.getMessage());
     }
 
     public AbstractCommand<?> findSpyCommand(Class<? extends AbstractCommand<?>> commandClass) {
@@ -318,7 +259,7 @@ public class BotMessageSenderMock {
     public MessageReactionAddEvent getReactionEventMock(MenuEmoji emoji) {
         when(mReactionAddEvent.getReactionEmote()).thenReturn(mReactionEmote);
         when(mReactionEmote.getEmoji()).thenReturn(emoji.getEmoji());
-        when(mReactionAddEvent.getChannel()).thenReturn(mMessageChannel);
+        when(mReactionAddEvent.getChannel()).thenReturn(messageEventMock.getMessage().getChannel());
 
         return mReactionAddEvent;
     }
@@ -328,11 +269,11 @@ public class BotMessageSenderMock {
     }
 
     public void chooseMenuReaction(EmojiMenuHandler menu, String messageId, String playerId, MenuEmoji emoji) {
-        setMessageMock(messageId);
-        setUserMock(playerId);
+        messageEventMock.setMessage(messageId);
+        messageEventMock.setUser(playerId);
 
-        setEventChannel(mReactionAddEvent, ChannelType.TEXT);
-        setEventMessage(mReactionAddEvent, messageId, playerId);
+        messageEventMock.setEventChannel(mReactionAddEvent, ChannelType.TEXT);
+        messageEventMock.setEventMessage(mReactionAddEvent, messageId, playerId);
 
         menu.hReactionAddEvent(getReactionEventMock(emoji), getGame());
     }
@@ -346,8 +287,8 @@ public class BotMessageSenderMock {
     }
 
     public void assertMessageQueueWithoutConsumer() {
-        verify(mMessageAction, atLeastOnce()).queue();
-        verify(mMessageAction, never()).queue(any());
+        verify(messageEventMock.getAction(), atLeastOnce()).queue();
+        verify(messageEventMock.getAction(), never()).queue(any());
     }
 
 }

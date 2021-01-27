@@ -76,10 +76,6 @@ public class BotAnimeCards {
         this.game = game;
     }
 
-    public JDA getDiscordAPI() {
-        return discordAPI;
-    }
-
     public boolean authenticate(String token) {
         try{
             // all functions must be called in this order

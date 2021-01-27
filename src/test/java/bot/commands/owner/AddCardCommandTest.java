@@ -1,42 +1,37 @@
 package bot.commands.owner;
 
-import bot.commands.user.shop.MessageSenderTester;
+import bot.commands.AbstractCommand;
+import bot.commands.AbstractCommandTest;
+import game.Player;
 import game.cards.CardGlobal;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddCardCommandTest  extends MessageSenderTester {
+class AddCardCommandTest extends AbstractCommandTest<AddCardCommand, AddCardCommand.Arguments> {
 
-    @Test
-    void incorrectCommandArguments() {
-        send("#addcard");
-        sender.assertCommandNotHandled();
+    @BeforeEach
+    void setUp() {
+        setCommand(new AddCardCommand(spyGame));
     }
 
     @Test
     void testCreateCardCommand() {
-        assertNull(game().getCardGlobalUnique("card name", "card series"));
+        assertNull(spyGame.getCardGlobalUnique("card name", "card series"));
 
-        send("#addcard \"card name\" \"card series\" image_url");
-        sender.assertCommandHandled(AddCardCommand.class);
+        AddCardCommand.Arguments args = createArguments();
+        args.name = "card name";
+        args.series = "card series";
+        args.imageUrl = "image_url";
 
-        CardGlobal c = game().getCardGlobalUnique("card name", "card series");
+        handleCommand(tester, args);
+
+        CardGlobal c = spyGame.getCardGlobalUnique("card name", "card series");
         assertNotNull(c);
         assertEquals("card name", c.getCharacterInfo().getName());
         assertEquals("card series", c.getCharacterInfo().getSeriesName());
         assertEquals("image_url", c.getCharacterInfo().getImageUrl());
-    }
-
-    @Test
-    void testCreateWithInsufficientParameters() {
-        assertNull(game().getCardGlobalUnique("card name unique", "series unique"));
-
-        send("#addcard \"card name\"");
-        sender.assertCommandNotHandled();
-
-        assertNull(game().getCardGlobalUnique("card name unique", null));
-        assertNull(game().getCardGlobalUnique("card name unique", "series unique"));
     }
 }
