@@ -21,11 +21,11 @@ public class MultiTradeContract extends AbstractContract {
     private Map<SeriesInfo, Float> senderStocks = new HashMap<>();
     private Map<SeriesInfo, Float> receiverStocks = new HashMap<>();
 
-    private final MaterialsSet senderMaterials = new MaterialsSet();
-    private final MaterialsSet receiverMaterials = new MaterialsSet();
+    private MaterialsSet senderMaterials = new MaterialsSet();
+    private MaterialsSet receiverMaterials = new MaterialsSet();
 
-    public MultiTradeContract(String senderId, String recipientId) {
-        super(senderId, recipientId, MultiTradeContractMenu.class);
+    public MultiTradeContract(String senderId, String receiverId) {
+        super(senderId, receiverId, MultiTradeContractMenu.class);
     }
 
     @Override
@@ -82,20 +82,26 @@ public class MultiTradeContract extends AbstractContract {
         updateMenu();
     }
 
-    public void addStocks(String playerId, Map<SeriesInfo, Float> stockValues) {
+    public void addStocks(Player player, Map<SeriesInfo, Float> stockValues) {
+        String playerId = player.getId();
         if (senderId.equals(playerId)){
             incrementMap(senderStocks, stockValues);
+            senderStocks = player.getAvailableStocks(senderStocks);
         }else if (receiverId.equals(playerId)){
             incrementMap(receiverStocks, stockValues);
+            receiverStocks = player.getAvailableStocks(receiverStocks);
         }
         updateMenu();
     }
 
-    public void addMaterials(String playerId, MaterialsSet materialsSet) {
+    public void addMaterials(Player player, MaterialsSet materialsSet) {
+        String playerId = player.getId();
         if (senderId.equals(playerId)){
             senderMaterials.addMaterials(materialsSet);
+            senderMaterials = player.getAvailableMaterials(senderMaterials);
         }else if (receiverId.equals(playerId)){
             receiverMaterials.addMaterials(materialsSet);
+            receiverMaterials = player.getAvailableMaterials(receiverMaterials);
         }
         updateMenu();
     }

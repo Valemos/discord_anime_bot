@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +36,12 @@ public class MessageEventMock {
 
     public MessageEventMock() {
         MockitoAnnotations.initMocks(this);
+        initMessageEventMock();
+    }
+
+    public void reset() {
+        Mockito.reset(mMessageEvent, mMessage, mVoidRestAction, mUser, mTextChannel, mMessageAction, mMessageChannel, mJDA);
+        initMessageEventMock();
     }
 
     public void initMessageEventMock() {

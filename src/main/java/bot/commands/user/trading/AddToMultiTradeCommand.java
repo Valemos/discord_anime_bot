@@ -56,8 +56,8 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
 
         if (!cards.isEmpty())           contract.addCards(playerId, cards);
         if (!armorItems.isEmpty())      contract.addArmor(playerId, armorItems);
-        if (!stockValues.isEmpty())     contract.addStocks(playerId, stockValues);
-        if (!materialsSet.isEmpty())    contract.addMaterials(playerId, materialsSet);
+        if (!stockValues.isEmpty())     contract.addStocks(player, stockValues);
+        if (!materialsSet.isEmpty())    contract.addMaterials(player, materialsSet);
 
         contract.buildMenu(game).sendMenu(event);
     }

@@ -1,89 +1,137 @@
 package bot.commands.user.trading;
 
-import bot.commands.user.shop.MessageSenderTester;
+import bot.commands.AbstractCommandTest;
+import game.AnimeCardsGame;
+import game.Player;
 import game.cards.CardPersonal;
 import game.contract.MultiTradeContract;
 import game.materials.Material;
+import game.materials.MaterialsSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddToMultiTradeCommandTest extends MessageSenderTester implements InterfaceMultiTradeTest {
+class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeCommand, AddToMultiTradeCommand.Arguments> implements InterfaceMultiTradeTest {
+
+    AddToMultiTradeCommand.Arguments arguments;
+    private String contractMessageId;
 
     @BeforeEach
     private void setUp() {
-        game().removeStocks(tester());
-        game().removeStocks(tester2());
-        sendAndCapture("#multitrade " + tester2().getId());
-        game().pickPersonalCard(tester2().getId(), sender.cardGlobal1, 5);
+        this.command = new AddToMultiTradeCommand(spyGame);
+        this.arguments = createArguments();
+
+        // add new multi trade contract before tests
+        contractMessageId = "111";
+        MultiTradeContract multiTrade = new MultiTradeContract(tester.getId(), tester2.getId());
+        spyGame.getContractsManager().add(contractMessageId, multiTrade);
+    }
+
+    @Override
+    public MultiTradeContract getMultiTrade() {
+        return spyGame.getContractsManager().getForMessage(MultiTradeContract.class, contractMessageId);
+    }
+
+    @Override
+    public Player tester() {
+        return tester;
+    }
+
+    @Override
+    public AnimeCardsGame game() {
+        return spyGame;
     }
 
     @Nested
     public class MaterialsTest{
         @Test
         void testTradeUnknownMaterial() {
-            send("#addtrade -m unknown=100");
+            arguments.materialsMap.put("unknown", "100");
+            handleCommand(tester, arguments);
 
             MultiTradeContract contract = getMultiTrade();
-
-            assertTrue(contract.getSenderMaterials().getMaterials().isEmpty());
-        }
-
-        @Test
-        void testGoldAddedToTrade() {
-            MultiTradeContract contract = getMultiTrade();
-
-            send("#addtrade -m gold=100");
-            assertEquals(100, contract.getSenderMaterials().getMaterials().get(Material.GOLD));
+            assertTrue(contract.getSenderMaterials().getMap().isEmpty());
         }
 
         @Test
         void testMultiTradeMaterialAmountNotInteger() {
-
-            send("#addtrade -m gold=hello");
+            arguments.materialsMap.put("gold", "hello");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            arguments.materialsMap.clear();
 
-            send("#addtrade -m gold=\"multi words\"");
+            arguments.materialsMap.put("gold", "100.568");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            arguments.materialsMap.clear();
 
-            send("#addtrade -m gold=100.568");
+            arguments.materialsMap.put("gold", "");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            arguments.materialsMap.clear();
 
-            send("#addtrade -m gold=100,568");
+            arguments.materialsMap.put("gold", "10f");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
-
-            send("#addtrade -m gold= -m hello= 20");
-            assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            arguments.materialsMap.clear();
         }
 
+        @Test
+        void testGoldAddedToTrade() {
+            tester.getMaterials().setMap(Map.of(Material.GOLD, 100));
 
+            arguments.materialsMap.put("gold", "100");
+            handleCommand(arguments);
+
+            MultiTradeContract contract = getMultiTrade();
+            assertEquals(100, contract.getSenderMaterials().getMap().get(Material.GOLD));
+        }
+
+        @Test
+        void testPlayerHasInsufficientMaterials() {
+            tester.getMaterials().setMap(Map.of(Material.GOLD, 100));
+
+            arguments.materialsMap.put("gold", "1000");
+            handleCommand(arguments);
+            arguments.materialsMap.clear();
+
+            arguments.materialsMap.put("gold", "100000");
+            handleCommand(arguments);
+
+            MultiTradeContract contract = getMultiTrade();
+            assertEquals(100, contract.getSenderMaterials().getMap().get(Material.GOLD));
+        }
     }
 
     @Nested
     public class CardsTest{
         @Test
         void testNotUserCardsNotAdded() {
-            send("#addtrade -c unknown -c \"multi word unknown\"");
-            assertTrue(getMultiTrade().getSenderCards().isEmpty());
+            arguments.cardIds.add("unknown");
+            arguments.cardIds.add("multi word unknown");
+            arguments.cardIds.add("15222345123455");
+            arguments.cardIds.add(tester2.getCards().get(0).getId());
 
-            send("#addtrade -c "+ tester2().getCards().get(0).getId());
-            assertTrue(getMultiTrade().getSenderCards().isEmpty());
-
-            send("#addtrade -c 15222345123455");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderCards().isEmpty());
         }
 
 
         @Test
         void testCardsAddedToTrade() {
-            send("#addtrade -c " + getTesterCard(0).getId() + " -c " + getTesterCard(1).getId());
-            assertEquals(2, getMultiTrade().getSenderCards().size());
-            assertTrue(getMultiTrade().getSenderCards().contains(getTesterCard(0)));
-            assertTrue(getMultiTrade().getSenderCards().contains(getTesterCard(1)));
-        }
+            CardPersonal card0 = tester.getCards().get(0);
+            arguments.cardIds.add(card0.getId());
+            CardPersonal card1 = tester.getCards().get(1);
+            arguments.cardIds.add(card1.getId());
 
+            assertEquals(2, getMultiTrade().getSenderCards().size());
+            assertTrue(getMultiTrade().getSenderCards().contains(card0));
+            assertTrue(getMultiTrade().getSenderCards().contains(card1));
+        }
     }
 
     @Nested
@@ -91,40 +139,53 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
         @Test
         void testCannotAddUnknownStocks() {
-            send("#addtrade -s testUnknown");
+            arguments.stockValuesMap.put("testUnknown", "1000.2");
+            handleCommand(arguments);
             assertTrue(getMultiTrade().getSenderStocks().isEmpty());
+        }
 
-            CardPersonal card1 = getTesterCard(0);
+        @Test
+        void testCannotAddStockYouDoNotOwn() {
+            CardPersonal card1 = tester.getCards().get(0);
+
+            spyGame.pickPersonalCard(tester2.getId(),
+                    spyGame.getCardsGlobal().getByCharacter(tester.getCards().get(tester.getCards().size() - 1).getCharacterInfo()),
+                    1);
+            CardPersonal card2 = tester2.getCards().get(0);
+
             game().exchangeCardForStock(card1);
-            game().exchangeCardForStock(getTesterCard(1));
-
-            CardPersonal card2 = tester2().getCards().get(0);
             game().exchangeCardForStock(card2);
 
-            send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + '"');
+            assertNotEquals(card1.getCharacterInfo(), card2.getCharacterInfo());
+
+            arguments.stockValuesMap.put(card2.getCharacterInfo().getSeries().getName(), "100.5");
+            handleCommand(arguments);
+
             assertTrue(getMultiTrade().getSenderStocks().isEmpty());
         }
 
         @Test
         void testAddedStockValue() {
-            CardPersonal card1 = getTesterCard(0);
+            CardPersonal card1 = tester.getCards().get(0);
             game().exchangeCardForStock(card1);
 
-            send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=100.5");
+            arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), "100.5");
+            handleCommand(arguments);
 
             assertEquals(1, getMultiTrade().getSenderStocks().size());
             assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
             assertEquals(100.5f, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
-
         }
 
         @Test
         void testAddedMaximumStockValue_ifPlayerHasLessThanSpecified() {
-            CardPersonal card1 = getTesterCard(0);
+            CardPersonal card1 = tester.getCards().get(0);
             float maxValue = game().exchangeCardForStock(card1);
 
-            send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue + 100));
-            send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue * 2));
+            arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), String.valueOf(maxValue + 100));
+            handleCommand(arguments);
+
+            arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), String.valueOf(maxValue * 2));
 
             assertEquals(1, getMultiTrade().getSenderStocks().size());
             assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
@@ -133,24 +194,42 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
         @Test
         void testAddStockValueWithMinus() {
-            CardPersonal card1 = getTesterCard(0);
-            float maxValue = game().exchangeCardForStock(card1);
+            CardPersonal card1 = tester.getCards().get(0);
+            spyGame.exchangeCardForStock(card1);
 
-            send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue + 100));
+            arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), "-100");
+            handleCommand(arguments);
 
             assertEquals(1, getMultiTrade().getSenderStocks().size());
             assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
-            assertEquals(maxValue, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
+            assertEquals(-100, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
         }
 
     }
 
     @Nested
     public class ArmorTest{
+
         @Test
         void testUnknownArmorNotAdded() {
+            spyGame.getArmorShop().getItems().get(0).useFor(spyGame, tester);
+            spyGame.getArmorShop().getItems().get(1).useFor(spyGame, tester2);
 
+            arguments.armorIds.add("unknown");
+            arguments.armorIds.add(tester2.getArmorItems().get(0).getId());
+            handleCommand(arguments);
+
+            assertTrue(getMultiTrade().getSenderArmor().isEmpty());
         }
 
+        @Test
+        void testArmorAdded() {
+            spyGame.getArmorShop().getItems().get(0).useFor(spyGame, tester);
+
+            arguments.armorIds.add(tester.getArmorItems().get(0).getId());
+            handleCommand(arguments);
+
+            assertTrue(getMultiTrade().getSenderArmor().contains(tester.getArmorItems().get(0)));
+        }
     }
 }

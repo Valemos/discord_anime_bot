@@ -25,11 +25,11 @@ public class MaterialsSet {
         this.materials = materials;
     }
 
-    public void setMaterials(Map<Material, Integer> materials) {
+    public void setMap(Map<Material, Integer> materials) {
         this.materials = materials;
     }
 
-    public Map<Material, Integer> getMaterials() {
+    public Map<Material, Integer> getMap() {
         return materials;
     }
 

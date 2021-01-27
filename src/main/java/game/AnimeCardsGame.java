@@ -26,7 +26,7 @@ import java.time.Instant;
 import java.util.*;
 
 public class AnimeCardsGame {
-    private final EventWaiter eventWaiter;
+    private EventWaiter eventWaiter;
     private final Session dbSession;
 
     private ItemsShop itemsShop;
@@ -105,6 +105,10 @@ public class AnimeCardsGame {
 
     public EventWaiter getEventWaiter() {
         return eventWaiter;
+    }
+
+    public void setEventWaiter(EventWaiter eventWaiter) {
+        this.eventWaiter = eventWaiter;
     }
 
     @Nonnull

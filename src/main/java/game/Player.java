@@ -8,10 +8,8 @@ import game.player_objects.ArmorItemPersonal;
 import game.player_objects.CooldownSet;
 import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -161,11 +159,20 @@ public class Player {
                 ).close();
     }
 
-    public Map<SeriesInfo, Float> getMaxStocks(Map<SeriesInfo, Float> stockValues) {
+    public Map<SeriesInfo, Float> getAvailableStocks(Map<SeriesInfo, Float> stockValues) {
         Map<SeriesInfo, Float> newValues = new HashMap<>();
         stockValues.forEach((series, value) -> {
             StockValue stock = findStockBySeries(series);
             newValues.put(series, stock.getValue() > value ? value : stock.getValue());
+        });
+        return newValues;
+    }
+
+    public MaterialsSet getAvailableMaterials(MaterialsSet materialsInput) {
+        MaterialsSet newValues = new MaterialsSet();
+        materialsInput.getMap().forEach((material, value) -> {
+            int availableAmount = materials.getAmount(material);
+            newValues.setAmount(material, availableAmount > value ? value : availableAmount);
         });
         return newValues;
     }
