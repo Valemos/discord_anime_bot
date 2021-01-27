@@ -75,10 +75,7 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
 
     public T getUnique(String name, String series) {
         List<T> cardsFound = getFiltered(name, series);
-        if (cardsFound.size() == 1){
-            return cardsFound.get(0);
-        }
-        return null;
+        return cardsFound.size() == 1 ? cardsFound.get(0) : null;
     }
 
     public List<T> getAllCards() {

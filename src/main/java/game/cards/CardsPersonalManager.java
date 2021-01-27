@@ -15,8 +15,16 @@ public class CardsPersonalManager extends AbstractCardsManager<CardPersonal> {
 
     public void removeCard(CardPersonal card) {
         dbSession.beginTransaction();
+
+        if(card.inSquadron()){
+            card.removeFromSquadron();
+            dbSession.merge(card.getAssignedSquadron());
+        }
+
         card.getOwner().getCards().remove(card);
+
         dbSession.remove(card);
+        dbSession.merge(card.getOwner());
         dbSession.getTransaction().commit();
     }
 

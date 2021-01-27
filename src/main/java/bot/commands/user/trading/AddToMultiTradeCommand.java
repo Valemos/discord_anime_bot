@@ -75,12 +75,15 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
     }
 
     private Map<SeriesInfo, Float> getStocks(Map<String, String> stockValues) {
-        return player.getStocks().stream()
-                .filter(stock -> stockValues.containsKey(stock.getSeries().getName()))
+        return stockValues.keySet().stream()
+                .map(stockName -> player.findStockByUniqueName(stockName))
+                .filter(Objects::nonNull)
                 .map(stock -> {
                     Float stockIncrement = tryParseFloat(stockValues.get(stock.getSeries().getName()));
                     if (stockIncrement != null){
-                        return new StockValue(stock.getSeries(),stock.getValue() - stockIncrement);
+                        return new StockValue(
+                                stock.getSeries(),
+                                stock.getValue() > stockIncrement ? stockIncrement : stock.getValue());
                     }else {
                         return null;
                     }
@@ -113,8 +116,10 @@ public class AddToMultiTradeCommand extends AbstractCommand<AddToMultiTradeComma
     }
 
     private List<CardPersonal> getCards(List<String> cardIds) {
-        return player.getCards().stream()
-                .filter(card -> cardIds.contains(card.getName()))
+        return cardIds.stream()
+                .map(id -> game.getCardsPersonal().getById(id))
+                .filter(Objects::nonNull)
+                .filter(card -> card.getOwner().equals(player))
                 .collect(Collectors.toList());
     }
 }

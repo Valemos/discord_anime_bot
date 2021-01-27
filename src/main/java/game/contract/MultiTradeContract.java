@@ -18,8 +18,8 @@ public class MultiTradeContract extends AbstractContract {
     private final Set<ArmorItemPersonal> senderArmor = new HashSet<>();
     private final Set<ArmorItemPersonal> receiverArmor = new HashSet<>();
 
-    private final Map<SeriesInfo, Float> senderStocks = new HashMap<>();
-    private final Map<SeriesInfo, Float> receiverStocks = new HashMap<>();
+    private Map<SeriesInfo, Float> senderStocks = new HashMap<>();
+    private Map<SeriesInfo, Float> receiverStocks = new HashMap<>();
 
     private final MaterialsSet senderMaterials = new MaterialsSet();
     private final MaterialsSet receiverMaterials = new MaterialsSet();
@@ -86,7 +86,7 @@ public class MultiTradeContract extends AbstractContract {
         if (senderId.equals(playerId)){
             incrementMap(senderStocks, stockValues);
         }else if (receiverId.equals(playerId)){
-            incrementMap(senderStocks, stockValues);
+            incrementMap(receiverStocks, stockValues);
         }
         updateMenu();
     }
@@ -101,13 +101,11 @@ public class MultiTradeContract extends AbstractContract {
     }
 
     private void incrementMap(Map<SeriesInfo, Float> map, Map<SeriesInfo, Float> increments) {
-        for (SeriesInfo key : increments.keySet()) {
-            incrementValue(map, key, increments.get(key));
-        }
+        increments.forEach((key, value) -> incrementValue(map, key, value));
     }
 
     private void incrementValue(Map<SeriesInfo, Float> map, SeriesInfo key, Float increment) {
-        map.put(key, increment + map.get(key));
+        map.put(key, increment + map.getOrDefault(key, 0f));
     }
 
     public Set<CardPersonal> getSenderCards() {

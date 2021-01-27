@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Player {
@@ -100,13 +101,20 @@ public class Player {
         this.stocks = stocks;
     }
 
-    public StockValue findStockByName(String seriesName) {
+    private StockValue findStockBySeries(SeriesInfo series) {
         return getStocks().stream()
-                .filter((s) -> String.valueOf(s.getSeries().getName()).toLowerCase()
-                        .contains(seriesName.toLowerCase()))
+                .filter(s -> s.getSeries().equals(series))
                 .findFirst().orElse(null);
     }
 
+    public StockValue findStockByUniqueName(String seriesName) {
+        List<StockValue> stocks = getStocks().stream()
+                                    .filter((s) -> String.valueOf(s.getSeries().getName()).toLowerCase()
+                                            .contains(seriesName.toLowerCase()))
+                                    .collect(Collectors.toList());
+
+        return stocks.size() == 1 ? stocks.get(0) : null;
+    }
 
     public Squadron getSquadron() {
         return squadron;
@@ -153,4 +161,12 @@ public class Player {
                 ).close();
     }
 
+    public Map<SeriesInfo, Float> getMaxStocks(Map<SeriesInfo, Float> stockValues) {
+        Map<SeriesInfo, Float> newValues = new HashMap<>();
+        stockValues.forEach((series, value) -> {
+            StockValue stock = findStockBySeries(series);
+            newValues.put(series, stock.getValue() > value ? value : stock.getValue());
+        });
+        return newValues;
+    }
 }

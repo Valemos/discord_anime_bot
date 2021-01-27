@@ -6,7 +6,6 @@ import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.*;
 import game.contract.ContractsManager;
 import game.materials.*;
-import game.player_objects.ArmorItemPersonal;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.items.ArmorItem;
@@ -15,7 +14,6 @@ import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
 import game.player_objects.StockValueId;
 import net.dv8tion.jda.api.entities.User;
-import org.hibernate.NonUniqueResultException;
 import org.hibernate.Session;
 
 import javax.annotation.Nonnull;
@@ -26,8 +24,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
@@ -237,7 +233,6 @@ public class AnimeCardsGame {
             }else{
                 cardStock = new StockValue(card);
                 dbSession.persist(cardStock);
-                cardStock.getOwner().getStocks().add(cardStock);
                 dbSession.merge(cardStock.getOwner());
             }
             dbSession.getTransaction().commit();
@@ -252,6 +247,7 @@ public class AnimeCardsGame {
         if (cardGlobal == null) return false;
 
         cardGlobal.getStats().incrementCardBurned();
+        cardsGlobalManager.update(cardGlobal);
         cardsPersonalManager.removeCard(card);
         return true;
     }
@@ -366,6 +362,16 @@ public class AnimeCardsGame {
         dbSession.createQuery("delete from ArmorItemPersonal as a where a.original.id = :paramId")
                 .setParameter("paramId", item.getId())
                 .executeUpdate();
+        dbSession.getTransaction().commit();
+    }
+
+    public void removeStocks(Player player) {
+        dbSession.beginTransaction();
+        for (StockValue stock : player.getStocks()){
+            dbSession.delete(stock);
+        }
+        player.getStocks().clear();
+        dbSession.merge(player);
         dbSession.getTransaction().commit();
     }
 }

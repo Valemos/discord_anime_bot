@@ -13,7 +13,7 @@ public class StockValue {
     private StockValueId compositeId;
 
     @MapsId(value = "ownerId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Player owner;
 
     @MapsId(value = "seriesId")

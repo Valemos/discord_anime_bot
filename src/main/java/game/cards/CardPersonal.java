@@ -135,4 +135,12 @@ public class CardPersonal implements DescriptionDisplayable, SearchableCard, Com
     public String getStatsString() {
         return stats.getDescription();
     }
+
+    public boolean inSquadron() {
+        return assignedSquadron != null;
+    }
+
+    public void removeFromSquadron() {
+        assignedSquadron.getMembers().remove(this);
+    }
 }

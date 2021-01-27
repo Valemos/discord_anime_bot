@@ -2,6 +2,7 @@ package bot;
 
 import bot.commands.AbstractCommand;
 import bot.commands.admin.GrabTimeCommand;
+import bot.commands.admin.LinkServerCommand;
 import bot.commands.admin.PrefixCommand;
 import bot.commands.admin.ResetCooldownsCommand;
 import bot.commands.owner.*;
@@ -141,6 +142,7 @@ public class BotAnimeCards {
                 new PrefixCommand(this),
                 new ResetCooldownsCommand(game),
                 new GrabTimeCommand(game),
+                new LinkServerCommand(game),
 
                 new CardDropCommand(game),
                 new DailyCommand(game),

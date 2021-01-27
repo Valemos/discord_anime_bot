@@ -13,6 +13,8 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
     @BeforeEach
     private void setUp() {
+        game().removeStocks(tester());
+        game().removeStocks(tester2());
         sendAndCapture("#multitrade " + tester2().getId());
         game().pickPersonalCard(tester2().getId(), sender.cardGlobal1, 5);
     }
@@ -67,7 +69,7 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
 
     @Test
     void testCardsAddedToTrade() {
-        send("#addtrade -c " + getTesterCard(0).getId() + " " + getTesterCard(1));
+        send("#addtrade -c " + getTesterCard(0).getId() + " -c " + getTesterCard(1).getId());
         assertEquals(2, getMultiTrade().getSenderCards().size());
         assertTrue(getMultiTrade().getSenderCards().contains(getTesterCard(0)));
         assertTrue(getMultiTrade().getSenderCards().contains(getTesterCard(1)));
@@ -108,11 +110,14 @@ class AddToMultiTradeCommandTest extends MessageSenderTester implements Interfac
         float maxValue = game().exchangeCardForStock(card1);
 
         send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue + 100));
+        send("#addtrade -s \"" + card1.getCharacterInfo().getSeries().getName() + "\"=" + (maxValue * 2));
 
         assertEquals(1, getMultiTrade().getSenderStocks().size());
         assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
         assertEquals(maxValue, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
     }
+
+
 
     @Test
     void testAddStockValueWithMinus() {
