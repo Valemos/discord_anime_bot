@@ -14,8 +14,9 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
     @Id
     private String id;
 
+    @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id")
     @MapsId
-    @OneToOne
     CharacterInfo characterInfo;
 
     @Embedded

@@ -31,4 +31,26 @@ class AddCardCommandTest extends AbstractCommandTest<AddCardCommand, AddCardComm
         assertEquals("card series", c.getCharacterInfo().getSeriesName());
         assertEquals("image_url", c.getCharacterInfo().getImageUrl());
     }
+
+    @Test
+    void testExistingCardNotUpdatedImage() {
+
+        arguments.name = "card name";
+        arguments.series = "card series";
+        arguments.imageUrl = "image_url";
+
+        handleCommand();
+
+        CardGlobal c = spyGame.getCardGlobalUnique("card name", "card series");
+        assertNotNull(c);
+
+        arguments.name = "card name";
+        arguments.series = "card series";
+        arguments.imageUrl = "updated";
+
+        handleCommand();
+
+        CardGlobal card2 = spyGame.getCardsGlobal().getById(c.getId());
+        assertEquals("image_url", card2.getCharacterInfo().getImageUrl());
+    }
 }

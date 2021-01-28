@@ -45,7 +45,8 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         Predicate characterEquality;
         if(character.getId() == null){
             characterEquality = cb.equal(cb.lower(root.get("characterInfo").get("name")),
-                                         character.getName().toLowerCase());
+                                        character.getName().toLowerCase());
+
         }else{
             characterEquality = cb.equal(root.get("characterInfo").get("id"), character.getId());
         }
@@ -101,7 +102,6 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
     public void removeCard(CardGlobal card) {
         dbSession.beginTransaction();
         dbSession.delete(card);
-        dbSession.delete(card.getCharacterInfo());
         dbSession.getTransaction().commit();
     }
 

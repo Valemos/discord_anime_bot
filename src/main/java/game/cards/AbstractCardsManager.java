@@ -83,4 +83,14 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
         CriteriaQuery<T> q = cb.createQuery(cardClass);
         return dbSession.createQuery(q.select(q.from(cardClass))).getResultList();
     }
+
+    public void removeAll(){
+        dbSession.beginTransaction();
+
+        for (T card : getAllCards()){
+            dbSession.delete(card);
+        }
+
+        dbSession.getTransaction().commit();
+    }
 }

@@ -1,5 +1,8 @@
 package bot.commands.user.squadron;
 
+import bot.commands.AbstractCommand;
+import bot.commands.AbstractCommandTest;
+import bot.commands.arguments.MultipleIdentifiersArguments;
 import bot.commands.user.shop.MessageSenderTester;
 import game.cards.CardPersonal;
 import game.player_objects.squadron.PatrolType;
@@ -18,122 +21,162 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-class PatrolCommandTest extends MessageSenderTester {
+class PatrolCommandTest extends AbstractCommandTest<PatrolCommand, PatrolCommand.Arguments> {
+
+    SquadronRemoveCommand cmdSquadronRemove;
+    private SquadronAddCommand cmdSquadronAdd;
 
     @BeforeEach
     void setUp() {
-        sender.clearSquadronsTable();
+        setCommand(new PatrolCommand(spyGame));
+
+        cmdSquadronRemove = new SquadronRemoveCommand(spyGame);
+        cmdSquadronAdd = new SquadronAddCommand(spyGame);
     }
 
     private void addSquadronMember(int index) {
-        CardPersonal card = getTesterCard(index);
-        game().addSquadronMember(tester(), card);
-        reset(game());
+        CardPersonal card = tester.getCards().get(index);
+        spyGame.addSquadronMember(tester, card);
+        reset(spyGame);
     }
 
     @Test
     void testPatrolNotStartedForEmptySquadron() {
         getTesterSquadron().setMembers(new HashSet<>());
-        send("#patrol overworld");
-        verify(game(), never()).createNewPatrol(any(), any(), any());
+
+        arguments.patrolType = PatrolType.OVERWORLD;
+        handleCommand();
+
+        verify(spyGame, never()).createNewPatrol(any(), any(), any());
     }
 
     @Test
     void testPatrolStartedFullName() {
         addSquadronMember(0);
-        send("#patrol overworld");
 
-        sender.assertCommandHandled(PatrolCommand.class);
-        verify(game(), times(1)).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
+        arguments.setPatrolWorld(PatrolType.OVERWORLD);
+        handleCommand();
+
+        verify(spyGame, times(1)).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
     }
 
     @Test
     void testPatrolWorldAlias() {
         addSquadronMember(0);
-        send("#patrol o");
 
-        sender.assertCommandHandled(PatrolCommand.class);
-        verify(game(), atLeastOnce()).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
+        arguments.setPatrolWorld(PatrolType.O);
+        handleCommand();
+
+        verify(spyGame, atLeastOnce()).createNewPatrol(any(), eq(PatrolType.OVERWORLD), any());
     }
 
     @Test
     void testPatrolNotStarted_WhenAnotherPatrolActive() {
         addSquadronMember(0);
 
-        send("#patrol o");
-        verify(game(), times(1)).createNewPatrol(any(), any(), any());
+        arguments.setPatrolWorld(PatrolType.O);
+        handleCommand();
 
-        assertTrue(tester().getSquadron().getPatrol().isStarted());
-        send("#patrol o");
-        verify(game(), times(1)).createNewPatrol(any(), any(), any());
+        verify(spyGame, times(1)).createNewPatrol(any(), any(), any());
+        assertTrue(tester.getSquadron().getPatrol().isStarted());
+
+        handleCommand(arguments);
+        verify(spyGame, times(1)).createNewPatrol(any(), any(), any());
     }
 
     @Test
     void testCannotStopPatrol_whenNotActive() {
         assertFalse(getTesterSquadron().getPatrol().isStarted());
-        send("#patrolstop");
-        verify(game(), never()).finishPatrol(any(), any());
+        handleCommand(new PatrolStopCommand(spyGame));
+        verify(spyGame, never()).finishPatrol(any(), any());
     }
 
     @Test
     void testPatrolStopped_whenActive() {
         addSquadronMember(0);
-        send("#patrol o");
-        assertTrue(tester().getSquadron().getPatrol().isStarted());
 
-        send("#patrolstop");
-        verify(game()).finishPatrol(any(), any());
+        arguments.setPatrolWorld(PatrolType.O);
+        handleCommand();
+
+        assertTrue(tester.getSquadron().getPatrol().isStarted());
+
+        handleCommand(new PatrolStopCommand(spyGame));
+        verify(spyGame).finishPatrol(any(), any());
     }
 
     @Test
     void testAddNotExistingMembersToSquadron() {
         assertTrue(getTesterSquadron().isEmpty());
-        send("#squadronadd 12345678 asdfghjkl");
+
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronAdd);
+
+        args.multipleIds.add("12345678");
+        args.multipleIds.add("asdfghjkl");
+        handleCommand(cmdSquadronAdd, tester, args);
+
         assertTrue(getTesterSquadron().isEmpty());
     }
 
     @Test
     void testRemoveNotExistingFromSquadron() {
         addSquadronMember(0);
-        assertEquals(1, tester().getSquadron().getMembers().size());
-        send("#squadronremove 12345678 asdfghjkl");
-        assertEquals(1, tester().getSquadron().getMembers().size());
+        assertEquals(1, tester.getSquadron().getMembers().size());
+
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronRemove);
+
+        args.multipleIds.add("12345678");
+        args.multipleIds.add("asdfghjkl");
+        handleCommand(cmdSquadronRemove, tester, args);
+
+        assertEquals(1, tester.getSquadron().getMembers().size());
     }
 
     @Test
     void testCannotAddToSquadron_WhenInPatrol() {
         addSquadronMember(0);
-        send("#patrol o");
 
-        send("#squadronadd 12345678 " + getTesterCard(0).getId());
+        arguments.setPatrolWorld(PatrolType.O);
+        handleCommand();
 
-        verify(game(), never()).addSquadronMember(any(), any());
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronAdd);
+
+        args.multipleIds.add("12345678");
+        args.multipleIds.add(tester.getCards().get(0).getId());
+        handleCommand(cmdSquadronAdd, tester, args);
+
+        verify(spyGame, never()).addSquadronMember(any(), any());
     }
 
     @Test
     void testCannotRemoveFromSquadron_WhenInPatrol() {
         addSquadronMember(0);
-        send("#patrol o");
 
-        send("#squadronremove 12345678 " + getTesterCard(0).getId());
+        arguments.setPatrolWorld(PatrolType.O);
+        handleCommand();
 
-        verify(game(), never()).removeSquadronMembers(any(), any());
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronRemove);
+        args.multipleIds.add("1234567890");
+        args.multipleIds.add(tester.getCards().get(0).getId());
+
+        handleCommand(cmdSquadronRemove, tester, args);
+
+        verify(spyGame, never()).removeSquadronMembers(any(), any());
     }
 
     @Test
     void testAddMembersToSquadron() {
-        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(0)));
-        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(1)));
+        CardPersonal card1 = tester.getCards().get(0);
+        CardPersonal card2 = tester.getCards().get(1);
+        assertFalse(getTesterSquadron().getMembers().contains(card1));
+        assertFalse(getTesterSquadron().getMembers().contains(card2));
 
-        send("#squadronadd " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronAdd);
+        args.multipleIds.add(card1.getId());
+        args.multipleIds.add(card2.getId());
+        handleCommand(cmdSquadronAdd, tester, args);
 
-        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(0)));
-        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(1)));
-    }
-
-    @NotNull
-    private Squadron getTesterSquadron() {
-        return game().getOrCreateSquadron(tester());
+        assertTrue(getTesterSquadron().getMembers().contains(card1));
+        assertTrue(getTesterSquadron().getMembers().contains(card2));
     }
 
     @Test
@@ -142,12 +185,23 @@ class PatrolCommandTest extends MessageSenderTester {
         addSquadronMember(1);
         addSquadronMember(3);
 
-        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(0)));
-        assertTrue(getTesterSquadron().getMembers().contains(getTesterCard(1)));
+        CardPersonal card1 = tester.getCards().get(0);
+        CardPersonal card2 = tester.getCards().get(1);
 
-        send("#squadronremove " + getTesterCard(0).getId() + " " + getTesterCard(1).getId());
+        assertTrue(getTesterSquadron().getMembers().contains(card1));
+        assertTrue(getTesterSquadron().getMembers().contains(card2));
 
-        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(0)));
-        assertFalse(getTesterSquadron().getMembers().contains(getTesterCard(1)));
+        MultipleIdentifiersArguments args = createArguments(cmdSquadronRemove);
+        args.multipleIds.add(card1.getId());
+        args.multipleIds.add(card2.getId());
+        handleCommand(cmdSquadronRemove, tester, args);
+
+        assertFalse(getTesterSquadron().getMembers().contains(card1));
+        assertFalse(getTesterSquadron().getMembers().contains(card2));
+    }
+
+    @NotNull
+    private Squadron getTesterSquadron() {
+        return spyGame.getOrCreateSquadron(tester);
     }
 }

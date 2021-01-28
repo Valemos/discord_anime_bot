@@ -90,10 +90,10 @@ public class BotMessageSenderMock {
 
         databaseSession = spyGame.getDatabaseSession();
 
-
         spyOnCommands();
         setDropTimerMock();
 
+        messageEventMock = new MessageEventMock();
         doReturn(messageEventMock.getJDA()).when(spyBot).buildJDA(any());
 
 
@@ -142,34 +142,15 @@ public class BotMessageSenderMock {
         clearTable(ArmorItem.class);
     }
 
-    public void clearSquadronsTable() {
-        List<Squadron> squadrons = getAllObjects(Squadron.class);
-        for (Squadron sq : squadrons){
-            getGame().clearSquadron(sq);
-
-            databaseSession.beginTransaction();
-            sq.getOwner().setSquadron(null);
-            databaseSession.merge(sq.getOwner());
-            databaseSession.delete(sq);
-            databaseSession.getTransaction().commit();
-        }
-    }
-
     public <T> void clearTable(Class<T> entityClass) {
         databaseSession.beginTransaction();
 
-        List<T> objects = getAllObjects(entityClass);
+        List<T> objects = AnimeCardsGame.getAllObjects(databaseSession, entityClass);
         for (T obj : objects){
             databaseSession.delete(obj);
         }
 
         databaseSession.getTransaction().commit();
-    }
-
-    private <T> List<T> getAllObjects(Class<T> entityClass) {
-        CriteriaBuilder cb = databaseSession.getCriteriaBuilder();
-        CriteriaQuery<T> q = cb.createQuery(entityClass);
-        return databaseSession.createQuery(q.select(q.from(entityClass))).list();
     }
 
     private void spyOnCommands() {
@@ -259,7 +240,9 @@ public class BotMessageSenderMock {
     public MessageReactionAddEvent getReactionEventMock(MenuEmoji emoji) {
         when(mReactionAddEvent.getReactionEmote()).thenReturn(mReactionEmote);
         when(mReactionEmote.getEmoji()).thenReturn(emoji.getEmoji());
-        when(mReactionAddEvent.getChannel()).thenReturn(messageEventMock.getMessage().getChannel());
+
+        MessageChannel channel = messageEventMock.getMessage().getChannel();
+        when(mReactionAddEvent.getChannel()).thenReturn(channel);
 
         return mReactionAddEvent;
     }

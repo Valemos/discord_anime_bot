@@ -3,8 +3,10 @@ package game.cards;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "series_id"})})
 public class CharacterInfo {
 
     @Id
@@ -12,7 +14,6 @@ public class CharacterInfo {
     @GenericGenerator(name = "base36_card_global", strategy = "bot.Base36SequenceGenerator")
     private String id;
 
-    @Column(unique = true)
     private String name;
 
     private String imageUrl;

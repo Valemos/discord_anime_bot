@@ -7,6 +7,7 @@ import game.AnimeCardsGame;
 import game.cards.CardGlobal;
 import net.dv8tion.jda.api.entities.Message;
 import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 
 import java.io.*;
 import java.util.List;
@@ -66,7 +67,7 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
         }
     }
 
-    private String handleCreateCardsFile(AnimeCardsGame game, File file) {
+    protected String handleCreateCardsFile(AnimeCardsGame game, File file) {
         int errorMessageCounter = 0;
         StringBuilder errorMessage = new StringBuilder();
 
@@ -75,19 +76,11 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
 
             AddCardCommand.Arguments addCardArgs = new AddCardCommand.Arguments();
 
-
             String line = reader.readLine();
             while (line != null) {
 
                 try {
-                    AbstractCommand.tryParseArguments(addCardArgs, line);
-
-                    CardGlobal newCard = new CardGlobal(
-                            addCardArgs.name,
-                            addCardArgs.series,
-                            addCardArgs.imageUrl
-                    );
-                    game.addCard(newCard);
+                    handleFileLine(game, addCardArgs, line);
 
                 } catch (CmdLineException e) {
                     errorMessageCounter++;
@@ -109,5 +102,16 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
         }
 
         return errorMessage.isEmpty() ? null : errorMessage.toString();
+    }
+
+    protected static void handleFileLine(AnimeCardsGame game, AddCardCommand.Arguments addCardArgs, String line) throws CmdLineException {
+        AbstractCommand.tryParseArguments(new CmdLineParser(addCardArgs), line);
+
+        CardGlobal newCard = new CardGlobal(
+                addCardArgs.name,
+                addCardArgs.series,
+                addCardArgs.imageUrl
+        );
+        game.addCard(newCard);
     }
 }

@@ -3,6 +3,8 @@ package game.cards;
 public interface SearchableCard {
     String getName();
     String getSeriesName();
+    CharacterInfo getCharacterInfo();
+    void setCharacterInfo(CharacterInfo characterInfo);
 
     static boolean containsName(SearchableCard c, String filterName){
         return String.valueOf(c.getName()).toLowerCase().contains(filterName.toLowerCase());

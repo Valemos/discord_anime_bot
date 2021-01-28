@@ -56,7 +56,7 @@ public abstract class AbstractCommand<T> extends Command {
         commandArgs = createArgumentsInstance(argumentsClass);
 
         try {
-            tryParseArguments(commandArgs, event.getArgs());
+            tryParseArguments(new CmdLineParser(commandArgs), event.getArgs());
             handle(event);
 
         } catch (CmdLineException e) {
@@ -64,9 +64,9 @@ public abstract class AbstractCommand<T> extends Command {
         }
     }
 
-    public static <T> void tryParseArguments(T argumentsObject, String argsString) throws CmdLineException {
+    public static <T> void tryParseArguments(CmdLineParser commandParser, String argsString) throws CmdLineException {
         String[] args = Commandline.translateCommandline(argsString);
-        new CmdLineParser(argumentsObject).parseArgument(args);
+        commandParser.parseArgument(args);
     }
 
     public abstract void handle(CommandEvent event);

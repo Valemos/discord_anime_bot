@@ -2,69 +2,62 @@ package bot.commands;
 
 import bot.BotAnimeCards;
 import bot.MessageEventMock;
+import bot.commands.user.trading.AddToMultiTradeCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
 import game.Player;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
 
     private static MessageEventMock messageEventMock;
 
     protected C command;
+    protected A arguments;
 
-    @Mock
-    private static EventWaiter mEventWaiter;
-
-    protected static BotAnimeCards spyBot;
+    protected static BotAnimeCards bot;
     protected static AnimeCardsGame spyGame;
     protected Player tester;
     protected Player tester2;
 
     @BeforeAll
     static void beforeAll() {
-        spyBot = new BotAnimeCards(mEventWaiter);
-        spyBot.loadSettings("hibernate_test.cfg.xml");
-        spyGame = spy(spyBot.getGame());
+        bot = new BotAnimeCards(mock(EventWaiter.class));
+        bot.loadSettings("hibernate_test.cfg.xml");
+        spyGame = spy(bot.getGame());
         messageEventMock = new MessageEventMock();
     }
 
     @BeforeEach
     void loadSettings() {
-        MockitoAnnotations.initMocks(this);
         messageEventMock.reset();
+        reset(spyGame);
 
-        spyGame.setEventWaiter(mEventWaiter);
-        spyGame.setSession(spyGame.getDatabaseSession());
-
-        spyBot.loadTestGameSettings(spyGame);
+        bot.loadTestGameSettings(spyGame);
         tester = spyGame.getOrCreatePlayer("409754559775375371");
         tester2 = spyGame.getOrCreatePlayer("347162620996091904");
     }
 
-    protected void setCommand(C commandObject) {
-        command = commandObject;
+    protected void setCommand(C command) {
+        this.command = command;
+        arguments = createArguments(command);
     }
 
-    protected void handleCommand(A arguments) {
+    protected void handleCommand() {
         handleCommand(command, tester, arguments);
+    }
+
+    protected void handleCommand(A args) {
+        handleCommand(command, tester, args);
     }
 
     protected void handleCommand(Player player, A arguments) {
         handleCommand(command, player, arguments);
     }
-
-    protected A createArguments() {
-        return command.createArgumentsInstance(command.argumentsClass);
-    }
-
 
     protected <T extends AbstractCommand<K>, K> K createArguments(T command) {
         return command.createArgumentsInstance(command.argumentsClass);
@@ -77,5 +70,9 @@ public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
         messageEventMock.setUser(player.getId());
         CommandEvent event = new CommandEvent(messageEventMock.getMock(), null, null);
         command.handle(event);
+    }
+
+    protected <T extends AbstractCommandNoArguments> void handleCommand(T command) {
+        handleCommand(command, tester, command.createArgumentsInstance(AbstractCommandNoArguments.EmptyArguments.class));
     }
 }

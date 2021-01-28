@@ -265,6 +265,12 @@ public class BotAnimeCards {
                         new CardStatsGlobal(1000, 80, 1300, Charisma.NEUTRAL)));
 
         tester1.getCards().clear();
+        game.clearSquadronsTable();
+
+        for (CardGlobal cardPrevious : game.getCardsGlobal().getAllCards()){
+            game.removeCard(cardPrevious);
+        }
+
         for (CardGlobal card : cards) {
             game.addCard(card);
             game.pickPersonalCard(tester1.getId(), card, 1);

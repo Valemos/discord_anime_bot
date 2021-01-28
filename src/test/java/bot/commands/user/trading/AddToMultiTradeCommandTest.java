@@ -7,6 +7,7 @@ import game.cards.CardPersonal;
 import game.contract.MultiTradeContract;
 import game.materials.Material;
 import game.materials.MaterialsSet;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,13 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeCommand, AddToMultiTradeCommand.Arguments> implements InterfaceMultiTradeTest {
 
-    AddToMultiTradeCommand.Arguments arguments;
     private String contractMessageId;
 
     @BeforeEach
     private void setUp() {
-        this.command = new AddToMultiTradeCommand(spyGame);
-        this.arguments = createArguments();
+        setCommand(new AddToMultiTradeCommand(spyGame));
 
         // add new multi trade contract before tests
         contractMessageId = "111";
@@ -82,7 +81,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
 
         @Test
         void testGoldAddedToTrade() {
-            tester.getMaterials().setMap(Map.of(Material.GOLD, 100));
+            tester.getMaterials().setAmount(Material.GOLD, 100);
 
             arguments.materialsMap.put("gold", "100");
             handleCommand(arguments);
@@ -93,7 +92,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
 
         @Test
         void testPlayerHasInsufficientMaterials() {
-            tester.getMaterials().setMap(Map.of(Material.GOLD, 100));
+            tester.getMaterials().setAmount(Material.GOLD, 100);
 
             arguments.materialsMap.put("gold", "1000");
             handleCommand(arguments);
@@ -111,6 +110,8 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
     public class CardsTest{
         @Test
         void testNotUserCardsNotAdded() {
+            spyGame.pickPersonalCard(tester2.getId(), spyGame.getCardGlobalUnique("riko", null), 1);
+
             arguments.cardIds.add("unknown");
             arguments.cardIds.add("multi word unknown");
             arguments.cardIds.add("15222345123455");
@@ -124,9 +125,11 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
         @Test
         void testCardsAddedToTrade() {
             CardPersonal card0 = tester.getCards().get(0);
-            arguments.cardIds.add(card0.getId());
             CardPersonal card1 = tester.getCards().get(1);
+
+            arguments.cardIds.add(card0.getId());
             arguments.cardIds.add(card1.getId());
+            handleCommand();
 
             assertEquals(2, getMultiTrade().getSenderCards().size());
             assertTrue(getMultiTrade().getSenderCards().contains(card0));

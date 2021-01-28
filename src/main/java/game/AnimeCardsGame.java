@@ -55,6 +55,10 @@ public class AnimeCardsGame {
         contractsManager = new ContractsManager();
     }
 
+    public void reset() {
+        setSession(dbSession);
+    }
+
     private List<ArmorItem> updateArmorItems(Session dbSession) {
         List<ArmorItem> armorItems = getArmorItems();
 
@@ -377,6 +381,25 @@ public class AnimeCardsGame {
         player.getStocks().clear();
         dbSession.merge(player);
         dbSession.getTransaction().commit();
+    }
+
+    public void clearSquadronsTable() {
+        List<Squadron> squadrons = getAllObjects(dbSession, Squadron.class);
+        for (Squadron sq : squadrons){
+            clearSquadron(sq);
+
+            dbSession.beginTransaction();
+            sq.getOwner().setSquadron(null);
+            dbSession.merge(sq.getOwner());
+            dbSession.delete(sq);
+            dbSession.getTransaction().commit();
+        }
+    }
+
+    public static <T> List<T> getAllObjects(Session s, Class<T> entityClass) {
+        CriteriaBuilder cb = s.getCriteriaBuilder();
+        CriteriaQuery<T> q = cb.createQuery(entityClass);
+        return s.createQuery(q.select(q.from(entityClass))).list();
     }
 }
 
