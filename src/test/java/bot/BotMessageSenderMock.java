@@ -10,21 +10,14 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardGlobal;
 import game.player_objects.ArmorItemPersonal;
-import game.player_objects.squadron.Squadron;
 import game.shop.items.ArmorItem;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.GenericMessageEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import org.hibernate.Session;
 import org.mockito.*;
 
 import javax.annotation.Nonnull;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.security.auth.login.LoginException;
 import java.util.Arrays;
 import java.util.List;
@@ -252,7 +245,7 @@ public class BotMessageSenderMock {
     }
 
     public void chooseMenuReaction(EmojiMenuHandler menu, String messageId, String playerId, MenuEmoji emoji) {
-        messageEventMock.setMessage(messageId);
+        messageEventMock.setMessageId(messageId);
         messageEventMock.setUser(playerId);
 
         messageEventMock.setEventChannel(mReactionAddEvent, ChannelType.TEXT);

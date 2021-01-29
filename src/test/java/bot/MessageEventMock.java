@@ -96,7 +96,7 @@ public class MessageEventMock {
         setUserMock(userId);
     }
 
-    public void setMessage(String messageId) {
+    public void setMessageId(String messageId) {
         setMessage(messageId, null);
     }
 

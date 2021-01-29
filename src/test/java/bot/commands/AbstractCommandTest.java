@@ -7,6 +7,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
 import game.Player;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -14,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
 
-    private static MessageEventMock messageEventMock;
+    protected static MessageEventMock messageEventMock;
 
     protected C command;
     protected A arguments;
@@ -32,9 +33,15 @@ public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
         messageEventMock = new MessageEventMock();
     }
 
+    @AfterAll
+    static void afterAll() {
+        bot.getGame().getDatabaseSession().close();
+    }
+
     @BeforeEach
     void loadSettings() {
         messageEventMock.reset();
+        spyGame.reset();
         reset(spyGame);
 
         bot.loadTestGameSettings(spyGame);

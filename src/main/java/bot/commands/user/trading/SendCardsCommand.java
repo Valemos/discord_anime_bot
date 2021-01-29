@@ -8,6 +8,7 @@ import game.cards.CardPersonal;
 import game.contract.SendCardsContract;
 import org.kohsuke.args4j.Argument;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class SendCardsCommand extends AbstractCommand<SendCardsCommand.Arguments
         String recieverId;
 
         @Argument(index = 1, required = true, metaVar = "cards id list", usage = "multiple card ids to send them to player")
-        List<String> cardIds;
+        List<String> cardIds = new ArrayList<>();
     }
 
     public SendCardsCommand(AnimeCardsGame game) {

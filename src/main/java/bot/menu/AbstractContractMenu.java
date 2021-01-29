@@ -16,10 +16,12 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
     private final String menuTitle;
 
     public AbstractContractMenu(AnimeCardsGame game, T contract, String menuTitle) {
+        this.menuTitle = menuTitle;
         this.game = game;
+
         this.contractClass = contract.getClass();
         this.contract = contract;
-        this.menuTitle = menuTitle;
+        game.getContractsManager().add(contract);
     }
 
     public void sendMenu(CommandEvent event) {
@@ -44,7 +46,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
         channel.sendMessage(message).queue(
                 resultMessage -> {
                     menu.display(resultMessage);
-                    game.getContractsManager().add(resultMessage.getId(), contract);
+                    game.getContractsManager().addMessage(resultMessage.getId(), contract);
                 }
         );
     }
@@ -52,7 +54,7 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
     @Override
     public void hEmojiConfirm(MessageReactionAddEvent event, AnimeCardsGame game) {
 
-        ContractInterface contract = game.getContractsManager().getForMessage(contractClass, event.getMessageId());
+        AbstractContract contract = game.getContractsManager().getForMessage(contractClass, event.getMessageId());
         if (contract == null) {
             event.getChannel().sendMessage("contract invalid").queue();
             return;
@@ -67,9 +69,9 @@ public abstract class AbstractContractMenu<T extends AbstractContract> implement
 
     @Override
     public void hEmojiDiscard(AnimeCardsGame game, MessageChannel channel, String messageId) {
-        ContractInterface contract = game.getContractsManager().getForMessage(contractClass, messageId);
+        AbstractContract contract = game.getContractsManager().getForMessage(contractClass, messageId);
         contract.discard();
-        game.getContractsManager().removeContract(messageId);
+        game.getContractsManager().removeMessageContract(messageId);
     }
 
     @Override

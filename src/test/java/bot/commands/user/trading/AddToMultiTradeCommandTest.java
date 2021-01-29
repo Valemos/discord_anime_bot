@@ -6,13 +6,9 @@ import game.Player;
 import game.cards.CardPersonal;
 import game.contract.MultiTradeContract;
 import game.materials.Material;
-import game.materials.MaterialsSet;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,17 +23,13 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
         // add new multi trade contract before tests
         contractMessageId = "111";
         MultiTradeContract multiTrade = new MultiTradeContract(tester.getId(), tester2.getId());
-        spyGame.getContractsManager().add(contractMessageId, multiTrade);
+        spyGame.getContractsManager().add(multiTrade);
+        spyGame.getContractsManager().addMessage(contractMessageId, multiTrade);
     }
 
     @Override
-    public MultiTradeContract getMultiTrade() {
+    public MultiTradeContract getMultiTrade(Player tester) {
         return spyGame.getContractsManager().getForMessage(MultiTradeContract.class, contractMessageId);
-    }
-
-    @Override
-    public Player tester() {
-        return tester;
     }
 
     @Override
@@ -52,7 +44,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.materialsMap.put("unknown", "100");
             handleCommand(tester, arguments);
 
-            MultiTradeContract contract = getMultiTrade();
+            MultiTradeContract contract = getMultiTrade(tester);
             assertTrue(contract.getSenderMaterials().getMap().isEmpty());
         }
 
@@ -60,22 +52,22 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
         void testMultiTradeMaterialAmountNotInteger() {
             arguments.materialsMap.put("gold", "hello");
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderMaterials().isEmpty());
             arguments.materialsMap.clear();
 
             arguments.materialsMap.put("gold", "100.568");
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderMaterials().isEmpty());
             arguments.materialsMap.clear();
 
             arguments.materialsMap.put("gold", "");
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderMaterials().isEmpty());
             arguments.materialsMap.clear();
 
             arguments.materialsMap.put("gold", "10f");
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderMaterials().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderMaterials().isEmpty());
             arguments.materialsMap.clear();
         }
 
@@ -86,7 +78,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.materialsMap.put("gold", "100");
             handleCommand(arguments);
 
-            MultiTradeContract contract = getMultiTrade();
+            MultiTradeContract contract = getMultiTrade(tester);
             assertEquals(100, contract.getSenderMaterials().getMap().get(Material.GOLD));
         }
 
@@ -101,7 +93,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.materialsMap.put("gold", "100000");
             handleCommand(arguments);
 
-            MultiTradeContract contract = getMultiTrade();
+            MultiTradeContract contract = getMultiTrade(tester);
             assertEquals(100, contract.getSenderMaterials().getMap().get(Material.GOLD));
         }
     }
@@ -118,7 +110,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.cardIds.add(tester2.getCards().get(0).getId());
 
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderCards().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderCards().isEmpty());
         }
 
 
@@ -131,9 +123,9 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.cardIds.add(card1.getId());
             handleCommand();
 
-            assertEquals(2, getMultiTrade().getSenderCards().size());
-            assertTrue(getMultiTrade().getSenderCards().contains(card0));
-            assertTrue(getMultiTrade().getSenderCards().contains(card1));
+            assertEquals(2, getMultiTrade(tester).getSenderCards().size());
+            assertTrue(getMultiTrade(tester).getSenderCards().contains(card0));
+            assertTrue(getMultiTrade(tester).getSenderCards().contains(card1));
         }
     }
 
@@ -144,7 +136,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
         void testCannotAddUnknownStocks() {
             arguments.stockValuesMap.put("testUnknown", "1000.2");
             handleCommand(arguments);
-            assertTrue(getMultiTrade().getSenderStocks().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderStocks().isEmpty());
         }
 
         @Test
@@ -164,7 +156,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.stockValuesMap.put(card2.getCharacterInfo().getSeries().getName(), "100.5");
             handleCommand(arguments);
 
-            assertTrue(getMultiTrade().getSenderStocks().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderStocks().isEmpty());
         }
 
         @Test
@@ -175,9 +167,9 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), "100.5");
             handleCommand(arguments);
 
-            assertEquals(1, getMultiTrade().getSenderStocks().size());
-            assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
-            assertEquals(100.5f, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
+            assertEquals(1, getMultiTrade(tester).getSenderStocks().size());
+            assertTrue(getMultiTrade(tester).getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
+            assertEquals(100.5f, getMultiTrade(tester).getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
         }
 
         @Test
@@ -190,9 +182,9 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
 
             arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), String.valueOf(maxValue * 2));
 
-            assertEquals(1, getMultiTrade().getSenderStocks().size());
-            assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
-            assertEquals(maxValue, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
+            assertEquals(1, getMultiTrade(tester).getSenderStocks().size());
+            assertTrue(getMultiTrade(tester).getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
+            assertEquals(maxValue, getMultiTrade(tester).getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
         }
 
         @Test
@@ -203,9 +195,9 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.stockValuesMap.put(card1.getCharacterInfo().getSeries().getName(), "-100");
             handleCommand(arguments);
 
-            assertEquals(1, getMultiTrade().getSenderStocks().size());
-            assertTrue(getMultiTrade().getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
-            assertEquals(-100, getMultiTrade().getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
+            assertEquals(1, getMultiTrade(tester).getSenderStocks().size());
+            assertTrue(getMultiTrade(tester).getSenderStocks().containsKey(card1.getCharacterInfo().getSeries()));
+            assertEquals(-100, getMultiTrade(tester).getSenderStocks().getOrDefault(card1.getCharacterInfo().getSeries(), 0.f));
         }
 
     }
@@ -222,7 +214,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.armorIds.add(tester2.getArmorItems().get(0).getId());
             handleCommand(arguments);
 
-            assertTrue(getMultiTrade().getSenderArmor().isEmpty());
+            assertTrue(getMultiTrade(tester).getSenderArmor().isEmpty());
         }
 
         @Test
@@ -232,7 +224,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
             arguments.armorIds.add(tester.getArmorItems().get(0).getId());
             handleCommand(arguments);
 
-            assertTrue(getMultiTrade().getSenderArmor().contains(tester.getArmorItems().get(0)));
+            assertTrue(getMultiTrade(tester).getSenderArmor().contains(tester.getArmorItems().get(0)));
         }
     }
 }
