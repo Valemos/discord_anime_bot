@@ -19,6 +19,7 @@ dependencies {
     implementation 'org.apache.ant:ant:1.8.2'
     implementation 'args4j:args4j:2.33'
     implementation 'org.apache.commons:commons-lang3:3.11'
+    implementation 'org.apache.commons:commons-math3:3.5'
 
     implementation 'net.dv8tion:JDA:4.2.0_224'
     implementation 'com.jagrosh:jda-utilities-command:3.0.5'

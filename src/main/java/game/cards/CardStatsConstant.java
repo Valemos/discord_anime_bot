@@ -17,7 +17,7 @@ public class CardStatsConstant implements CardStats{
     public CardStatsConstant() {
     }
 
-    public CardStatsConstant(float approvalRating, int cardPrint, float dexterity, float strength, float wisdom) {
+    public CardStatsConstant(float dexterity, float strength, float wisdom, float approvalRating, int cardPrint) {
         this.approvalRating = approvalRating;
         this.cardPrint = cardPrint;
         this.dexterity = dexterity;

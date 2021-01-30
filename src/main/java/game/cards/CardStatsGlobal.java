@@ -1,5 +1,7 @@
 package game.cards;
 
+import org.apache.commons.math3.util.Precision;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
@@ -11,7 +13,10 @@ public class CardStatsGlobal implements CardStats {
     int cardFightsTotal;
 
     @Transient
-    private static final BaseCardStats baseStats = new BaseCardStats(30, 50, 50);
+    private static final CardStatsConstant baseStats = new CardStatsConstant(30, 50, 50, 0, 0);
+
+    @Transient
+    public static final int wisdomHalfLife = 1000;
 
     public CardStatsGlobal() {
         this(0, 0, 0);
@@ -25,20 +30,24 @@ public class CardStatsGlobal implements CardStats {
 
     public CardStatsConstant getConstantStats(CardPickInfo pickInfo) {
         return new CardStatsConstant(
-                getApprovalRating(),
-                amountCardsPrinted,
-                getDexterity(baseStats.dexterity, pickInfo.getPickDelay()),
-                getStrength(baseStats.strength, pickInfo.getCardFights()),
-                getWisdom(baseStats.wisdom, amountCardsPrinted)
+                getDexterity(baseStats.dexterity, pickInfo.getPickDelay()), getStrength(baseStats.strength, pickInfo.getCardFights()), getWisdom(baseStats.wisdom, amountCardsPrinted), getApprovalRating(),
+                amountCardsPrinted
         );
     }
 
-    private float getWisdom(float base, int cardPrint) {
-        // TODO finish wisdom function
-        return cardPrint;
+    /*
+    To calculate wisdom, we use base wisdom stat for the first card printed,
+    and by the time reaching "wisdomHalfLife" number of printed cards,
+    wisdom of this card will become half of base value
+     */
+    protected float getWisdom(float base, int cardPrint) {
+        if (cardPrint < 1){
+            return base;
+        }
+        return (float) (Precision.round(base / Math.pow(2, cardPrint / (float)wisdomHalfLife), 1));
     }
 
-    private float getStrength(float base, int cardFights) {
+    protected float getStrength(float base, int cardFights) {
         if      (cardFights >= 4)   return base;
         else if (cardFights == 3)   return base * 0.75f;
         else if (cardFights == 2)   return base * 0.5f;
@@ -46,7 +55,7 @@ public class CardStatsGlobal implements CardStats {
         else                        return 0;
     }
 
-    private float getDexterity(float base, float delay) {
+    protected float getDexterity(float base, float delay) {
         if      (delay <= 1)    return base;
         else if (delay <= 3)    return base * 0.75f;
         else if (delay <= 6)    return base * 0.5f;

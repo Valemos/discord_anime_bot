@@ -11,10 +11,7 @@ class CardPersonalTest {
         CharacterInfo info = new CharacterInfo("name", "series", "url");
         CardPersonal card = new CardPersonal(info,
                 new CardStatsConstant(
-                        10,
-                        10,
-                        10,
-                        10,
+                        10, 10, 10, 10,
                         10
                 ));
         assertEquals(50, card.getPowerLevel());
