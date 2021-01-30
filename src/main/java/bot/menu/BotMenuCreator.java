@@ -52,7 +52,7 @@ public class BotMenuCreator {
     }
 
     public static void menuForCardIds(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        showPagedMenu(event, game, "Card ids list", selectedPage,
+        showPagedMenu(event, game, "Card id list", selectedPage,
                 cards.stream()
                 .map(DescriptionDisplayable::getIdName)
                 .toArray(String[]::new)

@@ -4,7 +4,7 @@ import bot.commands.AbstractCommandOptionalPlayer;
 import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.materials.MaterialsSet;
+import game.materials.Material;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +23,8 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
     public void handlePlayer(CommandEvent event) {
         List<String> items = new ArrayList<>();
 
-        MaterialsSet materials = requestedPlayer.getMaterials();
-        materials.getMap().forEach((material, value) -> {
-            if (value > 0){
-                items.add(materials.getMaterialDescription(material));
-            }
-        });
+        items.add(requestedPlayer.getMaterials().getAmountString(Material.GOLD));
+        items.add(requestedPlayer.getMaterials().getAmountString(Material.DIAMOND));
 
         requestedPlayer.getArmorItems().forEach((armorItem) -> items.add(armorItem.getIdNameStats()));
 

@@ -250,8 +250,8 @@ public class AnimeCardsGame {
 
     public void addToWishlist(Player player, CardGlobal card) {
         dbSession.beginTransaction();
-        dbSession.persist(player);
         player.getWishList().add(card);
+        dbSession.persist(player);
         dbSession.getTransaction().commit();
     }
 

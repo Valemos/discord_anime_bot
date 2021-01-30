@@ -18,19 +18,24 @@ public class WishCardByIdCommand extends AbstractCommand<MultipleIdentifiersArgu
     @Override
     public void handle(CommandEvent event) {
         boolean anyCardAdded = false;
+        StringBuilder message = new StringBuilder();
 
         for (String cardId : commandArgs.multipleIds){
             CardGlobal card = game.getCardsGlobal().getById(cardId);
             if (card != null){
-                game.addToWishlist(player, card);
-                anyCardAdded = true;
+                if (!player.getWishList().contains(card)){
+                    game.addToWishlist(player, card);
+                    anyCardAdded = true;
+                }else{
+                    message.append("you already added \"").append(card.getName()).append("\"\n");
+                }
+            }else{
+                message.append("cannot find card ").append(cardId).append('\n');
             }
         }
 
-        if(anyCardAdded){
-            sendMessage(event, "cards added");
-        }else{
-            sendMessage(event, "cannot add any card");
-        }
+        if(anyCardAdded) message.append("cards added");
+
+        if(!message.isEmpty()) sendMessage(event, message.toString());
     }
 }

@@ -28,7 +28,7 @@ public class WishCardCommand extends AbstractCommand<MultipleWordsArguments> {
         }
         else if (cards.size() == 1){
             game.addToWishlist(player, cards.get(0));
-            sendMessage(event, "added to wishlist" + cards.get(0).getCharacterInfo().getFullName());
+            sendMessage(event, "added to wishlist " + cards.get(0).getCharacterInfo().getFullName());
         }else{
             BotMenuCreator.menuForCardIds(cards, event, game, 1);
         }
