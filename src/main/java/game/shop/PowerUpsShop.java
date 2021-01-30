@@ -6,8 +6,8 @@ import game.shop.items.*;
 import java.util.List;
 import java.util.Map;
 
-public class ItemsShop extends AbstractShop {
-    public ItemsShop() {
+public class PowerUpsShop extends AbstractShop<UsablePowerUp> {
+    public PowerUpsShop() {
         super("Power ups shop", List.of(
                 new DropRefresher(  Map.of(Material.GOLD,   500)),
                 new GrabRefresher(  Map.of(Material.GOLD,   300)),
@@ -20,9 +20,9 @@ public class ItemsShop extends AbstractShop {
         assignIndices(items);
     }
 
-    private void assignIndices(List<? extends AbstractShopItem> items) {
+    private void assignIndices(List<? extends UsablePowerUp> items) {
         int index = 1;
-        for (AbstractShopItem item : items){
+        for (UsablePowerUp item : items){
             item.setId(String.valueOf(index++));
         }
     }

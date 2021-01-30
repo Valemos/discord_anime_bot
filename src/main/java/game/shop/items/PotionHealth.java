@@ -7,7 +7,7 @@ import game.player_objects.squadron.Squadron;
 
 import java.util.Map;
 
-public class PotionHealth extends AbstractShopItem {
+public class PotionHealth extends AbstractShopItem implements UsablePowerUp{
     public PotionHealth(Map<Material, Integer> materials) {
         super("Health potion", materials);
     }

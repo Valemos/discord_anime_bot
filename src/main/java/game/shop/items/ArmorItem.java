@@ -43,7 +43,7 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
     }
 
     @Override
-    public void useFor(AnimeCardsGame game, Player player) {
+    public void buyFor(AnimeCardsGame game, Player player) {
         Session s = game.getDatabaseSession();
         s.beginTransaction();
         player = s.load(Player.class, player.getId());

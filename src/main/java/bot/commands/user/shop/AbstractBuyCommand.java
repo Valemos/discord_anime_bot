@@ -8,6 +8,7 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.shop.AbstractShop;
 import game.shop.items.AbstractShopItem;
+import game.shop.items.IShopItem;
 
 public abstract class AbstractBuyCommand extends AbstractCommand<MultipleWordsArguments> {
 
@@ -15,9 +16,9 @@ public abstract class AbstractBuyCommand extends AbstractCommand<MultipleWordsAr
         super(game, MultipleWordsArguments.class);
     }
 
-    protected void buyItem(CommandEvent event, AbstractShop shop, Player player, String itemId) {
+    protected <T extends IShopItem> void buyItem(CommandEvent event, AbstractShop<T> shop, Player player, String itemId) {
 
-        AbstractShopItem item = shop.findShopItem(itemId);
+        T item = shop.findShopItem(itemId);
         if (item == null){
             sendMessage(event, "item not found \"" + itemId + '"');
             return;

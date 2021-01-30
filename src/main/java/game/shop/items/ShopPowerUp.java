@@ -8,7 +8,7 @@ import game.player_objects.squadron.PowerUpType;
 
 import java.util.Map;
 
-public abstract class ShopPowerUp extends AbstractShopItem {
+public abstract class ShopPowerUp extends AbstractShopItem implements UsablePowerUp {
 
     protected PowerUpType powerUpType;
 

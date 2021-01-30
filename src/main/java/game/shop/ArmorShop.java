@@ -5,7 +5,7 @@ import game.shop.items.ArmorItem;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class ArmorShop extends AbstractShop {
+public class ArmorShop extends AbstractShop<ArmorItem> {
     public ArmorShop(List<ArmorItem> armorItems) {
         super("Armor shop", armorItems);
     }

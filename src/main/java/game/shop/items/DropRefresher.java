@@ -6,7 +6,7 @@ import game.materials.Material;
 
 import java.util.Map;
 
-public class DropRefresher extends AbstractShopItem {
+public class DropRefresher extends AbstractShopItem implements UsablePowerUp {
     public DropRefresher(Map<Material, Integer> materials) {
         super("Extra drop", materials);
     }

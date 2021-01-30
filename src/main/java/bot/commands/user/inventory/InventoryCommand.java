@@ -5,6 +5,7 @@ import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.materials.Material;
+import game.shop.PowerUpsShop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,13 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
 
         items.add(requestedPlayer.getMaterials().getAmountString(Material.GOLD));
         items.add(requestedPlayer.getMaterials().getAmountString(Material.DIAMOND));
+
+        PowerUpsShop shop = game.getPowerUpsShop();
+        requestedPlayer.getPowerUps().forEach((powerUpClass, amount) ->{
+            if (amount > 0){
+                items.add(shop.findShopItem(powerUpClass).getName() + ": " + amount);
+            }
+        });
 
         requestedPlayer.getArmorItems().forEach((armorItem) -> items.add(armorItem.getIdNameStats()));
 

@@ -2,7 +2,6 @@ package bot.commands.user.shop;
 
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
-import game.shop.ItemsShop;
 
 public class BuyCommand extends AbstractBuyCommand {
 
@@ -15,7 +14,6 @@ public class BuyCommand extends AbstractBuyCommand {
 
     @Override
     public void handle(CommandEvent event) {
-        ItemsShop shop = game.getItemsShop();
-        buyItem(event, shop, player, commandArgs.getString());
+        buyItem(event, game.getPowerUpsShop(), player, commandArgs.getString());
     }
 }

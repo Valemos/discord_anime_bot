@@ -8,6 +8,8 @@ import game.player_objects.ArmorItemPersonal;
 import game.player_objects.CooldownSet;
 import game.player_objects.squadron.Squadron;
 import game.player_objects.StockValue;
+import game.shop.items.AbstractShopItem;
+import game.shop.items.UsablePowerUp;
 
 import javax.annotation.Nonnull;
 import javax.persistence.*;
@@ -31,6 +33,10 @@ public class Player {
 
     @OneToOne
     private Squadron squadron;
+
+    @ElementCollection
+    @MapKeyColumn(name = "poweruptype")
+    private Map<Class<? extends UsablePowerUp>, Integer> powerUps = new HashMap<>();
 
     @OneToMany(mappedBy="owner")
     private final List<ArmorItemPersonal> armorItems = new ArrayList<>();
@@ -97,6 +103,18 @@ public class Player {
 
     public void setStocks(List<StockValue> stocks) {
         this.stocks = stocks;
+    }
+
+    public Map<Class<? extends UsablePowerUp>, Integer> getPowerUps() {
+        return powerUps;
+    }
+
+    public void setPowerUps(Map<Class<? extends UsablePowerUp>, Integer> powerUps) {
+        this.powerUps = powerUps;
+    }
+
+    public void addPowerUp(Class<? extends UsablePowerUp> powerUp) {
+        powerUps.put(powerUp, 1 + powerUps.getOrDefault(powerUp, 0));
     }
 
     private StockValue findStockBySeries(SeriesInfo series) {
@@ -175,5 +193,20 @@ public class Player {
             newValues.setAmount(material, availableAmount > value ? value : availableAmount);
         });
         return newValues;
+    }
+
+    public void usePowerUp(AnimeCardsGame game, UsablePowerUp powerUp) {
+        powerUp.useFor(game, this);
+        powerUps.put(powerUp.getClass(), powerUps.get(powerUp.getClass()) - 1);
+    }
+
+    public boolean canUseItem(UsablePowerUp powerUp) {
+        Class<? extends UsablePowerUp> powerUpClass = powerUp.getClass();
+        int powerUpAmount = powerUps.getOrDefault(powerUpClass, 0);
+
+        if (powerUpAmount == 0) {
+            powerUps.remove(powerUpClass);
+            return false;
+        }else return true;
     }
 }

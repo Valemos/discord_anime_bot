@@ -4,10 +4,11 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.materials.Material;
 import game.materials.MaterialsSet;
+import org.hibernate.Session;
 
 import java.util.Map;
 
-public abstract class AbstractShopItem {
+public abstract class AbstractShopItem implements IShopItem {
     protected String id;
     protected String name;
     protected MaterialsSet itemCost;
@@ -21,8 +22,6 @@ public abstract class AbstractShopItem {
         this.name = name;
         this.itemCost = itemCost;
     }
-
-    public abstract void useFor(AnimeCardsGame game, Player player);
 
     public String getId() {
         return id;

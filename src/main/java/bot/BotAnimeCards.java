@@ -11,7 +11,7 @@ import bot.commands.user.inventory.InspectCardCommand;
 import bot.commands.user.inventory.InventoryCommand;
 import bot.commands.user.inventory.MaterialsCommand;
 import bot.commands.user.inventory.ShowCollectionCommand;
-import bot.commands.user.shop.BuyArmorCommand;
+import bot.commands.user.shop.*;
 import bot.commands.user.squadron.*;
 import bot.commands.user.trading.AddToMultiTradeCommand;
 import bot.commands.user.trading.MultiTradeCommand;
@@ -19,9 +19,6 @@ import bot.commands.user.trading.SendCardsCommand;
 import bot.commands.user.trading.TradeCardForCardCommand;
 import bot.commands.user.wishlist.*;
 import bot.commands.user.*;
-import bot.commands.user.shop.ArmorShopCommand;
-import bot.commands.user.shop.BuyCommand;
-import bot.commands.user.shop.ShopCommand;
 import bot.commands.user.stocks.*;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandClient;
@@ -157,6 +154,7 @@ public class BotAnimeCards {
                 new BuyCommand(game),
                 new ArmorShopCommand(game),
                 new BuyArmorCommand(game),
+                new UsePowerUpCommand(game),
 
                 new SquadronCommand(game),
                 new SquadronAddCommand(game),
@@ -276,7 +274,7 @@ public class BotAnimeCards {
             game.pickPersonalCard(tester1.getId(), card, new CardPickInfo(0, 1));
         }
 
-        tester1.getMaterials().setAmount(Material.GOLD, 100);
+        tester1.getMaterials().setAmount(Material.GOLD, 1000);
     }
 
     private static String loadBotTokenFile() throws IOException {

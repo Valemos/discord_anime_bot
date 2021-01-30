@@ -4,57 +4,63 @@ import game.AnimeCardsGame;
 import game.shop.items.AbstractShopItem;
 import game.Player;
 import game.materials.MaterialsSet;
-import org.jetbrains.annotations.NotNull;
+import game.shop.items.IShopItem;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractShop {
+public abstract class AbstractShop<T extends IShopItem> {
 
-    protected final List<? extends AbstractShopItem> items;
+    protected final List<? extends T> items;
     private final String messageTitle;
 
-    public AbstractShop(String messageTitle, List<? extends AbstractShopItem> items) {
+    public AbstractShop(String messageTitle, List<? extends T> items) {
         this.items = items;
         this.messageTitle = messageTitle;
     }
 
-    public boolean tryBuyItem(AnimeCardsGame game, Player player, @Nonnull AbstractShopItem item) {
+    public <C extends IShopItem> boolean tryBuyItem(AnimeCardsGame game, Player player, @Nonnull C item) {
 
         MaterialsSet playerMaterials = player.getMaterials();
         MaterialsSet itemCost = item.getItemCost();
 
         if (playerMaterials.containsEnough(itemCost)){
             player.getMaterials().subtractMaterials(itemCost);
-            item.useFor(game, player);
+            item.buyFor(game, player);
             return true;
         }
         return false;
     }
 
-    public AbstractShopItem findShopItem(String itemId) {
-        AbstractShopItem item = getItemById(itemId);
+    public T findShopItem(String itemId) {
+        T item = getItemById(itemId);
         if (item == null)
             item = getUniqueByName(itemId);
 
         return item;
     }
 
-    private AbstractShopItem getUniqueByName(String itemName) {
-        List<? extends AbstractShopItem> items = this.items.stream()
-                .filter(i -> String.valueOf(i.getName()).toLowerCase().contains(itemName.toLowerCase()))
-                .collect(Collectors.toList());
-        return items.size() == 1 ? items.get(0) : null;
+    public <C extends T> T findShopItem(Class<C> itemClass) {
+        return items.stream()
+                .filter(item -> item.getClass().isAssignableFrom(itemClass))
+                .findFirst().orElse(null);
     }
 
-    private AbstractShopItem getItemById(String itemId) {
+    private T getUniqueByName(String itemName) {
+        List<? extends T> itemsFound = items.stream()
+                .filter(i -> String.valueOf(i.getName()).toLowerCase().contains(itemName.toLowerCase()))
+                .collect(Collectors.toList());
+        return itemsFound.size() == 1 ? itemsFound.get(0) : null;
+    }
+
+    private T getItemById(String itemId) {
         return items.stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst().orElse(null);
     }
 
-    public List<? extends AbstractShopItem> getItems() {
+    public List<? extends T> getItems() {
         return items;
     }
 
@@ -63,7 +69,7 @@ public abstract class AbstractShop {
     }
 
     @Nonnull
-    public String getMessageCostIsHigh(AbstractShopItem item, Player player) {
+    public String getMessageCostIsHigh(T item, Player player) {
         return "cannot buy " + item.getName()
                 + "\nyou have:\n"
                 + player.getMaterials().getDescriptionMultiline()

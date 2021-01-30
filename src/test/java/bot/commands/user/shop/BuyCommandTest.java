@@ -4,11 +4,12 @@ import game.AnimeCardsGame;
 import game.Player;
 import game.cards.CardPersonal;
 import game.materials.Material;
-import game.shop.ItemsShop;
+import game.shop.PowerUpsShop;
 import game.shop.items.AbstractShopItem;
 import game.shop.items.ShopPowerUp;
 import game.player_objects.squadron.HealthState;
 import game.player_objects.squadron.Squadron;
+import game.shop.items.UsablePowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,15 +21,15 @@ import static org.mockito.Mockito.*;
 
 class BuyCommandTest extends MessageSenderTester{
 
-    private ItemsShop spyShop;
-    private List<? extends AbstractShopItem> items;
+    private PowerUpsShop spyShop;
+    private List<? extends UsablePowerUp> items;
     private ArgumentCaptor<AbstractShopItem> itemCaptor;
 
     @BeforeEach
     void setUp() {
 
-        spyShop = spy(game().getItemsShop());
-        doReturn(spyShop).when(game()).getItemsShop();
+        spyShop = spy(game().getPowerUpsShop());
+        doReturn(spyShop).when(game()).getPowerUpsShop();
         items = spyShop.getItems();
 
         itemCaptor = ArgumentCaptor.forClass(AbstractShopItem.class);

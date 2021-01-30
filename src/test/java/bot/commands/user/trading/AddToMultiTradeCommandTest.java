@@ -205,8 +205,8 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
 
         @Test
         void testUnknownArmorNotAdded() {
-            spyGame.getArmorShop().getItems().get(0).useFor(spyGame, tester);
-            spyGame.getArmorShop().getItems().get(1).useFor(spyGame, tester2);
+            spyGame.getArmorShop().getItems().get(0).buyFor(spyGame, tester);
+            spyGame.getArmorShop().getItems().get(1).buyFor(spyGame, tester2);
 
             arguments.armorIds.add("unknown");
             arguments.armorIds.add(tester2.getArmorItems().get(0).getId());
@@ -217,7 +217,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
 
         @Test
         void testArmorAdded() {
-            spyGame.getArmorShop().getItems().get(0).useFor(spyGame, tester);
+            spyGame.getArmorShop().getItems().get(0).buyFor(spyGame, tester);
 
             arguments.armorIds.add(tester.getArmorItems().get(0).getId());
             handleCommand(arguments);

@@ -12,7 +12,7 @@ import game.player_objects.StockValueId;
 import game.player_objects.squadron.PatrolType;
 import game.player_objects.squadron.Squadron;
 import game.shop.ArmorShop;
-import game.shop.ItemsShop;
+import game.shop.PowerUpsShop;
 import game.shop.items.ArmorItem;
 import net.dv8tion.jda.api.entities.User;
 import org.hibernate.Session;
@@ -32,7 +32,7 @@ public class AnimeCardsGame {
     private final EventWaiter eventWaiter;
     private final Session dbSession;
 
-    private ItemsShop itemsShop;
+    private PowerUpsShop powerUpsShop;
     private ArmorShop armorShop;
 
     private CardsGlobalManager cardsGlobalManager;
@@ -51,7 +51,7 @@ public class AnimeCardsGame {
     public void setSession(Session dbSession){
         cardsGlobalManager = new CardsGlobalManager(dbSession);
         cardsPersonalManager = new CardsPersonalManager(dbSession);
-        itemsShop = new ItemsShop();
+        powerUpsShop = new PowerUpsShop();
         List<ArmorItem> armorItems = updateArmorItems(dbSession);
         armorShop = new ArmorShop(armorItems);
         cardDropManager = new CardDropManager(this, dbSession);
@@ -177,15 +177,15 @@ public class AnimeCardsGame {
     }
 
     public Paginator getItemShopViewer(User user) {
-        return BotMenuCreator.menuShop(eventWaiter, itemsShop, user);
+        return BotMenuCreator.menuShop(eventWaiter, powerUpsShop, user);
     }
 
     public Paginator getArmorShopViewer(User user) {
         return BotMenuCreator.menuShop(eventWaiter, armorShop, user);
     }
 
-    public ItemsShop getItemsShop() {
-        return itemsShop;
+    public PowerUpsShop getPowerUpsShop() {
+        return powerUpsShop;
     }
 
     public ArmorShop getArmorShop() {
