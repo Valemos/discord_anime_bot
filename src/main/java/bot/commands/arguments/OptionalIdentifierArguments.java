@@ -7,10 +7,5 @@ import org.kohsuke.args4j.Argument;
 public class OptionalIdentifierArguments {
 
     @Argument(metaVar = "identifier", usage = "optional id to use command for specific player")
-    private String id;
-
-
-    public String getSelectedOrPlayerId(Player player) {
-        return id == null? player.getId() : id;
-    }
+    public String id;
 }

@@ -10,12 +10,12 @@ public class BuyCommand extends AbstractBuyCommand {
         super(game);
         name = "buy";
         guildOnly = false;
-        help = "buys a specific item from power ups shop";
+        help = "buy a specific item from power ups shop";
     }
 
     @Override
     public void handle(CommandEvent event) {
         ItemsShop shop = game.getItemsShop();
-        buyItem(event, shop, player, commandArgs.itemId);
+        buyItem(event, shop, player, commandArgs.getString());
     }
 }

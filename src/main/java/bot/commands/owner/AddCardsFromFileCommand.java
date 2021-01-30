@@ -8,6 +8,7 @@ import game.cards.CardGlobal;
 import net.dv8tion.jda.api.entities.Message;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Localizable;
 
 import java.io.*;
 import java.util.List;
@@ -35,10 +36,11 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
             Message.Attachment attachment = attachments.get(0);
             String fileExtension = attachment.getFileExtension();
 
-            if (fileExtension != null && fileExtension.equals(".txt")){
+            if (fileExtension != null && fileExtension.equals("txt")){
                 try {
                     File tempFile = File.createTempFile("cards-", ".tmp");
-                    attachment.downloadToFile(tempFile).thenAccept(file -> {
+                    attachment.downloadToFile(tempFile).thenAccept(
+                    file -> {
                         String message = handleCreateCardsFile(game, file);
                         if (message != null) sendMessage(event, message);
                     }).exceptionally(t ->{
@@ -82,7 +84,7 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
                 try {
                     handleFileLine(game, addCardArgs, line);
 
-                } catch (CmdLineException e) {
+                } catch (CmdLineException | InvalidArgumentsException e) {
                     errorMessageCounter++;
                     if (errorMessageCounter <= 10) {
                         errorMessage.append(e.getMessage()).append('\n');
@@ -104,14 +106,24 @@ public class AddCardsFromFileCommand extends AbstractCommandNoArguments {
         return errorMessage.isEmpty() ? null : errorMessage.toString();
     }
 
-    protected static void handleFileLine(AnimeCardsGame game, AddCardCommand.Arguments addCardArgs, String line) throws CmdLineException {
-        AbstractCommand.tryParseArguments(new CmdLineParser(addCardArgs), line);
+    protected static void handleFileLine(AnimeCardsGame game, AddCardCommand.Arguments addCardArgs, String line) throws CmdLineException, InvalidArgumentsException {
+        CmdLineParser commandParser = new CmdLineParser(addCardArgs);
+        AbstractCommand.tryParseArguments(commandParser, line);
 
         CardGlobal newCard = new CardGlobal(
                 addCardArgs.name,
                 addCardArgs.series,
                 addCardArgs.imageUrl
         );
-        game.addCard(newCard);
+
+        if(!game.addCard(newCard)){
+            throw new InvalidArgumentsException("cannot add card \"" + (line.length() < 50 ? line : line.substring(0, 50) + "...") + '"');
+        }
+    }
+
+    public static class InvalidArgumentsException extends Exception {
+        public InvalidArgumentsException(String message) {
+            super(message);
+        }
     }
 }

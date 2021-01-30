@@ -18,7 +18,6 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 public class BotMenuCreator {
 
@@ -30,6 +29,7 @@ public class BotMenuCreator {
                 .setUsers(user)
                 .setText(shop.getTitle())
                 .setItemsPerPage(5)
+                .setTimeout(-1, TimeUnit.MILLISECONDS)
                 .waitOnSinglePage(true);
 
         if (shopItems.size() > 0){
@@ -43,56 +43,59 @@ public class BotMenuCreator {
         return builder.build();
     }
 
-
     public static void menuForCardsTop(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        menuWithMapper(cards, event, game, "Cards top",
-                DescriptionDisplayable::getIdNameStats, selectedPage
+        showPagedMenu(event, game, "Cards top", selectedPage,
+                cards.stream()
+                .map(DescriptionDisplayable::getIdNameStats)
+                .toArray(String[]::new)
         );
     }
 
     public static void menuForCardIds(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        menuWithMapper(cards, event, game, "Card ids list",
-                DescriptionDisplayable::getIdName, selectedPage
+        showPagedMenu(event, game, "Card ids list", selectedPage,
+                cards.stream()
+                .map(DescriptionDisplayable::getIdName)
+                .toArray(String[]::new)
         );
     }
 
     public static void menuForCardStats(Collection<CardGlobal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        menuWithMapper(cards, event, game, "Cards list",
-                DescriptionDisplayable::getNameStats, selectedPage
+        showPagedMenu(event, game, "Cards list", selectedPage,
+                cards.stream()
+                .map(DescriptionDisplayable::getNameStats)
+                .toArray(String[]::new)
         );
     }
 
     public static void menuForPersonalCardStats(Collection<CardPersonal> cards, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        menuWithMapper(cards, event, game, "Cards collection",
-                DescriptionDisplayable::getIdNameStats, selectedPage
+        showPagedMenu(event, game, "Cards collection", selectedPage,
+                cards.stream()
+                .map(DescriptionDisplayable::getIdNameStats)
+                .toArray(String[]::new)
         );
     }
 
     public static void menuForItemStats(Collection<ArmorItemPersonal> items, CommandEvent event, AnimeCardsGame game, int selectedPage) {
-        menuWithMapper(items, event, game, "Items list",
-                DescriptionDisplayable::getNameStats, selectedPage
+        showPagedMenu(event, game, "Items list", selectedPage,
+                items.stream()
+                .map(DescriptionDisplayable::getNameStats)
+                .toArray(String[]::new)
         );
     }
 
-    private static void menuWithMapper(Collection<? extends DescriptionDisplayable> items,
-                                       CommandEvent event,
-                                       AnimeCardsGame game,
-                                       String title,
-                                       Function<DescriptionDisplayable, String> mapper,
-                                       int selectedPage){
+    public static void showPagedMenu(CommandEvent event,
+                                     AnimeCardsGame game,
+                                     String title, int selectedPage, String[] itemsArray){
 
-        if (items.size() > 0){
+        if (itemsArray.length > 0){
             Paginator cardsMenu = new Paginator.Builder()
                     .setEventWaiter(game.getEventWaiter())
                     .setText('`' + title + '`')
                     .setUsers(event.getAuthor())
                     .waitOnSinglePage(true)
-                    .setItems(items.stream()
-                            .map(mapper)
-                            .toArray(String[]::new))
-                    .setItemsPerPage(5)
+                    .setItems(itemsArray)
+                    .setItemsPerPage(10)
                     .setTimeout(5, TimeUnit.MINUTES)
-                    .setFinalAction(Message::clearReactions)
                     .build();
 
             cardsMenu.paginate(event.getChannel(), selectedPage);

@@ -1,6 +1,8 @@
-package game.cards;
+package game;
 
 import bot.commands.SortingType;
+import game.cards.ComparableCard;
+import game.cards.SearchableCard;
 
 import java.util.Comparator;
 import java.util.List;

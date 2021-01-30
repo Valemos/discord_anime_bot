@@ -13,7 +13,7 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
     public static class Arguments{
         PatrolType patrolType;
 
-        @Argument(usage = "type of world to send current squadron to", required = true)
+        @Argument(metaVar = "patrol world (o - overworld, u - underworld)", usage = "type of world to send current squadron to", required = true)
         public void setPatrolWorld(PatrolType patrolType) {
             this.patrolType = PatrolType.getTypeNameFromAlias(patrolType);
         }
@@ -31,7 +31,7 @@ public class PatrolCommand extends AbstractCommand<PatrolCommand.Arguments> {
         if (squadron.isEmpty()){
             sendMessage(event, "your squadron is empty");
 
-        } else if (squadron.getPatrol().isStarted()) {
+        } else if (squadron.getPatrol().isBusy()) {
             sendMessage(event,
                     "you have already active patrol in "
                             + squadron.getPatrol().getPatrolType().getTypeName() + ":\n"

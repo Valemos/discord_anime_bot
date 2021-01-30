@@ -16,7 +16,7 @@ public class StockValueCommand extends AbstractCommand<MultipleWordsArguments> {
 
     @Override
     public void handle(CommandEvent event) {
-        String seriesName = commandArgs.getSingleString();
+        String seriesName = commandArgs.getString();
 
         StockValue stock = player.findStockByUniqueName(seriesName);
         if (stock != null){

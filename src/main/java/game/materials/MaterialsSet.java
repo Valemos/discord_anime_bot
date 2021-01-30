@@ -74,13 +74,13 @@ public class MaterialsSet {
     @Transient
     public String getDescriptionMultiline() {
         String description = Arrays.stream(Material.values())
-                .map(this::getMaterialAmountString)
+                .map(this::getMaterialDescription)
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining("\n"));
         return description.equals("") ? noMaterialsDescription : description;
     }
 
-    private String getMaterialAmountString(Material material) {
+    public String getMaterialDescription(Material material) {
         int amount = getAmount(material);
         if(amount > 0){
             return material.getName() + ": " + amount;

@@ -23,10 +23,6 @@ class TradeCommandsTest extends AbstractCommandTest<MultiTradeCommand, RequiredP
         doReturn(spyContracts).when(spyGame).getContractsManager();
     }
 
-    private CardPersonal pickCardForTester2(CardGlobal card) {
-        return spyGame.pickPersonalCard(tester2.getId(), card, 5);
-    }
-
     @Override
     public AnimeCardsGame game() {
         return spyGame;
@@ -109,7 +105,7 @@ class TradeCommandsTest extends AbstractCommandTest<MultiTradeCommand, RequiredP
         @Test
         void testCannotSendUnknownCards() {
             CardPersonal card1 = tester.getCards().get(0);
-            CardPersonal card2 = pickCardForTester2(spyGame.getCardGlobalUnique("riko", null));
+            CardPersonal card2 = pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
 
             args.recieverId = tester2.getId();
             args.cardIds.add("unknownCardId");
@@ -147,7 +143,7 @@ class TradeCommandsTest extends AbstractCommandTest<MultiTradeCommand, RequiredP
 
         @Test
         void testCannotSendCardsYouDoNotOwn() {
-            CardPersonal card = pickCardForTester2(spyGame.getCardGlobalUnique("riko", null));
+            CardPersonal card = pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
 
             int collectionSize = tester2.getCards().size();
 
@@ -189,7 +185,7 @@ class TradeCommandsTest extends AbstractCommandTest<MultiTradeCommand, RequiredP
         @Test
         void testExchangeCards() {
             CardPersonal card1 = tester.getCards().get(0);
-            CardPersonal card2 = pickCardForTester2(spyGame.getCardGlobalUnique("riko", null));
+            CardPersonal card2 = pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
 
             assertFalse(tester.getCards().contains(card2));
             assertFalse(tester2.getCards().contains(card1));
@@ -210,7 +206,7 @@ class TradeCommandsTest extends AbstractCommandTest<MultiTradeCommand, RequiredP
 
         @Test
         void testExchangeAnyCardUnknown() {
-            CardPersonal card1 = pickCardForTester2(spyGame.getCardGlobalUnique("riko", null));
+            CardPersonal card1 = pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
 
             args.sendCardId = tester.getCards().get(0).getId();
             args.receiveCardId = "unknown";

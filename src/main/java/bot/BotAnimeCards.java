@@ -41,7 +41,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.security.auth.login.LoginException;
@@ -139,6 +138,7 @@ public class BotAnimeCards {
                 new ResetCooldownsCommand(game),
                 new GrabTimeCommand(game),
                 new LinkServerCommand(game),
+                new GiveMaterialsCommand(game),
 
                 new CardDropCommand(game),
                 new DailyCommand(game),
@@ -242,27 +242,27 @@ public class BotAnimeCards {
                 "Riko",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(1000, 10, 1800, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(1000, 10, 1800)),
                 new CardGlobal(
                 "Reg",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(110, 1, 125, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(110, 1, 125)),
                 new CardGlobal(
                 "Mitty",
                 "Made in Abyss",
                 "https://drive.google.com/uc?export=view&id=1ZgYRfy6pxFeDh2TKH8d2n6yENwyEuUN7",
-                        new CardStatsGlobal(5, 0, 5, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(5, 0, 5)),
                 new CardGlobal(
                 "Haruhi Suzumiya",
                 "Suzumiya Haruhi no Yuuutsu",
                 "https://drive.google.com/uc?export=view&id=1KzOy0arH9zuVx3L0HNc_ge6lrWPL-ZKk",
-                        new CardStatsGlobal(100, 80, 115, Charisma.NEUTRAL)),
+                        new CardStatsGlobal(100, 80, 115)),
                 new CardGlobal(
                 "Kaiman",
                 "Dorohedoro",
                 "https://drive.google.com/uc?export=view&id=1yv3-lkLhsH5PlClDtdjxOdLYhqFEmB5x",
-                        new CardStatsGlobal(1000, 80, 1300, Charisma.NEUTRAL)));
+                        new CardStatsGlobal(1000, 80, 1300)));
 
         tester1.getCards().clear();
         game.clearSquadronsTable();
@@ -273,7 +273,7 @@ public class BotAnimeCards {
 
         for (CardGlobal card : cards) {
             game.addCard(card);
-            game.pickPersonalCard(tester1.getId(), card, 1);
+            game.pickPersonalCard(tester1.getId(), card, new CardPickInfo(0, 1));
         }
 
         tester1.getMaterials().setAmount(Material.GOLD, 100);

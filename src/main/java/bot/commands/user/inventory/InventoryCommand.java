@@ -4,6 +4,10 @@ import bot.commands.AbstractCommandOptionalPlayer;
 import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
+import game.materials.MaterialsSet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryCommand extends AbstractCommandOptionalPlayer {
 
@@ -16,12 +20,19 @@ public class InventoryCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    public void handle(CommandEvent event) {
-        if(tryFindPlayerArgument(event)){
-            return;
-        }
+    public void handlePlayer(CommandEvent event) {
+        List<String> items = new ArrayList<>();
 
-        BotMenuCreator.menuForItemStats(requestedPlayer.getArmorItems(), event, game, 1);
+        MaterialsSet materials = requestedPlayer.getMaterials();
+        materials.getMap().forEach((material, value) -> {
+            if (value > 0){
+                items.add(materials.getMaterialDescription(material));
+            }
+        });
+
+        requestedPlayer.getArmorItems().forEach((armorItem) -> items.add(armorItem.getIdNameStats()));
+
+        BotMenuCreator.showPagedMenu(event, game, "Inventory", 1, items.toArray(new String[0]));
     }
 
 }

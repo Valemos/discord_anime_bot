@@ -4,7 +4,7 @@ public interface DescriptionDisplayable {
     String getId();
     String getName();
     default String getFullName() {return null;}
-    default String getDescription() {return null;}
+    default String getAdditionalInfo() {return null;}
     String getStatsString();
 
     default String getNameStats(){
@@ -25,8 +25,8 @@ public interface DescriptionDisplayable {
     }
 
     default String getFullDescription() {
-        String desc = getDescription();
-        if(desc != null)    return getIdNameStats() + "\n" + desc;
+        String info = getAdditionalInfo();
+        if(info != null)    return getIdNameStats() + "\n" + info;
         else                return getIdNameStats();
     }
 }

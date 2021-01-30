@@ -15,7 +15,7 @@ public class ShutdownCommand extends AbstractCommandNoArguments {
         this.bot = bot;
         name = "shutdown";
         ownerCommand = true;
-        help = "shuts down current running instance of the bot (waits until running processes will finish)";
+        hidden = true;
     }
 
     @Override

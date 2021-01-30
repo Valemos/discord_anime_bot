@@ -44,7 +44,7 @@ public class Patrol {
     }
 
     public MaterialsSet getMaterialsFound(Squadron squadron) {
-        if (!isStarted()){
+        if (!isBusy()){
             return new MaterialsSet();
         }
 
@@ -56,7 +56,11 @@ public class Patrol {
         return materials;
     }
 
-    public boolean isStarted() {
-        return started != null;
+    public boolean isBusy() {
+        return started != null && !isFinished();
+    }
+
+    public boolean isFinished() {
+        return finished != null;
     }
 }

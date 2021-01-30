@@ -18,12 +18,9 @@ public class WishListCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    public void handle(CommandEvent event) {
-        if(tryFindPlayerArgument(event)){
-            return;
-        }
-
+    public void handlePlayer(CommandEvent event) {
         Set<CardGlobal> wishList = requestedPlayer.getWishList();
         BotMenuCreator.menuForCardStats(wishList, event, game, 1);
     }
+
 }

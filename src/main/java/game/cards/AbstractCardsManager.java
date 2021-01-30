@@ -1,8 +1,8 @@
 package game.cards;
 
 import bot.commands.SortingType;
+import game.CollectionTransformer;
 import org.hibernate.Session;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.persistence.NoResultException;

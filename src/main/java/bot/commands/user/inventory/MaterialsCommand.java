@@ -16,11 +16,7 @@ public class MaterialsCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    public void handle(CommandEvent event) {
-        if(tryFindPlayerArgument(event)){
-            return;
-        }
-
+    public void handlePlayer(CommandEvent event) {
         MaterialsSet materials = requestedPlayer.getMaterials();
         sendMessage(event, "Player materials:\n" + materials.getDescriptionMultiline());
     }

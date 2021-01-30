@@ -9,40 +9,49 @@ public class CardStatsGlobal implements CardStats {
     int amountCardsPrinted;
     int amountCardsBurned;
     int cardFightsTotal;
-    Charisma charisma;
+
+    @Transient
+    private static final BaseCardStats baseStats = new BaseCardStats(30, 50, 50);
 
     public CardStatsGlobal() {
-        this(0, 0, 0, Charisma.fromValue(0));
+        this(0, 0, 0);
     }
 
-    public CardStatsGlobal(int amountCardsPrinted, int amountCardsBurned, int cardFightsTotal, Charisma charisma) {
+    public CardStatsGlobal(int amountCardsPrinted, int amountCardsBurned, int cardFightsTotal) {
         this.amountCardsPrinted = amountCardsPrinted;
         this.amountCardsBurned = amountCardsBurned;
         this.cardFightsTotal = cardFightsTotal;
-        this.charisma = charisma;
     }
 
-    public float calcApprovalRating(){
-        if (getAmountCardsBurned() != 0){
-            return (getAmountCardsPrinted() - getAmountCardsBurned()) / (float) getAmountCardsBurned();
-        }else{
-            return getAmountCardsPrinted() - getAmountCardsBurned();
-        }
-    }
-
-    private float wisdomFunction(int amountCardsPrinted) {
-        return amountCardsPrinted;
-    }
-
-    public CardStatsConstant getStatsForPickDelay(float delayCardPicked) {
+    public CardStatsConstant getConstantStats(CardPickInfo pickInfo) {
         return new CardStatsConstant(
-                calcApprovalRating(),
+                getApprovalRating(),
                 amountCardsPrinted,
-                delayCardPicked,
-                cardFightsTotal,
-                wisdomFunction(amountCardsPrinted),
-                charisma
+                getDexterity(baseStats.dexterity, pickInfo.getPickDelay()),
+                getStrength(baseStats.strength, pickInfo.getCardFights()),
+                getWisdom(baseStats.wisdom, amountCardsPrinted)
         );
+    }
+
+    private float getWisdom(float base, int cardPrint) {
+        // TODO finish wisdom function
+        return cardPrint;
+    }
+
+    private float getStrength(float base, int cardFights) {
+        if      (cardFights >= 4)   return base;
+        else if (cardFights == 3)   return base * 0.75f;
+        else if (cardFights == 2)   return base * 0.5f;
+        else if (cardFights == 1)   return base * 0.25f;
+        else                        return 0;
+    }
+
+    private float getDexterity(float base, float delay) {
+        if      (delay <= 1)    return base;
+        else if (delay <= 3)    return base * 0.75f;
+        else if (delay <= 6)    return base * 0.5f;
+        else if (delay <= 10)   return base * 0.25f;
+        else                    return 0;
     }
 
     @Override
@@ -51,8 +60,7 @@ public class CardStatsGlobal implements CardStats {
             CardStatsGlobal other = (CardStatsGlobal) obj;
             return amountCardsPrinted == other.amountCardsPrinted &&
                     amountCardsBurned == other.amountCardsBurned &&
-                    cardFightsTotal == other.cardFightsTotal &&
-                    charisma == other.charisma;
+                    cardFightsTotal == other.cardFightsTotal;
         }else{
             return false;
         }
@@ -94,19 +102,27 @@ public class CardStatsGlobal implements CardStats {
         this.cardFightsTotal = cardFightsTotal;
     }
 
-    public void setCharisma(Charisma charisma) {
-        this.charisma = charisma;
-    }
-
     @Transient
     @Override
     public float getPowerLevel() {
-        return getStatsForPickDelay(0).getPowerLevel();
+        return getConstantStats(new CardPickInfo(1, 1)).getPowerLevel();
     }
 
     @Transient
     @Override
     public float getApprovalRating() {
-        return calcApprovalRating();
+        if (getAmountCardsBurned() != 0){
+            return (getAmountCardsPrinted() - getAmountCardsBurned()) / (float) getAmountCardsBurned();
+        }else{
+            return getAmountCardsPrinted() - getAmountCardsBurned();
+        }
+    }
+
+    @Override
+    @Transient
+    public String getDescription() {
+        return "printed: " + amountCardsPrinted +
+                " burned: " + amountCardsBurned +
+                " total fights: " + cardFightsTotal;
     }
 }

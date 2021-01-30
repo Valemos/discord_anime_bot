@@ -1,9 +1,9 @@
 package game.cards;
 
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "series_id"})})
@@ -76,5 +76,11 @@ public class CharacterInfo {
 
     public String getFullName() {
         return name + " / " + series.getName();
+    }
+
+    public boolean isValid() {
+        return name.length() < 256 &&
+                getSeriesName().length() < 256 &&
+                imageUrl.length() < MessageEmbed.URL_MAX_LENGTH;
     }
 }

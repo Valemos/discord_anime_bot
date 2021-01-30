@@ -21,7 +21,7 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
     public void handle(CommandEvent event) {
         Squadron squadron = game.getOrCreateSquadron(player);
 
-        if(squadron.getPatrol().isStarted()){
+        if(squadron.getPatrol().isBusy()){
             sendMessage(event, "stop patrol to edit squadron");
             return;
         }
@@ -36,8 +36,12 @@ public class SquadronAddCommand extends AbstractCommand<MultipleIdentifiersArgum
             CardPersonal card = game.getCardsPersonal().getById(cardId);
 
             if (card != null && card.getOwner().equals(player)){
-                game.addSquadronMember(player, card);
-                msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
+                if (!squadron.getMembers().contains(card)) {
+                    game.addSquadronMember(player, card);
+                    msgBuilder.append(card.getCharacterInfo().getFullName()).append(" added to squadron\n");
+                } else {
+                    msgBuilder.append(card.getCharacterInfo().getFullName()).append(" already in squadron\n");
+                }
             }else{
                 msgBuilder.append(cardId).append(" not found in player collection\n");
             }

@@ -8,7 +8,7 @@ public class MultipleWordsArguments {
     @Argument(metaVar = "input words", required = true, usage = "enter one or multiple words")
     public List<String> multipleWords;
 
-    public String getSingleString() {
+    public String getString() {
         return String.join(" ", multipleWords);
     }
 }

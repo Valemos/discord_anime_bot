@@ -5,28 +5,31 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.jagrosh.jdautilities.menu.Paginator;
 import game.cards.*;
 import game.contract.ContractsManager;
-import game.materials.*;
+import game.materials.Material;
+import game.materials.MaterialsSet;
+import game.player_objects.StockValue;
+import game.player_objects.StockValueId;
+import game.player_objects.squadron.PatrolType;
+import game.player_objects.squadron.Squadron;
 import game.shop.ArmorShop;
 import game.shop.ItemsShop;
 import game.shop.items.ArmorItem;
-import game.player_objects.squadron.PatrolType;
-import game.player_objects.squadron.Squadron;
-import game.player_objects.StockValue;
-import game.player_objects.StockValueId;
 import net.dv8tion.jda.api.entities.User;
 import org.hibernate.Session;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AnimeCardsGame {
-    private EventWaiter eventWaiter;
+    private final EventWaiter eventWaiter;
     private final Session dbSession;
 
     private ItemsShop itemsShop;
@@ -64,16 +67,15 @@ public class AnimeCardsGame {
 
         for(ArmorItem armor : armorItems){
             if (armor.getId() == null){
-                try{
+                ArmorItem existing = findArmorByName(dbSession, armor.getName());
+
+                if (existing != null){
+                    armor.setId(existing.getId());
+                    dbSession.merge(armor);
+                }else{
                     dbSession.beginTransaction();
                     dbSession.save(armor);
                     dbSession.getTransaction().commit();
-
-                    // catch unique name violation
-                }catch(PersistenceException e){
-                    ArmorItem existing = findArmorByName(dbSession, armor.getName());
-                    armor.setId(existing.getId());
-                    dbSession.merge(armor);
                 }
             }else{
                 dbSession.merge(armor);
@@ -111,10 +113,6 @@ public class AnimeCardsGame {
         return eventWaiter;
     }
 
-    public void setEventWaiter(EventWaiter eventWaiter) {
-        this.eventWaiter = eventWaiter;
-    }
-
     @Nonnull
     public Player getOrCreatePlayer(String playerId) {
         Player player = getPlayer(playerId);
@@ -135,22 +133,12 @@ public class AnimeCardsGame {
         return player;
     }
 
-    public List<Player> getAllPlayers() {
-
-        CriteriaBuilder cb = dbSession.getCriteriaBuilder();
-        CriteriaQuery<Player> cq = cb.createQuery(Player.class);
-        Root<Player> root = cq.from(Player.class);
-        CriteriaQuery<Player> playersQuery = cq.select(root);
-
-        return dbSession.createQuery(playersQuery).list();
-    }
-
     public CardsPersonalManager getCardsPersonal() {
         return cardsPersonalManager;
     }
 
-    public void addCard(CardGlobal card) {
-        cardsGlobalManager.addCard(card);
+    public boolean addCard(CardGlobal card) {
+        return cardsGlobalManager.addCard(card);
     }
 
     public CardsGlobalManager getCardsGlobal(){
@@ -166,12 +154,12 @@ public class AnimeCardsGame {
         cardsGlobalManager.removeCard(card);
     }
 
-    public CardPersonal pickPersonalCard(String playerId, CardGlobal cardGlobal, float pickDelay) {
+    public CardPersonal pickPersonalCard(String playerId, CardGlobal cardGlobal, CardPickInfo pickInfo) {
         cardGlobal = dbSession.load(CardGlobal.class, cardGlobal.getId());
         Player player = dbSession.load(Player.class, playerId);
         cardGlobal.getStats().incrementCardPrint();
 
-        CardPersonal card = getPersonalCardForDelay(cardGlobal, pickDelay);
+        CardPersonal card = getPersonalCard(cardGlobal, pickInfo);
         savePersonalCard(player, card);
 
         return card;
@@ -184,8 +172,8 @@ public class AnimeCardsGame {
         dbSession.getTransaction().commit();
     }
 
-    private CardPersonal getPersonalCardForDelay(CardGlobal card, float delay) {
-        return new CardPersonal(card.getCharacterInfo(), card.getStats().getStatsForPickDelay(delay));
+    private CardPersonal getPersonalCard(CardGlobal card, CardPickInfo pickInfo) {
+        return new CardPersonal(card.getCharacterInfo(), card.getStats().getConstantStats(pickInfo));
     }
 
     public Paginator getItemShopViewer(User user) {
@@ -367,8 +355,8 @@ public class AnimeCardsGame {
 
     public void removeArmorItemsPersonal(ArmorItem item) {
         dbSession.beginTransaction();
-        dbSession.createQuery("delete from ArmorItemPersonal as a where a.original.id = :paramId")
-                .setParameter("paramId", item.getId())
+        dbSession.createQuery("delete from ArmorItemPersonal as a where a.original.id = :itemId")
+                .setParameter("itemId", item.getId())
                 .executeUpdate();
         dbSession.getTransaction().commit();
     }

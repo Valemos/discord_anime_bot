@@ -2,12 +2,14 @@ package bot.commands;
 
 import bot.BotAnimeCards;
 import bot.MessageEventMock;
-import bot.commands.user.trading.AddToMultiTradeCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import game.AnimeCardsGame;
 import game.Player;
-import org.junit.jupiter.api.AfterAll;
+import game.cards.CardGlobal;
+import game.cards.CardPersonal;
+import game.cards.CardPickInfo;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -33,20 +35,20 @@ public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
         messageEventMock = new MessageEventMock();
     }
 
-    @AfterAll
-    static void afterAll() {
-        bot.getGame().getDatabaseSession().close();
-    }
-
     @BeforeEach
     void loadSettings() {
         messageEventMock.reset();
-        spyGame.reset();
         reset(spyGame);
 
         bot.loadTestGameSettings(spyGame);
         tester = spyGame.getOrCreatePlayer("409754559775375371");
         tester2 = spyGame.getOrCreatePlayer("347162620996091904");
+    }
+
+    @AfterEach
+    void tearDown() {
+        spyGame.reset();
+        bot.loadTestGameSettings(spyGame);
     }
 
     protected void setCommand(C command) {
@@ -81,5 +83,9 @@ public class AbstractCommandTest<C extends AbstractCommand<A>, A> {
 
     protected <T extends AbstractCommandNoArguments> void handleCommand(T command) {
         handleCommand(command, tester, command.createArgumentsInstance(AbstractCommandNoArguments.EmptyArguments.class));
+    }
+
+    protected CardPersonal pickTesterCard(Player player, CardGlobal card) {
+        return spyGame.pickPersonalCard(player.getId(), card, new CardPickInfo(1, 1));
     }
 }

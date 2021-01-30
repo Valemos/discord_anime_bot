@@ -36,11 +36,13 @@ public class CardFight {
 
     public CardPersonal giveCardToWinner(AnimeCardsGame game) {
         if (winnerId != null){
-            if (playerPickDelay.size() > 1){
+            int playersFighting = playerPickDelay.size();
+            if (playersFighting > 1){
                 cardTrophy.getStats().incrementCardFights();
                 game.getCardsGlobal().update(cardTrophy);
             }
-            return game.pickPersonalCard(winnerId, cardTrophy, playerPickDelay.get(winnerId));
+            CardPickInfo pickInfo = new CardPickInfo(playerPickDelay.get(winnerId), playersFighting);
+            return game.pickPersonalCard(winnerId, cardTrophy, pickInfo);
         }
         return null;
     }

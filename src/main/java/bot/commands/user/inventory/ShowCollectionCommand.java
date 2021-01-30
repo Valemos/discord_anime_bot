@@ -6,7 +6,7 @@ import bot.menu.BotMenuCreator;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
-import game.cards.CollectionTransformer;
+import game.CollectionTransformer;
 import game.cards.CardPersonal;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;

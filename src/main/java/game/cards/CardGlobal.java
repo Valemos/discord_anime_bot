@@ -1,10 +1,6 @@
 package game.cards;
 
-import bot.Base36SequenceGenerator;
 import game.DescriptionDisplayable;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -82,12 +78,7 @@ public class CardGlobal implements DescriptionDisplayable, SearchableCard, Compa
 
     @Override
     public String getStatsString() {
-        return stats.getStatsForPickDelay(0).getDescription();
-    }
-
-    @Override
-    public String getIdNameStats() {
-        return getIdName() + "\n" + getStatsString();
+        return stats.getDescription();
     }
 
     @Override

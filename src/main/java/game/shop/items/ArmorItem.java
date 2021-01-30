@@ -76,6 +76,11 @@ public class ArmorItem extends AbstractShopItem implements DescriptionDisplayabl
     }
 
     @Override
+    public String getFullName() {
+        return name;
+    }
+
+    @Override
     public String getStatsString() {
         return "armor: " + armorValue;
     }

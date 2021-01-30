@@ -3,7 +3,6 @@ package game.player_objects;
 import bot.commands.user.shop.MessageSenderTester;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +32,6 @@ class CooldownSetTest extends MessageSenderTester {
 
         Instant now = Instant.now();
         assertTrue(cooldownSet.getDrop().tryUse(now));
-        assertTrue(cooldownSet.getDrop().tryUse(now.plusSeconds(cooldownSet.getDrop().getSecondsLeft(now) + 1)));
+        assertTrue(cooldownSet.getDrop().tryUse(now.plusSeconds(cooldownSet.getDrop().getTimeLeft(now) + 1)));
     }
 }

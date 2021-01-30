@@ -17,6 +17,6 @@ public class BuyArmorCommand extends AbstractBuyCommand {
     @Override
     public void handle(CommandEvent event) {
         ArmorShop shop = game.getArmorShop();
-        buyItem(event, shop, player, commandArgs.itemId);
+        buyItem(event, shop, player, commandArgs.getString());
     }
 }

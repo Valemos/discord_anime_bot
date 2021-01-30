@@ -12,16 +12,26 @@ public abstract class AbstractCommandOptionalPlayer extends AbstractCommand<Opti
         super(game, OptionalIdentifierArguments.class);
     }
 
+    @Override
+    public void handle(CommandEvent event) {
+        if (tryFindPlayerArgument(event)) {
+            handlePlayer(event);
+        }
+    }
+
+    protected abstract void handlePlayer(CommandEvent event);
 
     public boolean tryFindPlayerArgument(CommandEvent event) {
-        String playerId = commandArgs.getSelectedOrPlayerId(player);
-        requestedPlayer = game.getPlayer(playerId);
+        if (commandArgs.id != null) {
+            requestedPlayer = game.getPlayer(commandArgs.id);
 
-        if (requestedPlayer == null){
-            event.getChannel().sendMessage(playerId + " player not found").queue();
-            return true;
+            if (requestedPlayer == null){
+                event.getChannel().sendMessage(commandArgs.id + " player not found").queue();
+                return false;
+            }
+        } else {
+            requestedPlayer = player;
         }
-
-        return false;
+        return true;
     }
 }

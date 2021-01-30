@@ -17,6 +17,10 @@ public class CooldownSet {
     @AttributeOverride(name = "lastUse", column = @Column(name = "grab_lastuse"))
     private Cooldown grab = createNewGrab();
 
+    @Embedded
+    @AttributeOverride(name = "lastUse", column = @Column(name = "daily_lastuse"))
+    private Cooldown daily = createNewDaily();
+
     public CooldownSet() {
     }
 
@@ -24,6 +28,7 @@ public class CooldownSet {
     void postLoad() {
         if (drop == null) drop = createNewDrop();
         if (grab == null) grab = createNewGrab();
+        if (daily == null) daily = createNewDaily();
     }
 
     @NotNull
@@ -34,6 +39,12 @@ public class CooldownSet {
     @NotNull
     private Cooldown createNewGrab() {
         return new Cooldown("Grab", 60);
+    }
+
+    @NotNull
+    private Cooldown createNewDaily() {
+        // seconds for 24 hours
+        return new Cooldown("Daily", 86400);
     }
 
     public Cooldown getDrop() {
@@ -52,12 +63,12 @@ public class CooldownSet {
         this.grab = grab;
     }
 
-    public void useDrop(Instant time){
-        drop.setUsed(time);
+    public Cooldown getDaily() {
+        return daily;
     }
 
-    public void useGrab(Instant time){
-        grab.setUsed(time);
+    public void setDaily(Cooldown daily) {
+        this.daily = daily;
     }
 
     public String getDescription(Instant time) {
@@ -68,5 +79,6 @@ public class CooldownSet {
     public void reset() {
         drop.reset();
         grab.reset();
+        daily.reset();
     }
 }

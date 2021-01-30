@@ -20,7 +20,7 @@ public class WishCardCommand extends AbstractCommand<MultipleWordsArguments> {
 
     @Override
     public void handle(CommandEvent event) {
-        String cardName = commandArgs.getSingleString();
+        String cardName = commandArgs.getString();
         List<CardGlobal> cards = game.getCardsGlobal().getFiltered(cardName, null);
 
         if (cards.isEmpty()){

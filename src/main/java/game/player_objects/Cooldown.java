@@ -1,7 +1,6 @@
 package game.player_objects;
 
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 import java.time.Duration;
 import java.time.Instant;
@@ -41,7 +40,7 @@ public class Cooldown {
     }
 
     public boolean isAvailable(Instant time) {
-        return getSecondsLeft(time) == 0;
+        return getTimeLeft(time) == 0;
     }
 
     public void reset() {
@@ -56,7 +55,6 @@ public class Cooldown {
         return false;
     }
 
-
     public String getDescription(Instant time) {
         return name + ": " + getSecondsLeftString(time);
     }
@@ -66,11 +64,23 @@ public class Cooldown {
     }
 
     public String getSecondsLeftString(Instant time) {
-        long seconds = getSecondsLeft(time);
-        return seconds > 0 ? String.valueOf(seconds) : "ready";
+        long seconds = getTimeLeft(time);
+        return seconds > 0 ? formatSeconds(seconds) : "ready";
     }
 
-    public long getSecondsLeft(Instant time) {
+    private String formatSeconds(long seconds) {
+        if (seconds >= 3600){
+            return String.format("%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+
+        }else if (seconds >= 60){
+            return String.format("%02d:%02d", (seconds % 3600) / 60, seconds % 60);
+
+        }else{
+            return String.format("%02d", seconds % 60);
+        }
+    }
+
+    public long getTimeLeft(Instant time) {
         if (lastUse == null){
             return 0;
         }

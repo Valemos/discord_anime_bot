@@ -1,8 +1,7 @@
 package game.cards;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,21 +11,18 @@ public class CardStatsConstant implements CardStats{
     float approvalRating = 0;
     int cardPrint = 0;
     float dexterity = 0;
-    int strength = 0;
+    float strength = 0;
     float wisdom = 0;
-    @Enumerated(EnumType.ORDINAL)
-    Charisma charisma = Charisma.NEUTRAL;
 
     public CardStatsConstant() {
     }
 
-    public CardStatsConstant(float approvalRating, int cardPrint, float dexterity, int strength, float wisdom, Charisma charisma) {
+    public CardStatsConstant(float approvalRating, int cardPrint, float dexterity, float strength, float wisdom) {
         this.approvalRating = approvalRating;
         this.cardPrint = cardPrint;
         this.dexterity = dexterity;
         this.strength = strength;
         this.wisdom = wisdom;
-        this.charisma = charisma;
     }
 
     @Override
@@ -44,27 +40,30 @@ public class CardStatsConstant implements CardStats{
         if (obj instanceof CardStatsConstant){
             CardStatsConstant other = (CardStatsConstant) obj;
             return approvalRating == other.approvalRating &&
+                    cardPrint == other.cardPrint &&
                     dexterity == other.dexterity &&
                     strength == other.strength &&
-                    wisdom == other.wisdom &&
-                    charisma == other.charisma;
+                    wisdom == other.wisdom;
         }else{
             return false;
         }
     }
 
+    @Transient
     @Override
     public float getPowerLevel() {
-        return approvalRating + cardPrint + dexterity + strength + wisdom;
+        return dexterity + strength + wisdom;
     }
 
+    @Transient
     @Override
     public float getApprovalRating() {
         return approvalRating;
     }
 
+    @Transient
     public String getDescription() {
-        return "charisma:" + charisma.getName() + " rating: " + approvalRating + " dex: " + dexterity + " str: " + strength + " wis: " + wisdom;
+        return " rating: " + approvalRating + " dex: " + dexterity + " str: " + strength + " wis: " + wisdom;
     }
 
 }

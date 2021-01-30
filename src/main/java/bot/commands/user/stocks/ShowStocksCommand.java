@@ -16,12 +16,9 @@ public class ShowStocksCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    public void handle(CommandEvent event) {
-        if(tryFindPlayerArgument(event)){
-            return;
-        }
+    public void handlePlayer(CommandEvent event) {
 
-        String[] stockItems = player.getStocks().stream()
+        String[] stockItems = requestedPlayer.getStocks().stream()
                 .sorted((s1, s2) -> Float.compare(s1.getValue(), s2.getValue()))
                 .map(StockValue::getNameValue)
                 .toArray(String[]::new);

@@ -4,7 +4,9 @@ import bot.commands.AbstractCommandNoArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.materials.Material;
+import game.player_objects.Cooldown;
 
+import java.time.Instant;
 import java.util.Random;
 
 public class DailyCommand extends AbstractCommandNoArguments {
@@ -26,13 +28,17 @@ public class DailyCommand extends AbstractCommandNoArguments {
 
     @Override
     public void handle(CommandEvent event) {
+        Instant now = Instant.now();
+
+        Cooldown dailyCooldown = player.getCooldowns().getDaily();
+        if (!dailyCooldown.tryUse(now)){
+            sendMessage(event, dailyCooldown.getVerboseDescription(now));
+            return;
+        }
+
         int goldReceived = getRandomGold();
         player.getMaterials().addAmount(Material.GOLD, goldReceived);
         sendMessage(event, "you received " + goldReceived + " gold!");
-    }
-
-    public int getRareProbability() {
-        return rareProbability;
     }
 
     public int getRandomGold() {

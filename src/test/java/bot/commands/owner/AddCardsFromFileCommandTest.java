@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.args4j.CmdLineException;
 
+import java.io.InvalidObjectException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -41,7 +43,7 @@ class AddCardsFromFileCommandTest extends AbstractCommandTest<AddCardsFromFileCo
     }
 
     @Test
-    void testNewCardAdded() throws CmdLineException {
+    void testNewCardAdded() throws CmdLineException, AddCardsFromFileCommand.InvalidArgumentsException {
         CardGlobal card = spyGame.getCardGlobalUnique("name", "series");
         assertNull(card);
 

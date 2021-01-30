@@ -19,7 +19,7 @@ public class SquadronRemoveCommand extends AbstractCommand<MultipleIdentifiersAr
     public void handle(CommandEvent event) {
         Squadron squadron = game.getOrCreateSquadron(player);
 
-        if(squadron.getPatrol().isStarted()){
+        if(squadron.getPatrol().isBusy()){
             sendMessage(event, "stop patrol to edit squadron");
             return;
         }

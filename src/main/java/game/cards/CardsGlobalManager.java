@@ -4,10 +4,13 @@ import org.hibernate.Session;
 
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
@@ -15,14 +18,18 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         super(CardGlobal.class, dbSession);
     }
 
-    public void addCard(CardGlobal card) {
+    public boolean addCard(CardGlobal card) {
+        if(!card.getCharacterInfo().isValid()){
+            return false;
+        }
+
         dbSession.beginTransaction();
 
         CardGlobal cardFound = getByCharacter(card.getCharacterInfo());
         if (cardFound != null){
             card.setCardInfo(cardFound);
             dbSession.getTransaction().commit();
-            return;
+            return true;
         }
 
         SeriesInfo series = findMatchingSeries(card.getCharacterInfo().getSeries());
@@ -34,7 +41,16 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
 
         dbSession.save(card.getCharacterInfo());
         dbSession.save(card);
-        dbSession.getTransaction().commit();
+
+        try{
+            dbSession.getTransaction().commit();
+            return true;
+
+        }catch (PersistenceException e){
+            Logger.getGlobal().log(Level.WARNING, e.getCause().getMessage());
+            dbSession.getTransaction().rollback();
+            return false;
+        }
     }
 
     public CardGlobal getByCharacter(CharacterInfo character) {

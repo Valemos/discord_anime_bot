@@ -21,7 +21,7 @@ public class AddCardCommand extends AbstractCommand<AddCardCommand.Arguments> {
 
     public AddCardCommand(AnimeCardsGame game) {
         super(game, Arguments.class);
-        name = "addcard";
+        name = "createcard";
         aliases = new String[]{"cr"};
         guildOnly = false;
         ownerCommand = true;
@@ -35,8 +35,10 @@ public class AddCardCommand extends AbstractCommand<AddCardCommand.Arguments> {
                 commandArgs.imageUrl
         );
 
-        game.addCard(newCard);
-
-        sendMessage(event, "new card added, card id is " + newCard.getCharacterInfo().getId());
+        if (game.addCard(newCard)){
+            sendMessage(event, "new card added, card id is `" + newCard.getCharacterInfo().getId() + '`');
+        }else{
+            sendMessage(event, "cannot add card with this data");
+        }
     }
 }

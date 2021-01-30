@@ -14,11 +14,8 @@ public class ResetCooldownsCommand extends AbstractCommandOptionalPlayer {
     }
 
     @Override
-    public void handle(CommandEvent event) {
-        if(!tryFindPlayerArgument(event)) return;
-
-        player.getCooldowns().reset();
-
-        sendMessage(event, "cooldowns reset for " + player.getId());
+    public void handlePlayer(CommandEvent event) {
+        requestedPlayer.getCooldowns().reset();
+        sendMessage(event, "cooldowns reset for " + requestedPlayer.getId());
     }
 }

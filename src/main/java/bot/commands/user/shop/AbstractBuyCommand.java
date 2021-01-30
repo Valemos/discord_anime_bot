@@ -2,16 +2,17 @@ package bot.commands.user.shop;
 
 import bot.commands.AbstractCommand;
 import bot.commands.arguments.BuyItemArguments;
+import bot.commands.arguments.MultipleWordsArguments;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.Player;
 import game.shop.AbstractShop;
 import game.shop.items.AbstractShopItem;
 
-public abstract class AbstractBuyCommand extends AbstractCommand<BuyItemArguments> {
+public abstract class AbstractBuyCommand extends AbstractCommand<MultipleWordsArguments> {
 
     public AbstractBuyCommand(AnimeCardsGame game) {
-        super(game, BuyItemArguments.class);
+        super(game, MultipleWordsArguments.class);
     }
 
     protected void buyItem(CommandEvent event, AbstractShop shop, Player player, String itemId) {

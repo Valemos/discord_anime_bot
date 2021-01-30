@@ -102,7 +102,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
     public class CardsTest{
         @Test
         void testNotUserCardsNotAdded() {
-            spyGame.pickPersonalCard(tester2.getId(), spyGame.getCardGlobalUnique("riko", null), 1);
+            pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
 
             arguments.cardIds.add("unknown");
             arguments.cardIds.add("multi word unknown");
@@ -143,9 +143,7 @@ class AddToMultiTradeCommandTest extends AbstractCommandTest<AddToMultiTradeComm
         void testCannotAddStockYouDoNotOwn() {
             CardPersonal card1 = tester.getCards().get(0);
 
-            spyGame.pickPersonalCard(tester2.getId(),
-                    spyGame.getCardsGlobal().getByCharacter(tester.getCards().get(tester.getCards().size() - 1).getCharacterInfo()),
-                    1);
+            pickTesterCard(tester2, spyGame.getCardGlobalUnique("riko", null));
             CardPersonal card2 = tester2.getCards().get(0);
 
             game().exchangeCardForStock(card1);
