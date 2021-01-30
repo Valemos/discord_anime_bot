@@ -17,7 +17,7 @@ public class CardSelectionArguments {
     public String cardId;
 
     public String getCardName() {
-        if (cardNameWords == null) {
+        if (cardNameWords.isEmpty()) {
             return null;
         }
 

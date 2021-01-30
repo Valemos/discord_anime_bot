@@ -24,7 +24,7 @@ class ModifyCharacterCommandTest extends MessageSenderTester {
     @Test
     void testCannotModifyUnknownCard() {
         send("#modifycard 1234567890 name series url");
-        verify(spyCardsGlobal, never()).updateCharacterInfo(any(), any(), any(), any());
+        verify(spyCardsGlobal, never()).updateCharacterInfo(any(), any());
     }
 
     @Test

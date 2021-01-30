@@ -56,7 +56,7 @@ public abstract class AbstractCardsManager<T extends SearchableCard & Comparable
     protected List<Predicate> getNameSeriesPredicates(CriteriaBuilder cb, Root<T> root, String name, String series) {
         List<Predicate> predicates = new ArrayList<>(2);
 
-        Path<Object> characterInfo = root.get("characterInfo");
+        Path<CharacterInfo> characterInfo = root.get("characterInfo");
         if(name != null)
             predicates.add(cb.like(cb.lower(characterInfo.get("name")), name.toLowerCase()));
 

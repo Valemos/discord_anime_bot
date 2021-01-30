@@ -4,6 +4,7 @@ import bot.commands.AbstractCommand;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import game.AnimeCardsGame;
 import game.cards.CardGlobal;
+import game.cards.CharacterInfo;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
 
@@ -35,9 +36,10 @@ public class ModifyCharacterCommand extends AbstractCommand<ModifyCharacterComma
         CardGlobal card = game.getCardsGlobal().getById(commandArgs.cardId);
         if (card != null){
             game.getCardsGlobal().updateCharacterInfo(card.getCharacterInfo(),
-                                                        commandArgs.newName,
-                                                        commandArgs.newSeries,
-                                                        commandArgs.newImageUrl);
+                                                        new CharacterInfo(
+                                                                commandArgs.newName,
+                                                                commandArgs.newSeries,
+                                                                commandArgs.newImageUrl));
 
         }else{
             sendMessage(event, "card with id " + commandArgs.cardId + " not found");

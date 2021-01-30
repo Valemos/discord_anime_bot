@@ -25,12 +25,14 @@ public abstract class CardSelectionCommand extends AbstractCommand<CardSelection
             card = game.getCardsGlobal().getById(commandArgs.cardId);
 
         } else {
-            if(commandArgs.cardNameWords.isEmpty()){
+            if(commandArgs.cardNameWords.isEmpty() && commandArgs.seriesName == null){
                 sendMessage(event, "incorrect options, specify name and/or series or id");
                 return;
             }
 
-            List<CardGlobal> cards = game.getCardsGlobal().getFiltered(commandArgs.getCardName(), commandArgs.seriesName);
+            List<CardGlobal> cards = game.getCardsGlobal()
+                    .getFiltered(commandArgs.getCardName(), commandArgs.seriesName);
+
             if (cards.isEmpty()){
                 sendMessage(event, "card not found");
                 return;

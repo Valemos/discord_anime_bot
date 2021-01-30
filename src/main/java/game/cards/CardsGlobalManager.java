@@ -74,17 +74,17 @@ public class CardsGlobalManager extends AbstractCardsManager<CardGlobal> {
         }
     }
 
-    public void updateCharacterInfo(CharacterInfo info, String newName, String newSeries, String newImageUrl) {
+    public void updateCharacterInfo(CharacterInfo info, CharacterInfo newInfo) {
         dbSession.beginTransaction();
 
-        if (newName != null) info.setName(newName);
+        if (newInfo.getName() != null) info.setName(newInfo.getName());
 
-        if (newImageUrl != null) info.setImageUrl(newImageUrl);
+        if (newInfo.getImageUrl() != null) info.setImageUrl(newInfo.getImageUrl());
 
-        if (newSeries != null){
-            SeriesInfo series = findMatchingSeries(newSeries);
+        if (newInfo.getSeriesName() != null){
+            SeriesInfo series = findMatchingSeries(newInfo.getSeries());
             if (series == null) {
-                series = new SeriesInfo(newSeries);
+                series = newInfo.getSeries();
                 dbSession.save(series);
             }
             info.setSeries(series);
